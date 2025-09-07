@@ -52,7 +52,26 @@ class PagamentoController extends Controller
             $q->where('user_id', Auth::id());
         })->with('cliente')->orderBy('created_at', 'desc')->get();
 
-        return view('pagamentos.index', compact('pagamentos', 'orcamentos'));
+        // Calcular totais para os cards de resumo
+        $baseQuery = Pagamento::whereHas('orcamento', function($q) {
+            $q->whereHas('cliente', function($q2) {
+                $q2->where('user_id', Auth::id());
+            });
+        });
+
+        $totalRecebido = $baseQuery->sum('valor');
+        
+        $totalMes = $baseQuery->whereYear('data_pagamento', date('Y'))
+                             ->whereMonth('data_pagamento', date('m'))
+                             ->sum('valor');
+        
+        $totalCartao = $baseQuery->whereIn('forma_pagamento', ['cartao_credito', 'cartao_debito'])
+                                 ->sum('valor');
+        
+        $totalPix = $baseQuery->whereIn('forma_pagamento', ['pix', 'transferencia'])
+                             ->sum('valor');
+
+        return view('pagamentos.index', compact('pagamentos', 'orcamentos', 'totalRecebido', 'totalMes', 'totalCartao', 'totalPix'));
     }
 
     /**

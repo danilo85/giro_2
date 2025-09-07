@@ -224,7 +224,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/modelos-propostas/{modeloProposta}/conteudo', [ModeloPropostaController::class, 'getConteudo'])->name('modelos-propostas.conteudo');
         
         // Upload de Arquivos para Orçamentos
-        Route::post('/orcamentos/files/upload', [OrcamentoFileController::class, 'upload'])->name('orcamentos.files.upload');
+        Route::post('/orcamentos/{orcamento}/files/upload', [OrcamentoFileController::class, 'upload'])->name('orcamentos.files.upload');
         Route::get('/orcamentos/{orcamento}/files', [OrcamentoFileController::class, 'getFiles'])->name('orcamentos.files.get');
         Route::delete('/orcamentos/files/{file}', [OrcamentoFileController::class, 'delete'])->name('orcamentos.files.delete');
         Route::get('/orcamentos/files/{file}/download', [OrcamentoFileController::class, 'download'])->name('orcamentos.files.download');
@@ -241,3 +241,11 @@ Route::prefix('public')->name('public.')->group(function () {
 });
 
 // File upload routes moved to RouteServiceProvider (without any middleware)
+
+// Debug routes (only in development)
+if (app()->environment('local')) {
+    require __DIR__.'/debug.php';
+}
+
+// Incluir rotas de teste
+require __DIR__ . '/test.php';

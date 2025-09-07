@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Orcamento;
 use App\Models\OrcamentoFile;
+use App\Utils\MimeTypeDetector;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -14,80 +16,114 @@ class OrcamentoFileController extends Controller
     /**
      * Upload de arquivo para orçamento
      */
-    public function upload(Request $request)
+    public function upload(Request $request, Orcamento $orcamento)
     {
+        \Log::info('=== INÍCIO DO UPLOAD ===', [
+            'orcamento_id' => $orcamento->id,
+            'request_files' => $request->hasFile('file') ? 'SIM' : 'NÃO'
+        ]);
+        
         $request->validate([
-            'file' => 'required|file|mimes:pdf,jpg,jpeg,png,doc,docx,xls,xlsx|max:10240', // 10MB max
-            'orcamento_id' => 'required|integer|exists:orcamentos,id',
-            'categoria' => 'required|in:anexo,avatar,logo',
-            'descricao' => 'nullable|string|max:255'
+            'file' => 'required|file|max:10240', // 10MB max
         ]);
 
-        // Verificar se o usuário tem acesso ao orçamento
-        $orcamento = Orcamento::findOrFail($request->orcamento_id);
-        if ($orcamento->cliente->user_id !== Auth::id()) {
+        $file = $request->file('file');
+        
+        \Log::info('Arquivo recebido', [
+            'original_name' => $file->getClientOriginalName(),
+            'size' => $file->getSize(),
+            'extension' => $file->getClientOriginalExtension(),
+            'path' => $file->getPathname()
+        ]);
+        
+        // Detectar MIME type usando nossa classe personalizada
+        try {
+            \Log::info('Iniciando detecção de MIME type...');
+            $mimeType = MimeTypeDetector::detect($file);
+            \Log::info('MIME type detectado com sucesso', ['mime_type' => $mimeType]);
+        } catch (\Exception $e) {
+            \Log::error('ERRO na detecção de MIME type', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            throw $e;
+        }
+        
+        // Validar tipo de arquivo
+        $allowedTypes = [
+            'application/pdf',
+            'image/jpeg',
+            'image/png',
+            'image/gif',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'application/vnd.ms-excel',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'text/plain',
+            'text/csv'
+        ];
+        
+        \Log::info('Validando tipo de arquivo', [
+            'detected_mime' => $mimeType,
+            'is_allowed' => in_array($mimeType, $allowedTypes)
+        ]);
+        
+        if (!in_array($mimeType, $allowedTypes)) {
+            \Log::warning('Tipo de arquivo não permitido', [
+                'detected_mime' => $mimeType,
+                'allowed_types' => $allowedTypes
+            ]);
             return response()->json([
                 'success' => false,
-                'message' => 'Acesso negado ao orçamento'
-            ], 403);
+                'message' => 'Tipo de arquivo não permitido. MIME type detectado: ' . $mimeType
+            ], 422);
         }
-
-        $file = $request->file('file');
-        $categoria = $request->categoria;
-        $orcamentoId = $request->orcamento_id;
 
         // Gerar nome único para o arquivo
-        $fileName = time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
-        $filePath = "orcamento-files/{$categoria}/{$fileName}";
-
-        // Escolher disco de armazenamento
-        $disk = config('filesystems.default') === 's3' ? 's3' : 'public';
+        $fileName = time() . '_' . $file->getClientOriginalName();
+        \Log::info('Nome do arquivo gerado', ['file_name' => $fileName]);
         
+        // Armazenar o arquivo
         try {
-            // Upload do arquivo
-            if ($disk === 's3') {
-                Storage::disk('s3')->put($filePath, file_get_contents($file));
-                $fileUrl = Storage::disk('s3')->url($filePath);
-            } else {
-                Storage::disk('public')->put($filePath, file_get_contents($file));
-                $fileUrl = Storage::disk('public')->url($filePath);
-            }
-
-            // Criar registro no banco de dados
-            $orcamentoFile = OrcamentoFile::create([
-                'orcamento_id' => $orcamentoId,
-                'user_id' => Auth::id(),
-                'nome_arquivo' => $file->getClientOriginalName(),
-                'url_arquivo' => $fileUrl,
-                'tipo_arquivo' => $file->getMimeType(),
-                'tamanho' => $file->getSize(),
-                'categoria' => $categoria,
-                'descricao' => $request->descricao
-            ]);
-            
-            return response()->json([
-                'success' => true,
-                'message' => 'Arquivo enviado com sucesso',
-                'file' => [
-                    'id' => $orcamentoFile->id,
-                    'filename' => $orcamentoFile->nome_arquivo,
-                    'size' => $orcamentoFile->formatted_size,
-                    'mime_type' => $orcamentoFile->tipo_arquivo,
-                    'url' => $fileUrl,
-                    'categoria' => $orcamentoFile->categoria,
-                    'descricao' => $orcamentoFile->descricao,
-                    'is_image' => $orcamentoFile->is_image,
-                    'icon' => $orcamentoFile->icon,
-                    'uploaded_at' => $orcamentoFile->created_at->format('d/m/Y H:i')
-                ]
-            ]);
-            
+            $path = $file->storeAs('orcamentos', $fileName, 'public');
+            \Log::info('Arquivo armazenado com sucesso', ['path' => $path]);
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Erro interno do servidor: ' . $e->getMessage()
-            ], 500);
+            \Log::error('ERRO ao armazenar arquivo', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            throw $e;
         }
+
+        // Registrar no banco de dados
+        try {
+            $orcamentoFile = new OrcamentoFile([
+                'orcamento_id' => $orcamento->id,
+                'user_id' => Auth::id(),
+                'nome_arquivo' => $fileName,
+                'url_arquivo' => Storage::url($path),
+                'tipo_arquivo' => $mimeType,
+                'tamanho' => $file->getSize(),
+                'categoria' => $request->input('categoria', 'anexo'),
+            ]);
+            
+            $orcamentoFile->save();
+            \Log::info('Arquivo registrado no banco de dados', ['file_id' => $orcamentoFile->id]);
+        } catch (\Exception $e) {
+            \Log::error('ERRO ao registrar no banco de dados', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            throw $e;
+        }
+
+        \Log::info('=== UPLOAD CONCLUÍDO COM SUCESSO ===');
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Arquivo enviado com sucesso!',
+            'file' => $orcamentoFile
+        ]);
     }
     
     /**
@@ -236,4 +272,6 @@ class OrcamentoFileController extends Controller
             ]
         ]);
     }
+    
+
 }

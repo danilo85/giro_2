@@ -349,8 +349,9 @@
 <script src="{{ asset('js/orcamento-file-upload.js') }}"></script>
 <script>
 // Inicializar componente de upload de arquivos
+let orcamentoFileUpload;
 document.addEventListener('DOMContentLoaded', function() {
-    new OrcamentoFileUpload({
+    orcamentoFileUpload = new OrcamentoFileUpload({
         containerId: 'file-upload-container',
         orcamentoId: {{ $orcamento->id }},
         categoria: 'anexo'

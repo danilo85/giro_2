@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Financial;
 use App\Http\Controllers\Controller;
 use App\Models\TransactionFile;
 use App\Models\TempFile;
+use App\Utils\MimeTypeDetector;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class FileUploadController extends Controller
@@ -44,12 +46,23 @@ class FileUploadController extends Controller
                 $fileUrl = Storage::disk('public')->url($filePath);
             }
 
+            // Detectar MIME type usando classe utilitária robusta
+            $mimeType = MimeTypeDetector::detect($file);
+            
+            // Log para debug
+            Log::info('Upload de arquivo financeiro', [
+                'nome' => $file->getClientOriginalName(),
+                'mime_type_detectado' => $mimeType,
+                'tamanho' => $file->getSize(),
+                'transaction_id' => $transactionId
+            ]);
+            
             // Criar registro no banco de dados
             $transactionFile = TransactionFile::create([
                 'transaction_id' => $transactionId,
                 'nome_arquivo' => $file->getClientOriginalName(),
                 'url_arquivo' => $fileUrl,
-                'tipo_arquivo' => $file->getMimeType(),
+                'tipo_arquivo' => $mimeType,
                 'tamanho' => $file->getSize()
             ]);
             
@@ -185,12 +198,23 @@ class FileUploadController extends Controller
                 $fileUrl = Storage::disk('public')->url($filePath);
             }
 
+            // Detectar MIME type usando classe utilitária robusta
+            $mimeType = MimeTypeDetector::detect($file);
+            
+            // Log para debug
+            Log::info('Upload temporário de arquivo', [
+                'nome' => $file->getClientOriginalName(),
+                'mime_type_detectado' => $mimeType,
+                'tamanho' => $file->getSize(),
+                'temp_id' => $tempId
+            ]);
+            
             // Criar registro temporário no banco de dados
             $tempFile = TempFile::create([
                 'temp_id' => $tempId,
                 'nome_arquivo' => $file->getClientOriginalName(),
                 'url_arquivo' => $fileUrl,
-                'tipo_arquivo' => $file->getMimeType(),
+                'tipo_arquivo' => $mimeType,
                 'tamanho' => $file->getSize(),
                 'user_id' => Auth::id()
             ]);
@@ -311,4 +335,6 @@ class FileUploadController extends Controller
             return $bytes . ' bytes';
         }
     }
+
+
 }

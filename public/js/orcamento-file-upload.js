@@ -6,7 +6,7 @@ class OrcamentoFileUpload {
     constructor(options = {}) {
         // Default options
         this.options = {
-            uploadUrl: '/api/budget/orcamentos/files/upload',
+            uploadUrl: '/api/budget/orcamentos/{orcamento_id}/files/upload',
             getFilesUrl: '/api/budget/orcamentos/',
             deleteUrl: '/api/budget/orcamentos/files/',
             downloadUrl: '/api/budget/orcamentos/files/',
@@ -167,7 +167,6 @@ class OrcamentoFileUpload {
         for (const file of files) {
             const formData = new FormData();
             formData.append('file', file);
-            formData.append('orcamento_id', this.options.orcamentoId);
             formData.append('categoria', this.options.categoria);
             if (descricao) {
                 formData.append('descricao', descricao);
@@ -178,7 +177,8 @@ class OrcamentoFileUpload {
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
                 
-                const response = await fetch(this.options.uploadUrl, {
+                const uploadUrl = this.options.uploadUrl.replace('{orcamento_id}', this.options.orcamentoId);
+                const response = await fetch(uploadUrl, {
                     method: 'POST',
                     body: formData,
                     headers: {

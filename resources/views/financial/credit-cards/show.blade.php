@@ -3,9 +3,7 @@
 @section('title', 'Detalhes do Cartão - Giro')
 
 @section('content')
-
-
-<div class="max-w-6xl mx-auto">
+<div class="max-w-7xl mx-auto">
     <!-- Breadcrumb -->
     <x-breadcrumb :items="[
         ['label' => 'Home', 'url' => route('dashboard'), 'icon' => 'fas fa-home'],
