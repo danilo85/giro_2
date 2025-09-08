@@ -3,6 +3,42 @@
 @section('title', 'Meu Perfil - Giro')
 
 @section('content')
+<style>
+    /* Drag and Drop Styles */
+    .logo-drop-zone {
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .logo-drop-zone:hover {
+        border-color: #3b82f6 !important;
+        background-color: #eff6ff;
+    }
+    
+    .logo-drop-zone.drag-over {
+        border-color: #3b82f6 !important;
+        background-color: #dbeafe !important;
+        transform: scale(1.02);
+    }
+    
+    .upload-icon {
+        transition: transform 0.2s ease;
+    }
+    
+    .logo-drop-zone:hover .upload-icon {
+        transform: scale(1.1);
+    }
+    
+    .feedback-message {
+        animation: fadeIn 0.3s ease;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
 <div class="max-w-4xl mx-auto">
     <!-- Header -->
     <div class="mb-8">
@@ -117,7 +153,7 @@
             <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">Informações Pessoais</h2>
                 
-                <form id="profile-form" action="{{ route('profile.update') }}" method="POST">
+                <form id="profile-form" action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     
@@ -151,6 +187,21 @@
                                 <p class="text-sm text-red-600 dark:text-red-400 mt-1">{{ $message }}</p>
                             @enderror
                         </div>
+                        
+                        <!-- CPF/CNPJ -->
+                        <div class="md:col-span-2">
+                            <label for="cpf_cnpj" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                CPF/CNPJ
+                            </label>
+                            <input type="text" id="cpf_cnpj" name="cpf_cnpj" 
+                                   value="{{ old('cpf_cnpj', auth()->user()->cpf_cnpj) }}"
+                                   class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                                   placeholder="000.000.000-00 ou 00.000.000/0000-00">
+                            <div id="cpf-cnpj-error" class="hidden text-sm text-red-600 dark:text-red-400 mt-1"></div>
+                            @error('cpf_cnpj')
+                                <p class="text-sm text-red-600 dark:text-red-400 mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
                     </div>
                     
                     <!-- Save Button -->
@@ -161,6 +212,221 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                             </svg>
                             Salvar Alterações
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Logomarcas Section -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mt-8">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">Logomarcas da Empresa</h2>
+                
+                <form id="logos-form" action="{{ route('profile.logo') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Logo Horizontal -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Logo Horizontal
+                            </label>
+                            <div class="logo-drop-zone border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 text-center hover:border-blue-400 transition-colors" 
+                                 data-logo-type="horizontal" 
+                                 ondrop="handleDrop(event, 'horizontal')" 
+                                 ondragover="handleDragOver(event)" 
+                                 ondragenter="handleDragEnter(event)" 
+                                 ondragleave="handleDragLeave(event)">
+                                @if(auth()->user()->getLogoByType('horizontal'))
+                                    <img id="logo-horizontal-preview" 
+                                         src="{{ auth()->user()->getLogoByType('horizontal')->url }}" 
+                                         alt="Logo Horizontal" 
+                                         class="max-h-20 mx-auto mb-2">
+                                @else
+                                    <div id="logo-horizontal-placeholder" class="text-gray-400 mb-2">
+                                        <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                        </svg>
+                                    </div>
+                                    <img id="logo-horizontal-preview" class="max-h-20 mx-auto mb-2 hidden" alt="Logo Horizontal">
+                                @endif
+                                <input type="file" id="logo-horizontal" name="logo_horizontal" accept="image/*" class="hidden" onchange="previewLogo(this, 'horizontal')">
+                                <button type="button" onclick="document.getElementById('logo-horizontal').click()" 
+                                        class="text-blue-600 hover:text-blue-700 text-sm font-medium">
+                                    {{ auth()->user()->getLogoByType('horizontal') ? 'Alterar' : 'Selecionar' }} Arquivo
+                                </button>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">PNG, JPG, SVG até 2MB</p>
+                            </div>
+                            @error('logo_horizontal')
+                                <p class="text-sm text-red-600 dark:text-red-400 mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        
+                        <!-- Logo Vertical -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Logo Vertical
+                            </label>
+                            <div class="logo-drop-zone border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 text-center hover:border-blue-400 transition-colors" 
+                                 data-logo-type="vertical" 
+                                 ondrop="handleDrop(event, 'vertical')" 
+                                 ondragover="handleDragOver(event)" 
+                                 ondragenter="handleDragEnter(event)" 
+                                 ondragleave="handleDragLeave(event)">
+                                @if(auth()->user()->getLogoByType('vertical'))
+                                    <img id="logo-vertical-preview" 
+                                         src="{{ auth()->user()->getLogoByType('vertical')->url }}" 
+                                         alt="Logo Vertical" 
+                                         class="max-h-20 mx-auto mb-2">
+                                @else
+                                    <div id="logo-vertical-placeholder" class="text-gray-400 mb-2">
+                                        <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                        </svg>
+                                    </div>
+                                    <img id="logo-vertical-preview" class="max-h-20 mx-auto mb-2 hidden" alt="Logo Vertical">
+                                @endif
+                                <input type="file" id="logo-vertical" name="logo_vertical" accept="image/*" class="hidden" onchange="previewLogo(this, 'vertical')">
+                                <button type="button" onclick="document.getElementById('logo-vertical').click()" 
+                                        class="text-blue-600 hover:text-blue-700 text-sm font-medium">
+                                    {{ auth()->user()->getLogoByType('vertical') ? 'Alterar' : 'Selecionar' }} Arquivo
+                                </button>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">PNG, JPG, SVG até 2MB</p>
+                            </div>
+                            @error('logo_vertical')
+                                <p class="text-sm text-red-600 dark:text-red-400 mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        
+                        <!-- Logo Ícone -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Ícone
+                            </label>
+                            <div class="logo-drop-zone border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 text-center hover:border-blue-400 transition-colors" 
+                                 data-logo-type="icone" 
+                                 ondrop="handleDrop(event, 'icone')" 
+                                 ondragover="handleDragOver(event)" 
+                                 ondragenter="handleDragEnter(event)" 
+                                 ondragleave="handleDragLeave(event)">
+                                @if(auth()->user()->getLogoByType('icone'))
+                                    <img id="logo-icone-preview" 
+                                         src="{{ auth()->user()->getLogoByType('icone')->url }}" 
+                                         alt="Ícone" 
+                                         class="max-h-20 mx-auto mb-2">
+                                @else
+                                    <div id="logo-icone-placeholder" class="text-gray-400 mb-2">
+                                        <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                        </svg>
+                                    </div>
+                                    <img id="logo-icone-preview" class="max-h-20 mx-auto mb-2 hidden" alt="Ícone">
+                                @endif
+                                <input type="file" id="logo-icone" name="logo_icone" accept="image/*" class="hidden" onchange="previewLogo(this, 'icone')">
+                                <button type="button" onclick="document.getElementById('logo-icone').click()" 
+                                        class="text-blue-600 hover:text-blue-700 text-sm font-medium">
+                                    {{ auth()->user()->getLogoByType('icone') ? 'Alterar' : 'Selecionar' }} Arquivo
+                                </button>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">PNG, JPG, SVG até 2MB</p>
+                            </div>
+                            @error('logo_icone')
+                                <p class="text-sm text-red-600 dark:text-red-400 mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+                    
+                    <!-- Save Logos Button -->
+                    <div class="flex justify-end mt-6">
+                        <button type="submit" 
+                                class="inline-flex items-center px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Salvar Logomarcas
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Assinatura Digital Section -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mt-8">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">Assinatura Digital</h2>
+                
+                <form id="signature-form" action="{{ route('profile.signature') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Upload Area with Drag & Drop -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Arquivo da Assinatura
+                            </label>
+                            <div id="signature-drop-zone" class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center hover:border-blue-400 transition-all duration-200 cursor-pointer">
+                                <div class="text-gray-400 mb-4">
+                                    <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                                    </svg>
+                                </div>
+                                <input type="file" id="assinatura-digital" name="assinatura" accept="image/*" class="hidden">
+                                <div id="signature-upload-text">
+                                    <p class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                        Arraste sua assinatura aqui
+                                    </p>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                                        ou clique para selecionar
+                                    </p>
+                                    <button type="button" id="signature-select-btn" 
+                                            class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-colors">
+                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                                        </svg>
+                                        {{ auth()->user()->assinatura_digital ? 'Alterar' : 'Selecionar' }} Assinatura
+                                    </button>
+                                </div>
+                                <div id="signature-upload-progress" class="hidden">
+                                    <div class="w-full bg-gray-200 rounded-full h-2 mb-2">
+                                        <div id="signature-progress-bar" class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                                    </div>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">Enviando assinatura...</p>
+                                </div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">PNG, JPG, SVG até 2MB</p>
+                            </div>
+                            @error('assinatura')
+                                <p class="text-sm text-red-600 dark:text-red-400 mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        
+                        <!-- Preview Area -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Visualização
+                            </label>
+                            <div class="border border-gray-300 dark:border-gray-600 rounded-lg p-4 bg-gray-50 dark:bg-gray-700 min-h-[200px] flex items-center justify-center">
+                                @if(auth()->user()->assinatura_digital)
+                                    <img id="signature-preview" 
+                                         src="{{ auth()->user()->assinatura_url }}" 
+                                         alt="Assinatura Digital" 
+                                         class="max-h-32 max-w-full">
+                                @else
+                                    <div id="signature-placeholder" class="text-center text-gray-400">
+                                        <svg class="w-16 h-16 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                                        </svg>
+                                        <p class="text-sm">Nenhuma assinatura carregada</p>
+                                    </div>
+                                    <img id="signature-preview" class="max-h-32 max-w-full hidden" alt="Assinatura Digital">
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Save Signature Button -->
+                    <div class="flex justify-end mt-6">
+                        <button type="submit" 
+                                class="inline-flex items-center px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Salvar Assinatura
                         </button>
                     </div>
                 </form>
@@ -504,6 +770,154 @@ document.getElementById('password_confirmation').addEventListener('input', funct
     }
 });
 
+// CPF/CNPJ Mask Function
+function applyCpfCnpjMask(input) {
+    let value = input.value.replace(/\D/g, ''); // Remove tudo que não é dígito
+    
+    if (value.length <= 11) {
+        // CPF: 000.000.000-00
+        value = value.replace(/(\d{3})(\d)/, '$1.$2');
+        value = value.replace(/(\d{3})(\d)/, '$1.$2');
+        value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+        input.placeholder = 'CPF: 000.000.000-00';
+    } else {
+        // CNPJ: 00.000.000/0000-00
+        value = value.replace(/(\d{2})(\d)/, '$1.$2');
+        value = value.replace(/(\d{3})(\d)/, '$1.$2');
+        value = value.replace(/(\d{3})(\d)/, '$1/$2');
+        value = value.replace(/(\d{4})(\d{1,2})$/, '$1-$2');
+        input.placeholder = 'CNPJ: 00.000.000/0000-00';
+    }
+    
+    input.value = value;
+    
+    // Validação visual
+    const isValid = validateCpfCnpj(value);
+    const errorDiv = document.getElementById('cpf-cnpj-error');
+    
+    if (value.length > 0 && !isValid) {
+        input.classList.add('border-red-500');
+        input.classList.remove('border-green-500');
+        if (errorDiv) {
+            errorDiv.textContent = value.length <= 14 ? 'CPF inválido' : 'CNPJ inválido';
+            errorDiv.classList.remove('hidden');
+        }
+    } else if (value.length > 0 && isValid) {
+        input.classList.add('border-green-500');
+        input.classList.remove('border-red-500');
+        if (errorDiv) {
+            errorDiv.classList.add('hidden');
+        }
+    } else {
+        input.classList.remove('border-red-500', 'border-green-500');
+        if (errorDiv) {
+            errorDiv.classList.add('hidden');
+        }
+    }
+}
+
+// Validação de CPF/CNPJ
+function validateCpfCnpj(value) {
+    const numbers = value.replace(/\D/g, '');
+    
+    if (numbers.length === 11) {
+        return validateCpf(numbers);
+    } else if (numbers.length === 14) {
+        return validateCnpj(numbers);
+    }
+    
+    return false;
+}
+
+// Validação de CPF
+function validateCpf(cpf) {
+    if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) {
+        return false;
+    }
+    
+    let sum = 0;
+    for (let i = 0; i < 9; i++) {
+        sum += parseInt(cpf.charAt(i)) * (10 - i);
+    }
+    let remainder = (sum * 10) % 11;
+    if (remainder === 10 || remainder === 11) remainder = 0;
+    if (remainder !== parseInt(cpf.charAt(9))) return false;
+    
+    sum = 0;
+    for (let i = 0; i < 10; i++) {
+        sum += parseInt(cpf.charAt(i)) * (11 - i);
+    }
+    remainder = (sum * 10) % 11;
+    if (remainder === 10 || remainder === 11) remainder = 0;
+    if (remainder !== parseInt(cpf.charAt(10))) return false;
+    
+    return true;
+}
+
+// Validação de CNPJ
+function validateCnpj(cnpj) {
+    if (cnpj.length !== 14 || /^(\d)\1{13}$/.test(cnpj)) {
+        return false;
+    }
+    
+    let length = cnpj.length - 2;
+    let numbers = cnpj.substring(0, length);
+    let digits = cnpj.substring(length);
+    let sum = 0;
+    let pos = length - 7;
+    
+    for (let i = length; i >= 1; i--) {
+        sum += numbers.charAt(length - i) * pos--;
+        if (pos < 2) pos = 9;
+    }
+    
+    let result = sum % 11 < 2 ? 0 : 11 - sum % 11;
+    if (result !== parseInt(digits.charAt(0))) return false;
+    
+    length = length + 1;
+    numbers = cnpj.substring(0, length);
+    sum = 0;
+    pos = length - 7;
+    
+    for (let i = length; i >= 1; i--) {
+        sum += numbers.charAt(length - i) * pos--;
+        if (pos < 2) pos = 9;
+    }
+    
+    result = sum % 11 < 2 ? 0 : 11 - sum % 11;
+    if (result !== parseInt(digits.charAt(1))) return false;
+    
+    return true;
+}
+
+// Aplicar máscara ao campo CPF/CNPJ
+const cpfCnpjField = document.getElementById('cpf_cnpj');
+if (cpfCnpjField) {
+    cpfCnpjField.addEventListener('input', function() {
+        applyCpfCnpjMask(this);
+    });
+    
+    cpfCnpjField.addEventListener('keypress', function(e) {
+        // Permitir apenas números
+        if (!/\d/.test(e.key) && !['Backspace', 'Delete', 'Tab', 'Escape', 'Enter'].includes(e.key)) {
+            e.preventDefault();
+        }
+    });
+    
+    // Remover formatação ao enviar o formulário
+    const form = cpfCnpjField.closest('form');
+    if (form) {
+        form.addEventListener('submit', function() {
+            cpfCnpjField.value = cpfCnpjField.value.replace(/\D/g, '');
+        });
+    }
+    
+    // Aplicar máscara no valor inicial se existir
+    if (cpfCnpjField.value) {
+        applyCpfCnpjMask(cpfCnpjField);
+    }
+}
+
 // Delete Account Modal Functions
 function openDeleteAccountModal() {
     document.getElementById('deleteAccountModal').classList.remove('hidden');
@@ -541,6 +955,249 @@ document.getElementById('deleteAccountModal').addEventListener('click', function
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         closeDeleteAccountModal();
+    }
+});
+
+// Logo preview function
+function previewLogo(input, type) {
+    const file = input.files[0];
+    const preview = document.getElementById(`logo-${type}-preview`);
+    const placeholder = document.getElementById(`logo-${type}-placeholder`);
+    
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            preview.classList.remove('hidden');
+            if (placeholder) {
+                placeholder.classList.add('hidden');
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+// Drag and Drop Functions for Logos
+function handleDragOver(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    e.currentTarget.classList.add('border-blue-500', 'bg-blue-50');
+}
+
+function handleDragEnter(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    e.currentTarget.classList.add('border-blue-500', 'bg-blue-50');
+}
+
+function handleDragLeave(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    e.currentTarget.classList.remove('border-blue-500', 'bg-blue-50');
+}
+
+function handleDrop(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const dropZone = e.currentTarget;
+    dropZone.classList.remove('border-blue-500', 'bg-blue-50');
+    
+    const files = e.dataTransfer.files;
+    const logoType = dropZone.getAttribute('data-logo-type');
+    
+    if (files.length > 0) {
+        const file = files[0];
+        
+        // Validar tipo de arquivo
+        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/svg+xml'];
+        if (!allowedTypes.includes(file.type)) {
+            alert('Tipo de arquivo não permitido. Use apenas JPG, PNG ou SVG.');
+            return;
+        }
+        
+        // Validar tamanho (2MB)
+        if (file.size > 2 * 1024 * 1024) {
+            alert('Arquivo muito grande. O tamanho máximo é 2MB.');
+            return;
+        }
+        
+        // Atualizar o input file
+        const fileInput = document.getElementById(`logo-${logoType}`);
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        fileInput.files = dataTransfer.files;
+        
+        // Mostrar preview
+        previewLogo(fileInput, logoType);
+        
+        // Mostrar feedback de sucesso
+        showUploadFeedback(logoType, 'Arquivo carregado com sucesso!');
+    }
+}
+
+function showUploadFeedback(logoType, message) {
+    // Criar elemento de feedback se não existir
+    let feedback = document.getElementById(`feedback-${logoType}`);
+    if (!feedback) {
+        feedback = document.createElement('div');
+        feedback.id = `feedback-${logoType}`;
+        feedback.className = 'mt-2 text-sm text-green-600 font-medium';
+        const dropZone = document.querySelector(`[data-logo-type="${logoType}"]`);
+        dropZone.appendChild(feedback);
+    }
+    
+    feedback.textContent = message;
+    feedback.classList.remove('hidden');
+    
+    // Remover feedback após 3 segundos
+    setTimeout(() => {
+        feedback.classList.add('hidden');
+    }, 3000);
+}
+
+// Signature preview function
+function previewSignature(input) {
+    const file = input.files[0];
+    const preview = document.getElementById('signature-preview');
+    const placeholder = document.getElementById('signature-placeholder');
+    
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            preview.classList.remove('hidden');
+            if (placeholder) {
+                placeholder.classList.add('hidden');
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+// Drag and Drop Functions for Signature
+function handleSignatureDragOver(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    const dropZone = document.getElementById('signature-drop-zone');
+    dropZone.classList.add('border-blue-500', 'bg-blue-50', 'dark:bg-blue-900/20');
+}
+
+function handleSignatureDragEnter(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    const dropZone = document.getElementById('signature-drop-zone');
+    dropZone.classList.add('border-blue-500', 'bg-blue-50', 'dark:bg-blue-900/20');
+}
+
+function handleSignatureDragLeave(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    const dropZone = document.getElementById('signature-drop-zone');
+    dropZone.classList.remove('border-blue-500', 'bg-blue-50', 'dark:bg-blue-900/20');
+}
+
+function handleSignatureDrop(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const dropZone = document.getElementById('signature-drop-zone');
+    dropZone.classList.remove('border-blue-500', 'bg-blue-50', 'dark:bg-blue-900/20');
+    
+    const files = e.dataTransfer.files;
+    
+    if (files.length > 0) {
+        const file = files[0];
+        
+        // Validar tipo de arquivo
+        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/svg+xml'];
+        if (!allowedTypes.includes(file.type)) {
+            showSignatureFeedback('Tipo de arquivo não permitido. Use apenas JPG, PNG ou SVG.', 'error');
+            return;
+        }
+        
+        // Validar tamanho (2MB)
+        if (file.size > 2 * 1024 * 1024) {
+            showSignatureFeedback('Arquivo muito grande. O tamanho máximo é 2MB.', 'error');
+            return;
+        }
+        
+        // Atualizar o input file
+        const fileInput = document.getElementById('assinatura-digital');
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        fileInput.files = dataTransfer.files;
+        
+        // Mostrar preview
+        previewSignature(fileInput);
+        
+        // Mostrar feedback de sucesso
+        showSignatureFeedback('Assinatura carregada com sucesso!', 'success');
+    }
+}
+
+function showSignatureFeedback(message, type) {
+    // Criar elemento de feedback se não existir
+    let feedback = document.getElementById('signature-feedback');
+    if (!feedback) {
+        feedback = document.createElement('div');
+        feedback.id = 'signature-feedback';
+        feedback.className = 'mt-2 text-sm font-medium';
+        const dropZone = document.getElementById('signature-drop-zone');
+        dropZone.parentNode.appendChild(feedback);
+    }
+    
+    // Definir cor baseada no tipo
+    feedback.className = `mt-2 text-sm font-medium ${
+        type === 'error' ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'
+    }`;
+    
+    feedback.textContent = message;
+    feedback.classList.remove('hidden');
+    
+    // Remover feedback após 3 segundos
+    setTimeout(() => {
+        feedback.classList.add('hidden');
+    }, 3000);
+}
+
+// Initialize Signature Drag and Drop
+document.addEventListener('DOMContentLoaded', function() {
+    const signatureDropZone = document.getElementById('signature-drop-zone');
+    const signatureInput = document.getElementById('assinatura-digital');
+    const signatureSelectBtn = document.getElementById('signature-select-btn');
+    
+    if (signatureDropZone) {
+        // Drag and drop events
+        signatureDropZone.addEventListener('dragover', handleSignatureDragOver);
+        signatureDropZone.addEventListener('dragenter', handleSignatureDragEnter);
+        signatureDropZone.addEventListener('dragleave', handleSignatureDragLeave);
+        signatureDropZone.addEventListener('drop', handleSignatureDrop);
+        
+        // Click to select file
+        signatureDropZone.addEventListener('click', function(e) {
+            if (e.target !== signatureSelectBtn) {
+                signatureInput.click();
+            }
+        });
+        
+        // Button click
+        if (signatureSelectBtn) {
+            signatureSelectBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                signatureInput.click();
+            });
+        }
+        
+        // File input change
+        if (signatureInput) {
+            signatureInput.addEventListener('change', function() {
+                if (this.files.length > 0) {
+                    previewSignature(this);
+                    showSignatureFeedback('Assinatura selecionada com sucesso!', 'success');
+                }
+            });
+        }
     }
 });
 </script>

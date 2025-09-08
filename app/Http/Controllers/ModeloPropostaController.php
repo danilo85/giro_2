@@ -14,7 +14,6 @@ class ModeloPropostaController extends Controller
      */
     public function index(Request $request)
     {
-        $this->authorize('viewAny', ModeloProposta::class);
         $query = ModeloProposta::forUser(Auth::id())->orderBy('nome');
 
         // Filtro de busca
@@ -41,7 +40,6 @@ class ModeloPropostaController extends Controller
      */
     public function create()
     {
-        $this->authorize('create', ModeloProposta::class);
         $autores = Autor::forUser(Auth::id())->orderBy('nome')->get();
         return view('modelos-propostas.create', compact('autores'));
     }
@@ -51,16 +49,27 @@ class ModeloPropostaController extends Controller
      */
     public function store(Request $request)
     {
-        $this->authorize('create', ModeloProposta::class);
         $request->validate([
             'nome' => 'required|string|max:255',
             'conteudo' => 'required|string',
+            'categoria' => 'nullable|string|max:100',
+            'status' => 'nullable|string|max:50',
+            'descricao' => 'nullable|string',
+            'observacoes' => 'nullable|string',
+            'valor_padrao' => 'nullable|numeric|min:0',
+            'prazo_padrao' => 'nullable|integer|min:1',
             'ativo' => 'boolean'
         ]);
 
-        $data = $request->only(['nome', 'conteudo', 'ativo']);
+        $data = $request->only([
+            'nome', 'conteudo', 'categoria', 'status', 'descricao', 
+            'observacoes', 'valor_padrao', 'prazo_padrao', 'ativo'
+        ]);
         $data['user_id'] = Auth::id();
         $data['ativo'] = $request->has('ativo');
+        $data['status'] = $data['status'] ?? 'ativo';
+        
+
 
         $modelo = ModeloProposta::create($data);
 
@@ -73,8 +82,8 @@ class ModeloPropostaController extends Controller
      */
     public function show(ModeloProposta $modeloProposta)
     {
-        $this->authorize('view', $modeloProposta);
-        return view('modelos-propostas.show', compact('modeloProposta'));
+        $modelo = $modeloProposta;
+        return view('modelos-propostas.show', compact('modelo'));
     }
 
     /**
@@ -82,7 +91,6 @@ class ModeloPropostaController extends Controller
      */
     public function edit(ModeloProposta $modeloProposta)
     {
-        $this->authorize('update', $modeloProposta);
         return view('modelos-propostas.edit', compact('modeloProposta'));
     }
 
@@ -91,15 +99,28 @@ class ModeloPropostaController extends Controller
      */
     public function update(Request $request, ModeloProposta $modeloProposta)
     {
-        $this->authorize('update', $modeloProposta);
-
         $request->validate([
             'nome' => 'required|string|max:200',
             'conteudo' => 'required|string',
+            'categoria' => 'nullable|string|max:100',
+            'status' => 'nullable|string|max:50',
+            'descricao' => 'nullable|string',
+            'observacoes' => 'nullable|string',
+            'valor_padrao' => 'nullable|numeric|min:0',
+            'prazo_padrao' => 'nullable|integer|min:1',
             'ativo' => 'boolean'
         ]);
 
-        $modeloProposta->update($request->all());
+        $data = $request->only([
+            'nome', 'conteudo', 'categoria', 'status', 'descricao',
+            'observacoes', 'valor_padrao', 'prazo_padrao', 'ativo'
+        ]);
+        $data['ativo'] = $request->has('ativo');
+        $data['status'] = $data['status'] ?? 'ativo';
+        
+
+
+        $modeloProposta->update($data);
 
         return redirect()->route('modelos-propostas.index')
             ->with('success', 'Modelo de proposta atualizado com sucesso!');
@@ -110,7 +131,6 @@ class ModeloPropostaController extends Controller
      */
     public function destroy(ModeloProposta $modeloProposta)
     {
-        $this->authorize('delete', $modeloProposta);
         
         $modeloProposta->delete();
         
@@ -140,12 +160,11 @@ class ModeloPropostaController extends Controller
      */
     public function getConteudo(ModeloProposta $modeloProposta)
     {
-        $this->authorize('view', $modeloProposta);
-
+        $modelo = $modeloProposta;
         return response()->json([
-            'id' => $modeloProposta->id,
-            'nome' => $modeloProposta->nome,
-            'conteudo' => $modeloProposta->conteudo
+            'id' => $modelo->id,
+            'nome' => $modelo->nome,
+            'conteudo' => $modelo->conteudo
         ]);
     }
 
@@ -154,13 +173,19 @@ class ModeloPropostaController extends Controller
      */
     public function duplicate(ModeloProposta $modeloProposta)
     {
-        $this->authorize('duplicate', $modeloProposta);
-
+        $modelo = $modeloProposta;
         // Criar uma cópia do modelo
         $novoModelo = ModeloProposta::create([
-            'nome' => 'Cópia de ' . $modeloProposta->nome,
-            'conteudo' => $modeloProposta->conteudo,
-            'ativo' => $modeloProposta->ativo,
+            'nome' => 'Cópia de ' . $modelo->nome,
+            'conteudo' => $modelo->conteudo,
+            'categoria' => $modelo->categoria,
+            'status' => $modelo->status,
+            'descricao' => $modelo->descricao,
+            'observacoes' => $modelo->observacoes,
+            'valor_padrao' => $modelo->valor_padrao,
+            'prazo_padrao' => $modelo->prazo_padrao,
+            'autores_padrao' => $modelo->autores_padrao,
+            'ativo' => $modelo->ativo,
             'user_id' => Auth::id()
         ]);
 

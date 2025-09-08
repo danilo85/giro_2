@@ -33,7 +33,7 @@
             </button>
         </div>
         <form method="GET" action="{{ route('modelos-propostas.index') }}" class="space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                     <label for="search" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Buscar</label>
                     <input type="text" id="search" name="search" value="{{ request('search') }}" 
@@ -49,6 +49,17 @@
                         <option value="produtos" {{ request('categoria') == 'produtos' ? 'selected' : '' }}>Produtos</option>
                         <option value="consultoria" {{ request('categoria') == 'consultoria' ? 'selected' : '' }}>Consultoria</option>
                         <option value="manutencao" {{ request('categoria') == 'manutencao' ? 'selected' : '' }}>Manutenção</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Status</label>
+                    <select id="status" name="status" 
+                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
+                        <option value="">Todos os status</option>
+                        <option value="ativo" {{ request('status') == 'ativo' ? 'selected' : '' }}>Ativo</option>
+                        <option value="inativo" {{ request('status') == 'inativo' ? 'selected' : '' }}>Inativo</option>
+                        <option value="rascunho" {{ request('status') == 'rascunho' ? 'selected' : '' }}>Rascunho</option>
+                        <option value="arquivado" {{ request('status') == 'arquivado' ? 'selected' : '' }}>Arquivado</option>
                     </select>
                 </div>
                 <div class="flex items-end">
@@ -154,6 +165,30 @@
                                     <path fill-rule="evenodd" d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path>
                                 </svg>
                                 <span class="modelo-category">{{ ucfirst($modelo->categoria) }}</span>
+                            </span>
+                            
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium
+                                @switch($modelo->status)
+                                    @case('ativo')
+                                        bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
+                                        @break
+                                    @case('inativo')
+                                        bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200
+                                        @break
+                                    @case('rascunho')
+                                        bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200
+                                        @break
+                                    @case('arquivado')
+                                        bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200
+                                        @break
+                                    @default
+                                        bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200
+                                @endswitch
+                            ">
+                                <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                </svg>
+                                {{ ucfirst($modelo->status) }}
                             </span>
                             
                             <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200">
@@ -262,6 +297,71 @@
     </a>
 </div>
 
+<!-- Delete Modal -->
+<div id="deleteModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-[10000]">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800">
+        <div class="mt-3 text-center">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900">
+                <svg class="h-6 w-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16c-.77.833.192 2.5 1.732 2.5z"></path>
+                </svg>
+            </div>
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white mt-2">Confirmar Exclusão</h3>
+            <div class="mt-2 px-7 py-3">
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                    Tem certeza que deseja excluir este modelo de proposta? Esta ação não pode ser desfeita.
+                </p>
+            </div>
+            <div class="items-center px-4 py-3">
+                <form id="deleteForm" method="POST" class="inline">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" 
+                            class="px-4 py-2 bg-red-600 text-white text-base font-medium rounded-md w-24 mr-2 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-300">
+                        Excluir
+                    </button>
+                </form>
+                <button onclick="closeDeleteModal()" 
+                        class="px-4 py-2 bg-gray-300 text-gray-800 text-base font-medium rounded-md w-24 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Duplicate Modal -->
+<div id="duplicateModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-[10000]">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800">
+        <div class="mt-3 text-center">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-purple-100 dark:bg-purple-900">
+                <svg class="h-6 w-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                </svg>
+            </div>
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white mt-2">Confirmar Duplicação</h3>
+            <div class="mt-2 px-7 py-3">
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                    Deseja criar uma cópia deste modelo de proposta? Uma nova versão será criada com o mesmo conteúdo.
+                </p>
+            </div>
+            <div class="items-center px-4 py-3">
+                <form id="duplicateForm" method="POST" class="inline">
+                    @csrf
+                    <button type="submit" 
+                            class="px-4 py-2 bg-purple-600 text-white text-base font-medium rounded-md w-24 mr-2 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-300">
+                        Duplicar
+                    </button>
+                </form>
+                <button onclick="closeDuplicateModal()" 
+                        class="px-4 py-2 bg-gray-300 text-gray-800 text-base font-medium rounded-md w-24 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 // Search toggle functionality
 function toggleSearch() {
@@ -302,52 +402,51 @@ function useModel(id) {
 }
 
 function duplicateModel(id) {
-    if (confirm('Deseja duplicar este modelo?')) {
-        // Create and submit form for duplication
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = `/modelos-propostas/${id}/duplicate`;
-        
-        const csrfToken = document.createElement('input');
-        csrfToken.type = 'hidden';
-        csrfToken.name = '_token';
-        const metaToken = document.querySelector('meta[name="csrf-token"]');
-        if (metaToken) {
-            csrfToken.value = metaToken.getAttribute('content');
-        }
-        
-        form.appendChild(csrfToken);
-        document.body.appendChild(form);
-        form.submit();
-    }
+    // Set the form action for duplicate
+    const duplicateForm = document.getElementById('duplicateForm');
+    duplicateForm.action = `/modelos-propostas/${id}/duplicate`;
+    
+    // Show the duplicate modal
+    document.getElementById('duplicateModal').classList.remove('hidden');
 }
 
 function deleteModel(id) {
-    if (confirm('Tem certeza que deseja excluir este modelo? Esta ação não pode ser desfeita.')) {
-        // Create and submit form for deletion
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = `/modelos-propostas/${id}`;
-        
-        const csrfToken = document.createElement('input');
-        csrfToken.type = 'hidden';
-        csrfToken.name = '_token';
-        const metaToken = document.querySelector('meta[name="csrf-token"]');
-        if (metaToken) {
-            csrfToken.value = metaToken.getAttribute('content');
-        }
-        
-        const methodField = document.createElement('input');
-        methodField.type = 'hidden';
-        methodField.name = '_method';
-        methodField.value = 'DELETE';
-        
-        form.appendChild(csrfToken);
-        form.appendChild(methodField);
-        document.body.appendChild(form);
-        form.submit();
+    // Set the form action for delete
+    const deleteForm = document.getElementById('deleteForm');
+    deleteForm.action = `/modelos-propostas/${id}`;
+    
+    // Show the delete modal
+    document.getElementById('deleteModal').classList.remove('hidden');
+}
+
+function closeDeleteModal() {
+    document.getElementById('deleteModal').classList.add('hidden');
+}
+
+function closeDuplicateModal() {
+    document.getElementById('duplicateModal').classList.add('hidden');
+}
+
+// Close modals when clicking outside
+window.onclick = function(event) {
+    const deleteModal = document.getElementById('deleteModal');
+    const duplicateModal = document.getElementById('duplicateModal');
+    
+    if (event.target === deleteModal) {
+        closeDeleteModal();
+    }
+    if (event.target === duplicateModal) {
+        closeDuplicateModal();
     }
 }
+
+// Close modals with Escape key
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        closeDeleteModal();
+        closeDuplicateModal();
+    }
+});
 </script>
 @endsection
 

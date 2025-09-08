@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
-@section('title', 'Criar Pagamento')
+@section('title', 'Novo Pagamento')
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 py-6">
+<div class="max-w-7xl mx-auto">
     <!-- Breadcrumb -->
     <nav class="flex mb-8" aria-label="Breadcrumb">
         <ol class="inline-flex items-center space-x-1 md:space-x-3">
@@ -20,7 +20,9 @@
                     <svg class="w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
                     </svg>
-                    <a href="{{ route('pagamentos.index') }}" class="ml-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ml-2 dark:text-gray-400 dark:hover:text-white">Pagamentos</a>
+                    @if($orcamento && $orcamento->id)
+                         <a href="{{ route('orcamentos.show', $orcamento->id) }}" class="ml-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ml-2 dark:text-gray-400 dark:hover:text-white">Orçamento #{{ $orcamento->id }}</a>
+                     @endif
                 </div>
             </li>
             <li aria-current="page">
@@ -28,7 +30,7 @@
                     <svg class="w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
                     </svg>
-                    <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400">Criar Pagamento</span>
+                    <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400">Novo Pagamento</span>
                 </div>
             </li>
         </ol>
@@ -38,24 +40,42 @@
     <div class="mb-8">
         <div class="flex items-center justify-between">
             <div class="flex items-center space-x-4">
-                <a href="{{ route('pagamentos.index') }}" 
-                   class="inline-flex items-center justify-center w-10 h-10 text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                    </svg>
-                </a>
+                @if($orcamento && $orcamento->id)
+                    <a href="{{ route('orcamentos.show', $orcamento->id) }}" 
+                       class="inline-flex items-center justify-center w-10 h-10 text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                    </a>
+                @else
+                    <a href="{{ route('pagamentos.index') }}" 
+                       class="inline-flex items-center justify-center w-10 h-10 text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                    </a>
+                @endif
                 <div>
-                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Criar Pagamento</h1>
-                    <p class="mt-2 text-gray-600 dark:text-gray-400">Registre um novo pagamento no sistema</p>
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Novo Pagamento</h1>
+                    @if($orcamento && $orcamento->id)
+                         <p class="mt-2 text-gray-600 dark:text-gray-400">Registrar pagamento para o orçamento #{{ $orcamento->id }}</p>
+                     @else
+                         <p class="mt-2 text-gray-600 dark:text-gray-400">Registrar novo pagamento</p>
+                     @endif
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Form -->
-    <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg border border-gray-200 dark:border-gray-700">
-        <div class="p-6 space-y-6">
-            <form action="{{ route('pagamentos.store') }}" method="POST" id="payment-form">
+    <!-- Grid Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Formulário Principal -->
+        <div class="lg:col-span-2">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+                <div class="p-6">
+                    <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-6">Informações do Pagamento</h2>
+                    
+                    <form method="POST" action="{{ route('pagamentos.store') }}" class="space-y-6">
             @csrf
             
             <!-- Orçamento -->
@@ -166,28 +186,47 @@
                 </div>
             </div>
             
-            <!-- Forma de Pagamento -->
-            <div>
-                <label for="forma_pagamento" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Forma de Pagamento <span class="text-red-500">*</span>
-                </label>
-                <select id="forma_pagamento" 
-                        name="forma_pagamento" 
-                        required
-                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white @error('forma_pagamento') border-red-500 @enderror">
-                    <option value="">Selecione a forma de pagamento</option>
-                    <option value="dinheiro" {{ old('forma_pagamento') == 'dinheiro' ? 'selected' : '' }}>Dinheiro</option>
-                    <option value="pix" {{ old('forma_pagamento') == 'pix' ? 'selected' : '' }}>PIX</option>
-                    <option value="cartao_credito" {{ old('forma_pagamento') == 'cartao_credito' ? 'selected' : '' }}>Cartão de Crédito</option>
-                    <option value="cartao_debito" {{ old('forma_pagamento') == 'cartao_debito' ? 'selected' : '' }}>Cartão de Débito</option>
-                    <option value="transferencia" {{ old('forma_pagamento') == 'transferencia' ? 'selected' : '' }}>Transferência Bancária</option>
-                    <option value="boleto" {{ old('forma_pagamento') == 'boleto' ? 'selected' : '' }}>Boleto Bancário</option>
-                    <option value="cheque" {{ old('forma_pagamento') == 'cheque' ? 'selected' : '' }}>Cheque</option>
-                    <option value="outros" {{ old('forma_pagamento') == 'outros' ? 'selected' : '' }}>Outros</option>
-                </select>
-                @error('forma_pagamento')
-                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                @enderror
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Forma de Pagamento -->
+                <div>
+                    <label for="forma_pagamento" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Forma de Pagamento <span class="text-red-500">*</span>
+                    </label>
+                    <select id="forma_pagamento" 
+                            name="forma_pagamento" 
+                            required
+                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white @error('forma_pagamento') border-red-500 @enderror">
+                        <option value="">Selecione a forma de pagamento</option>
+                        <option value="dinheiro" {{ old('forma_pagamento') == 'dinheiro' ? 'selected' : '' }}>Dinheiro</option>
+                        <option value="pix" {{ old('forma_pagamento') == 'pix' ? 'selected' : '' }}>PIX</option>
+                        <option value="cartao_credito" {{ old('forma_pagamento') == 'cartao_credito' ? 'selected' : '' }}>Cartão de Crédito</option>
+                        <option value="cartao_debito" {{ old('forma_pagamento') == 'cartao_debito' ? 'selected' : '' }}>Cartão de Débito</option>
+                        <option value="transferencia" {{ old('forma_pagamento') == 'transferencia' ? 'selected' : '' }}>Transferência Bancária</option>
+                        <option value="boleto" {{ old('forma_pagamento') == 'boleto' ? 'selected' : '' }}>Boleto Bancário</option>
+                    </select>
+                    @error('forma_pagamento')
+                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                    @enderror
+                </div>
+                
+                <!-- Status -->
+                <div>
+                    <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Status <span class="text-red-500">*</span>
+                    </label>
+                    <select id="status" 
+                            name="status" 
+                            required
+                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white @error('status') border-red-500 @enderror">
+                        <option value="pendente" {{ old('status', 'pendente') == 'pendente' ? 'selected' : '' }}>Pendente</option>
+                        <option value="processando" {{ old('status', 'pendente') == 'processando' ? 'selected' : '' }}>Processando</option>
+                        <option value="confirmado" {{ old('status', 'pendente') == 'confirmado' ? 'selected' : '' }}>Confirmado</option>
+                        <option value="cancelado" {{ old('status', 'pendente') == 'cancelado' ? 'selected' : '' }}>Cancelado</option>
+                    </select>
+                    @error('status')
+                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                    @enderror
+                </div>
             </div>
             
             <!-- Observações -->
@@ -206,13 +245,59 @@
             </div>
             
             <!-- Botões -->
-            <div class="flex items-center justify-end pt-6 border-t border-gray-200 dark:border-gray-700">
+            <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
+                <a href="{{ route('pagamentos.index') }}" 
+                   class="px-4 py-2 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
+                    Cancelar
+                </a>
                 <button type="submit" 
-                        class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors">
+                        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors">
                     Criar Pagamento
                 </button>
             </div>
-        </form>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Seção de Preview -->
+        <div class="lg:col-span-1">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+                <div class="p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Preview do Pagamento</h3>
+                    
+                    <div class="space-y-4">
+                        <div class="text-center p-6 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                            <div class="mx-auto h-16 w-16 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center mb-4">
+                                <svg class="h-8 w-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                                </svg>
+                            </div>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Valor do pagamento</p>
+                            <p id="preview-valor" class="text-2xl font-bold text-gray-900 dark:text-white">R$ 0,00</p>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-500 dark:text-gray-400">Orçamento:</span>
+                                <span id="preview-orcamento" class="text-sm font-medium text-gray-900 dark:text-white">-</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-500 dark:text-gray-400">Conta Bancária:</span>
+                                <span id="preview-banco" class="text-sm font-medium text-gray-900 dark:text-white">-</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-500 dark:text-gray-400">Data:</span>
+                                <span id="preview-data" class="text-sm font-medium text-gray-900 dark:text-white">-</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-500 dark:text-gray-400">Forma:</span>
+                                <span id="preview-forma" class="text-sm font-medium text-gray-900 dark:text-white">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 <script>
@@ -223,6 +308,50 @@ document.addEventListener('DOMContentLoaded', function() {
     const totalPago = document.getElementById('total-pago');
     const saldoRestante = document.getElementById('saldo-restante');
     const valorInput = document.getElementById('valor');
+    const bankSelect = document.getElementById('bank_id');
+    const dataInput = document.getElementById('data_pagamento');
+    const formaSelect = document.getElementById('forma_pagamento');
+    
+    // Preview elements
+    const previewOrcamento = document.getElementById('preview-orcamento');
+    const previewBanco = document.getElementById('preview-banco');
+    const previewValor = document.getElementById('preview-valor');
+    const previewData = document.getElementById('preview-data');
+    const previewForma = document.getElementById('preview-forma');
+    
+    // Function to update preview
+    function updatePreview() {
+        // Update orçamento
+        const selectedOrcamento = orcamentoSelect.options[orcamentoSelect.selectedIndex];
+        previewOrcamento.textContent = selectedOrcamento.value ? selectedOrcamento.text : '-';
+        
+        // Update banco
+        const selectedBank = bankSelect.options[bankSelect.selectedIndex];
+        previewBanco.textContent = selectedBank.value ? selectedBank.text : '-';
+        
+        // Update valor
+        const valor = valorInput.value;
+        if (valor) {
+            const valorFormatted = new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(parseFloat(valor));
+            previewValor.textContent = valorFormatted;
+        } else {
+            previewValor.textContent = 'R$ 0,00';
+        }
+        
+        // Update data
+        if (dataInput.value) {
+            const date = new Date(dataInput.value + 'T00:00:00');
+            previewData.textContent = date.toLocaleDateString('pt-BR');
+        } else {
+            previewData.textContent = '-';
+        }
+        
+        // Update forma
+        previewForma.textContent = formaSelect.value || '-';
+    }
     
     orcamentoSelect.addEventListener('change', function() {
         const selectedOption = this.options[this.selectedIndex];
@@ -246,12 +375,24 @@ document.addEventListener('DOMContentLoaded', function() {
             orcamentoInfo.classList.add('hidden');
             valorInput.value = '';
         }
+        
+        updatePreview();
     });
+    
+    // Add event listeners for preview updates
+    valorInput.addEventListener('input', updatePreview);
+    bankSelect.addEventListener('change', updatePreview);
+    dataInput.addEventListener('change', updatePreview);
+    formaSelect.addEventListener('change', updatePreview);
     
     // Trigger change event if there's a pre-selected value
     if (orcamentoSelect.value) {
         orcamentoSelect.dispatchEvent(new Event('change'));
     }
+    
+    // Initial preview update
+    updatePreview();
 });
 </script>
 </div>
+@endsection

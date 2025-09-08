@@ -15,6 +15,7 @@ class ModeloPropostaPolicy
      */
     public function viewAny(User $user): bool
     {
+        \Log::info('ModeloPropostaPolicy::viewAny', ['user_id' => $user->id]);
         return true;
     }
 
@@ -23,7 +24,14 @@ class ModeloPropostaPolicy
      */
     public function view(User $user, ModeloProposta $modeloProposta): bool
     {
-        return $user->id === $modeloProposta->user_id;
+        $result = $user->id === $modeloProposta->user_id;
+        \Log::info('ModeloPropostaPolicy::view', [
+            'user_id' => $user->id,
+            'modelo_user_id' => $modeloProposta->user_id,
+            'modelo_id' => $modeloProposta->id,
+            'result' => $result
+        ]);
+        return $result;
     }
 
     /**
@@ -39,7 +47,14 @@ class ModeloPropostaPolicy
      */
     public function update(User $user, ModeloProposta $modeloProposta): bool
     {
-        return $user->id === $modeloProposta->user_id;
+        $result = $user->id === $modeloProposta->user_id;
+        \Log::info('ModeloPropostaPolicy::update', [
+            'user_id' => $user->id,
+            'modelo_user_id' => $modeloProposta->user_id,
+            'modelo_id' => $modeloProposta->id,
+            'result' => $result
+        ]);
+        return $result;
     }
 
     /**
@@ -47,7 +62,14 @@ class ModeloPropostaPolicy
      */
     public function delete(User $user, ModeloProposta $modeloProposta): bool
     {
-        return $user->id === $modeloProposta->user_id;
+        $result = $user->id === $modeloProposta->user_id;
+        \Log::info('ModeloPropostaPolicy::delete', [
+            'user_id' => $user->id,
+            'modelo_user_id' => $modeloProposta->user_id,
+            'modelo_id' => $modeloProposta->id,
+            'result' => $result
+        ]);
+        return $result;
     }
 
     /**
@@ -55,7 +77,14 @@ class ModeloPropostaPolicy
      */
     public function duplicate(User $user, ModeloProposta $modeloProposta): bool
     {
-        return $user->id === $modeloProposta->user_id;
+        $result = $user->id === $modeloProposta->user_id;
+        \Log::info('ModeloPropostaPolicy::duplicate', [
+            'user_id' => $user->id,
+            'modelo_user_id' => $modeloProposta->user_id,
+            'modelo_id' => $modeloProposta->id,
+            'result' => $result
+        ]);
+        return $result;
     }
 
     /**

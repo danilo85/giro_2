@@ -354,7 +354,7 @@
 @push('scripts')
 <script src="{{ asset('js/cliente-autocomplete.js') }}"></script>
 <script src="{{ asset('js/autor-autocomplete.js') }}"></script>
-<script src="{{ asset('js/orcamento-file-upload.js') }}"></script>
+<script src="{{ asset('js/orcamento-file-upload.js') }}?v={{ time() }}"></script>
 <script>
 // Auto-fill from template
 document.getElementById('modelo_proposta_id').addEventListener('change', function() {
@@ -421,11 +421,16 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Initialize file upload component
-    let orcamentoFileUpload = new OrcamentoFileUpload({
+    console.log('About to initialize OrcamentoFileUpload');
+    window.orcamentoFileUpload = new OrcamentoFileUpload({
         containerId: 'file-upload-container',
         orcamentoId: {{ $orcamento->id }},
-        categoria: 'anexo'
+        categoria: 'anexo',
+        getFilesUrl: '/orcamentos/',
+        deleteUrl: '/api/budget/orcamentos/files/',
+        downloadUrl: '/api/budget/orcamentos/files/'
     });
+    console.log('OrcamentoFileUpload initialized:', window.orcamentoFileUpload);
     
     // Pré-selecionar cliente atual se existir
     @if($orcamento->cliente)

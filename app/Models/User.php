@@ -28,6 +28,8 @@ class User extends Authenticatable
         'last_login_ip',
         'is_online',
         'last_activity_at',
+        'cpf_cnpj',
+        'assinatura_digital',
     ];
 
     /**
@@ -104,6 +106,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the logos for the user.
+     */
+    public function logos()
+    {
+        return $this->hasMany(UserLogo::class);
+    }
+
+    /**
      * Check if user is admin.
      */
     public function isAdmin()
@@ -146,5 +156,32 @@ class User extends Authenticatable
             'last_activity_at' => now(),
             'is_online' => true,
         ]);
+    }
+
+    /**
+     * Get the user's signature URL.
+     */
+    public function getAssinaturaUrlAttribute()
+    {
+        if ($this->assinatura_digital) {
+            return asset('storage/' . $this->assinatura_digital);
+        }
+        return null;
+    }
+
+    /**
+     * Get logo by type.
+     */
+    public function getLogoByType($tipo)
+    {
+        return $this->logos()->where('tipo', $tipo)->first();
+    }
+
+    /**
+     * Get all logos grouped by type.
+     */
+    public function getLogosGroupedAttribute()
+    {
+        return $this->logos->groupBy('tipo');
     }
 }

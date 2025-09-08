@@ -84,6 +84,10 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
     Route::post('/profile/avatar', [ProfileController::class, 'updateAvatar'])->name('profile.avatar');
+    Route::post('/profile/logo', [ProfileController::class, 'uploadLogo'])->name('profile.logo');
+    Route::post('/profile/signature', [ProfileController::class, 'uploadSignature'])->name('profile.signature');
+    Route::delete('/profile/logo', [ProfileController::class, 'deleteLogo'])->name('profile.logo.delete');
+    Route::delete('/profile/signature', [ProfileController::class, 'deleteSignature'])->name('profile.signature.delete');
     Route::delete('/profile', [ProfileController::class, 'delete'])->name('profile.delete');
 
     // Settings
@@ -202,10 +206,11 @@ Route::middleware(['auth'])->group(function () {
 
     // Pagamentos
     Route::resource('pagamentos', PagamentoController::class);
+    Route::post('/pagamentos/{pagamento}/gerar-recibo', [PagamentoController::class, 'gerarRecibo'])->name('pagamentos.gerar-recibo');
 
     // Modelos de Propostas
-    Route::resource('modelos-propostas', ModeloPropostaController::class);
-    Route::post('modelos-propostas/{modelo_proposta}/duplicate', [ModeloPropostaController::class, 'duplicate'])->name('modelos-propostas.duplicate');
+    Route::resource('modelos-propostas', ModeloPropostaController::class)->parameters(['modelos-propostas' => 'modeloProposta']);
+    Route::post('modelos-propostas/{modeloProposta}/duplicate', [ModeloPropostaController::class, 'duplicate'])->name('modelos-propostas.duplicate');
    
 
 
@@ -280,6 +285,9 @@ Route::prefix('public')->name('public.')->group(function () {
     Route::get('/orcamento/{token}', [OrcamentoController::class, 'showPublic'])->name('orcamentos.public');
     Route::patch('/orcamento/{token}/aprovar', [OrcamentoController::class, 'aprovarPublico'])->name('orcamentos.public.aprovar');
     Route::patch('/orcamento/{token}/rejeitar', [OrcamentoController::class, 'rejeitarPublico'])->name('orcamentos.public.rejeitar');
+    
+    // Rotas públicas para recibos
+    Route::get('/recibo/{token}', [PagamentoController::class, 'showReciboPublico'])->name('recibos.public');
 });
 
 // File upload routes moved to RouteServiceProvider (without any middleware)

@@ -1,152 +1,308 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $orcamento->titulo }} - Orçamento</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Proposta #{{ $orcamento->numero }} - {{ $orcamento->cliente->name }}</title>
+    
+    {{-- Importação da fonte Open Sans --}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700;800&display=swap" rel="stylesheet">
+    
+    {{-- Carregamento do Tailwind CSS via Vite --}}
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
+    {{-- Alpine.js --}}
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; }
+        .font-open-sans {
+            font-family: 'Open Sans', sans-serif;
+        }
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen">
-    <div class="max-w-4xl mx-auto py-8 px-4">
-        <!-- Header -->
-        <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-gray-900 mb-2">Proposta de Orçamento</h1>
-            <p class="text-gray-600">{{ $orcamento->titulo }}</p>
-        </div>
+<body class="h-full bg-gray-50 font-open-sans">
 
-        <!-- Status -->
-        <div class="text-center mb-8">
+    {{-- Estilos específicos para a impressão --}}
+    <style>
+        @media print {
+            body {
+                background-color: #fff !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .print-container {
+                box-shadow: none !important;
+                border: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .print-bg-transparent {
+                background-color: transparent !important;
+            }
+            .print-grid-cols-2 {
+                display: grid !important;
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            }
+        }
+    </style>
+
+    {{-- Notificação "Toast" de SUCESSO --}}
+    @if (session()->has('success'))
+        <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 5000)" x-show="show" x-transition
+             class="no-print fixed top-5 right-5 z-50 rounded-md bg-green-600 px-4 py-3 text-sm font-bold text-white shadow-lg font-open-sans">
+            <p>{{ session('success') }}</p>
+        </div>
+    @endif
+
+    {{-- Botão de Desfazer --}}
+    @if (session()->has('undo_action'))
+        <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 8000)" x-show="show" x-transition
+            class="no-print fixed bottom-5 right-5 z-50 rounded-md bg-gray-800 px-4 py-3 text-sm text-white shadow-lg font-open-sans">
+            <div class="flex items-center gap-4">
+                <p>{{ session('undo_action') }}</p>
+                <button wire:click="revertStatus" class="font-bold underline hover:text-yellow-400">Desfazer</button>
+            </div>
+        </div>
+    @endif
+
+    <div class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 font-open-sans">
+        <div class="bg-white p-8 md:p-12 shadow-lg rounded-md relative print-container">
+            
             @php
                 $statusColors = [
-                    'rascunho' => 'bg-gray-100 text-gray-800',
-                    'enviado' => 'bg-blue-100 text-blue-800',
-                    'aprovado' => 'bg-green-100 text-green-800',
-                    'rejeitado' => 'bg-red-100 text-red-800',
-                    'em_andamento' => 'bg-yellow-100 text-yellow-800',
-                    'concluido' => 'bg-purple-100 text-purple-800',
-                    'quitado' => 'bg-emerald-100 text-emerald-800'
+                    'pendente' => 'bg-gray-400',
+                    'analisando' => 'bg-yellow-400', 
+                    'aprovado' => 'bg-green-500', 
+                    'rejeitado' => 'bg-red-500'
                 ];
-                $statusClass = $statusColors[$orcamento->status] ?? 'bg-gray-100 text-gray-800';
+                $statusClass = $statusColors[strtolower($orcamento->status)] ?? $statusColors['pendente'];
             @endphp
-            <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium {{ $statusClass }}">
-                {{ ucfirst(str_replace('_', ' ', $orcamento->status)) }}
-            </span>
-        </div>
-
-        <!-- Orçamento Card -->
-        <div class="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden mb-8">
-            <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
-                <h2 class="text-xl font-semibold text-white">{{ $orcamento->titulo }}</h2>
-                <p class="text-blue-100 text-sm mt-1">Orçamento #{{ $orcamento->id }}</p>
-            </div>
-
-            <div class="p-6">
-                <!-- Cliente -->
-                <div class="mb-6">
-                    <h3 class="text-lg font-medium text-gray-900 mb-3">Cliente</h3>
-                    <div class="bg-gray-50 rounded-lg p-4">
-                        <p class="font-medium text-gray-900">{{ $orcamento->cliente->nome }}</p>
-                        <p class="text-gray-600">{{ $orcamento->cliente->email }}</p>
-                        @if($orcamento->cliente->telefone)
-                        <p class="text-gray-600">{{ $orcamento->cliente->telefone }}</p>
-                        @endif
-                    </div>
-                </div>
-
-                <!-- Descrição -->
-                @if($orcamento->descricao)
-                <div class="mb-6">
-                    <h3 class="text-lg font-medium text-gray-900 mb-3">Descrição</h3>
-                    <div class="bg-gray-50 rounded-lg p-4">
-                        <p class="text-gray-700">{{ $orcamento->descricao }}</p>
-                    </div>
-                </div>
-                @endif
-
-                <!-- Valores -->
-                <div class="mb-6">
-                    <h3 class="text-lg font-medium text-gray-900 mb-3">Valores</h3>
-                    <div class="bg-gray-50 rounded-lg p-4">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="text-center">
-                                <span class="text-sm font-medium text-gray-500">Valor Total</span>
-                                <p class="text-2xl font-bold text-gray-900">R$ {{ number_format($orcamento->valor_total, 2, ',', '.') }}</p>
+            
+            <!-- Status Badge (bolinha pulsante) -->
+            <div class="absolute top-8 right-8 flex items-center space-x-2 animate-pulse">
+                <div class="w-4 h-4 {{ $statusClass }} rounded-full"></div>
                             </div>
-                            <div class="text-center">
-                                <span class="text-sm font-medium text-gray-500">Validade</span>
-                                <p class="text-lg font-medium text-gray-900">{{ $orcamento->data_validade->format('d/m/Y') }}</p>
+
+            <header class="flex justify-between items-start mb-12">
+                <div>
+                    <h1 class="text-6xl font-black text-gray-800 tracking-tighter">PROPOSTA</h1>
+                    <div class="mt-4  text-gray-500">
+                        <p>Válido de {{ $orcamento->data_orcamento->format('d/m/Y') }} a {{ $orcamento->data_validade ? $orcamento->data_validade->format('d/m/Y') : 'Não definido' }}</p>
+                        <p>Para <span class="font-semibold text-gray-700">{{ $orcamento->cliente->nome }}</span></p>
+                    </div>
+                </div>
+                <div>
+                    <div class="bg-gray-800 text-white w-12 h-12 flex items-center justify-center rounded-full">
+                        <span class="text-l text-white">{{ $orcamento->id }}</span>
+                    </div>
+                </div>
+            </header>
+
+            <main>
+                <div class="mb-8">
+                    <h2 class="font-bold text-gray-900 text-lg mb-3">Orçamento:</h2>
+                    <p class="text-gray-800 font-medium mb-4">{{ $orcamento->titulo }}</p>
+                    <div class="prose max-w-none text-gray-700 leading-relaxed text-justify">
+                        {!! $orcamento->descricao !!}
+                    </div>
+                </div>
+
+                <div class="mb-8">
+                    <p class="font-bold text-gray-900">Prazo:</p>
+                    <p class="text-gray-700 mt-1">Prazo estimado é de {{ $orcamento->prazo_entrega_dias }} dias úteis</p>
+                </div>
+
+                <div class="bg-gray-50  p-8 mb-0 print-bg-transparent border border-gray-200">
+                    <div>
+                        <p class="text-gray-500 uppercase text-sm font-semibold tracking-wide">Total</p>
+                        <p class="text-5xl font-black text-gray-900 mt-2">R$ {{ number_format($orcamento->valor_total, 2, ',', '.') }}</p>
+                        <p class="mt-3 text-sm text-gray-600">Forma de pagamento: {{ $orcamento->condicoes_pagamento }}</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 text-white font-bold overflow-hidden shadow-sm print-grid-cols-2">
+                    <div class="bg-gray-800 p-6">
+                        <p class="text-xs uppercase tracking-wider text-gray-300 mb-2">40% para iniciar</p>
+                        <p class="text-2xl font-bold">1º R$ {{ number_format($orcamento->valor_total * 0.4, 2, ',', '.') }}</p>
+                    </div>
+                    <div class="bg-gray-700 p-6">
+                        <p class="text-xs uppercase tracking-wider text-gray-300 mb-2">60% ao término</p>
+                        <p class="text-2xl font-bold">2º R$ {{ number_format($orcamento->valor_total * 0.6, 2, ',', '.') }}</p>
+                    </div>
+                </div>
+            
+
+                <div class="bg-white p-6 mt-10" x-data="{ confirmingApproval: false, confirmingRejection: false }">
+                     @if(strtolower($orcamento->status) === 'analisando')
+                        <div class="text-center">
+                            <h3 class="text-lg font-semibold text-gray-800">Ações</h3>
+                            <p class="text-gray-600 mt-1 mb-4">O que você gostaria de fazer em relação a esta proposta?</p>
+                            <div class="flex justify-center flex-wrap gap-4 no-print">
+                                <button @click="confirmingApproval = true" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-md transition-colors">Aprovar Proposta</button>
+                                <button @click="confirmingRejection = true" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-md transition-colors">Rejeitar</button>
+                                <button onclick="window.print()" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-md transition-colors">Imprimir / Salvar PDF</button>
+                            </div>
+                        </div>
+                    @else
+                        <div class="text-center">
+                            <p class="text-lg font-semibold italic text-gray-600">Este orçamento foi {{ strtolower($orcamento->status) }}{{ $orcamento->updated_at ? ' em ' . $orcamento->updated_at->format('d/m/Y') : '' }}.</p>
+                             <div class="flex justify-center flex-wrap gap-4 mt-4 no-print">
+                                <button onclick="window.print()" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-md transition-colors">Imprimir / Salvar PDF</button>
+                            </div>
+                        </div>
+                    @endif
+
+                    <!-- Modal de Rejeição -->
+                    <div x-show="confirmingRejection" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 no-print" style="display: none;">
+                        <div @click.away="confirmingRejection = false" class="bg-white rounded-lg p-6 max-w-sm mx-auto text-center">
+                            <h3 class="text-lg font-bold">Confirmar Rejeição</h3>
+                            <p class="mt-2 text-sm text-gray-600">Tem certeza que deseja rejeitar esta proposta?</p>
+                            <div class="mt-4 flex justify-center gap-4">
+                                <button @click="confirmingRejection = false" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">Cancelar</button>
+                                <button onclick="rejeitarOrcamento()" @click="confirmingRejection = false" class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700">Sim, Rejeitar</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Modal de Aprovação -->
+                    <div x-show="confirmingApproval" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 no-print" style="display: none;">
+                        <div @click.away="confirmingApproval = false" class="bg-white rounded-lg p-6 max-w-sm mx-auto text-center">
+                            <h3 class="text-lg font-bold">Confirmar Aprovação</h3>
+                            <p class="mt-2 text-sm text-gray-600">Tem certeza que deseja aprovar este orçamento?</p>
+                            <div class="mt-4 flex justify-center gap-4">
+                                <button @click="confirmingApproval = false" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">Cancelar</button>
+                                <button onclick="aprovarOrcamento()" @click="confirmingApproval = false" class="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-md hover:bg-green-700">Sim, Aprovar</button>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            </main>
 
-        <!-- Ações -->
-        @if(in_array($orcamento->status, ['enviado', 'rascunho']))
-        <div class="bg-white rounded-lg shadow-lg border border-gray-200 p-6">
-            <h3 class="text-lg font-medium text-gray-900 mb-4">Ações</h3>
-            
-            <div class="flex flex-col sm:flex-row gap-4">
-                <button onclick="aprovarOrcamento()" 
-                        class="flex-1 bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-6 rounded-lg transition-colors">
-                    Aprovar Orçamento
-                </button>
-                
-                <button onclick="rejeitarOrcamento()" 
-                        class="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-6 rounded-lg transition-colors">
-                    Rejeitar Orçamento
-                </button>
-            </div>
+            {{-- Rodapé com logo, redes sociais e QR code --}}
+            <footer class="mt-16 border-t border-gray-200 pt-8">
+                <div class="flex justify-between items-center">
+                    {{-- Logo da marca --}}
+                    <div class="flex items-center">
+                        <div class="bg-gray-800 text-white px-4 py-2 rounded font-bold text-lg">
+                            <span class="text-white">DANILO</span><br>
+                            <span class="text-white">MIGUEL</span>
+                        </div>
+                        <div class="ml-4 text-sm text-gray-600">
+                            <p class="font-semibold">Design & Ilustração</p>
+                            @if(optional($orcamento->user)->website_url)
+                                <p>{{ str_replace(['http://', 'https://'], '', $orcamento->user->website_url) }}</p>
+                            @endif
+                            @if(optional($orcamento->user)->whatsapp)
+                                <p>{{ $orcamento->user->whatsapp }}</p>
+                            @endif
+                        </div>
+                    </div>
+
+                    {{-- QR Code --}}
+                    <div class="flex items-center">
+                        <div class="w-16 h-16 bg-gray-200 border-2 border-gray-300 flex items-center justify-center">
+                            {{-- QR Code placeholder - pode ser substituído por um QR code real --}}
+                            <svg class="w-12 h-12 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M3 3h6v6H3V3zm2 2v2h2V5H5zM3 15h6v6H3v-6zm2 2v2h2v-2H5zM15 3h6v6h-6V3zm2 2v2h2V5h-2zM15 15h2v2h-2v-2zM17 17h2v2h-2v-2zM19 15h2v2h-2v-2zM15 19h2v2h-2v-2zM17 21h2v2h-2v-2zM19 19h2v2h-2v-2zM21 17h2v2h-2v-2zM15 17h2v2h-2v-2z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Links de redes sociais --}}
+                <div class="mt-6 flex justify-center space-x-6 no-print">
+                    @if(optional($orcamento->user)->website_url)
+                        <a href="{{ $orcamento->user->website_url }}" target="_blank" class="text-gray-500 hover:text-gray-700 transition-colors">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M12.232 4.232a2.5 2.5 0 013.536 3.536l-1.225 1.224a.75.75 0 001.061 1.06l1.224-1.224a4 4 0 00-5.656-5.656l-3 3a4 4 0 00.225 5.865.75.75 0 00.977-1.138 2.5 2.5 0 01-.142-3.665l3-3.001z"></path>
+                                <path d="M4.468 12.232a2.5 2.5 0 010-3.536l1.225-1.224a.75.75 0 00-1.061-1.06l-1.224 1.224a4 4 0 005.656 5.656l3-3a4 4 0 00-.225-5.865.75.75 0 00-.977 1.138 2.5 2.5 0 01.142 3.665l-3 3a2.5 2.5 0 01-3.536 0z"></path>
+                            </svg>
+                        </a>
+                    @endif
+                    @if(optional($orcamento->user)->behance_url)
+                        <a href="{{ $orcamento->user->behance_url }}" target="_blank" class="text-gray-500 hover:text-gray-700 transition-colors">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M22 7h-7v-2h7v2zm1.726 10c-.442 1.297-2.029 2-5.101 2-3.074 0-5.564-1.729-5.564-5.675 0-3.91 2.325-5.92 5.466-5.92 3.082 0 4.964 1.782 5.375 4.426.078.506.109 1.188.095 2.14H15.97c.13 3.211 3.483 3.312 4.588 2.029h3.168zm-7.686-4h4.965c-.105-1.547-1.136-2.219-2.477-2.219-1.466 0-2.277.768-2.488 2.219zm-9.574 6.988h-6.466v-14.967h6.953c5.476.081 5.58 5.444 2.72 6.906 3.461 1.26 3.577 8.061-3.207 8.061zm-3.466-8.988h3.584c2.508 0 2.906-3-.312-3h-3.272v3zm3.391 3h-3.391v3.016h3.341c3.055 0 2.868-3.016.05-3.016z"/>
+                            </svg>
+                        </a>
+                    @endif
+                    @if(optional($orcamento->user)->whatsapp)
+                        <a href="https://wa.me/{{ preg_replace('/\D/', '', $orcamento->user->whatsapp) }}" target="_blank" class="text-gray-500 hover:text-green-600 transition-colors">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.894 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.523.074-.797.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.626.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+                            </svg>
+                        </a>
+                    @endif
+                    {{-- Instagram --}}
+                    <a href="#" target="_blank" class="text-gray-500 hover:text-pink-600 transition-colors">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                        </svg>
+                    </a>
+                    {{-- LinkedIn --}}
+                    <a href="#" target="_blank" class="text-gray-500 hover:text-blue-600 transition-colors">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                        </svg>
+                    </a>
+                </div>
+            </footer>
         </div>
-        @endif
     </div>
+</div>
 
-    <script>
-        function aprovarOrcamento() {
-            fetch(`/orcamento/{{ $orcamento->token_publico }}/aprovar`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Orçamento aprovado com sucesso!');
-                    location.reload();
-                } else {
-                    alert('Erro: ' + data.message);
-                }
-            });
-        }
-        
-        function rejeitarOrcamento() {
-            const motivo = prompt('Motivo da rejeição (opcional):');
-            
-            fetch(`/orcamento/{{ $orcamento->token_publico }}/rejeitar`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({ motivo: motivo })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Orçamento rejeitado com sucesso!');
-                    location.reload();
-                } else {
-                    alert('Erro: ' + data.message);
-                }
-            });
-        }
-    </script>
+<script>
+    function aprovarOrcamento() {
+        fetch('{{ route("public.orcamentos.public.aprovar", $orcamento->token_publico) }}', {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Orçamento aprovado com sucesso!');
+                location.reload();
+            } else {
+                alert('Erro ao aprovar orçamento: ' + (data.message || 'Erro desconhecido'));
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            alert('Erro ao aprovar orçamento');
+        });
+    }
+    
+    function rejeitarOrcamento() {
+        fetch('{{ route("public.orcamentos.public.rejeitar", $orcamento->token_publico) }}', {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Orçamento rejeitado com sucesso!');
+                location.reload();
+            } else {
+                alert('Erro ao rejeitar orçamento: ' + (data.message || 'Erro desconhecido'));
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            alert('Erro ao rejeitar orçamento');
+        });
+    }
+
+
+</script>
 </body>
 </html>

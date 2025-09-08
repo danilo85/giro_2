@@ -45,21 +45,29 @@
                 <div>
                     <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Status</p>
                     <div class="mt-2">
-                        @if($modelo->ativo)
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                                <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                                </svg>
-                                Ativo
-                            </span>
-                        @else
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
-                                <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
-                                </svg>
-                                Inativo
-                            </span>
-                        @endif
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                            @switch($modelo->status)
+                                @case('ativo')
+                                    bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
+                                    @break
+                                @case('inativo')
+                                    bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200
+                                    @break
+                                @case('rascunho')
+                                    bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200
+                                    @break
+                                @case('arquivado')
+                                    bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200
+                                    @break
+                                @default
+                                    bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200
+                            @endswitch
+                        ">
+                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            {{ ucfirst($modelo->status) }}
+                        </span>
                     </div>
                 </div>
                 <div class="p-3 bg-gray-100 dark:bg-gray-700 rounded-lg">
@@ -99,6 +107,40 @@
                 </div>
             </div>
         </div>
+
+        <!-- Valor Padrão Card -->
+        @if($modelo->valor_padrao)
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Valor Padrão</p>
+                    <p class="text-lg font-semibold text-gray-900 dark:text-white mt-2">R$ {{ number_format($modelo->valor_padrao, 2, ',', '.') }}</p>
+                </div>
+                <div class="p-3 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                    <svg class="w-6 h-6 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        @endif
+
+        <!-- Prazo Padrão Card -->
+        @if($modelo->prazo_padrao)
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Prazo Padrão</p>
+                    <p class="text-lg font-semibold text-gray-900 dark:text-white mt-2">{{ $modelo->prazo_padrao }} dias</p>
+                </div>
+                <div class="p-3 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                    <svg class="w-6 h-6 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        @endif
     </div>
 
     <!-- Model Content -->
@@ -139,6 +181,38 @@
                 </div>
                 <div class="p-6">
                     <p class="text-gray-700 dark:text-gray-300">{{ $modelo->observacoes }}</p>
+                </div>
+            </div>
+            @endif
+
+            <!-- Autores Padrão -->
+            @if($modelo->autores_padrao && is_array($modelo->autores_padrao) && count($modelo->autores_padrao) > 0)
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md">
+                <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Autores Padrão</h3>
+                </div>
+                <div class="p-6">
+                    <div class="space-y-2">
+                        @foreach($modelo->autores_padrao as $autor)
+                            <div class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                </svg>
+                                {{ is_array($autor) ? ($autor['nome'] ?? $autor['name'] ?? 'Autor') : $autor }}
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+            @elseif($modelo->autores_padrao && is_string($modelo->autores_padrao))
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md">
+                <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Autores Padrão</h3>
+                </div>
+                <div class="p-6">
+                    <div class="prose prose-sm max-w-none dark:prose-invert">
+                        {!! nl2br(e($modelo->autores_padrao)) !!}
+                    </div>
                 </div>
             </div>
             @endif

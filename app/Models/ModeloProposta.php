@@ -16,11 +16,21 @@ class ModeloProposta extends Model
         'user_id',
         'nome',
         'conteudo',
+        'categoria',
+        'status',
+        'descricao',
+        'observacoes',
+        'valor_padrao',
+        'prazo_padrao',
+        'autores_padrao',
         'ativo'
     ];
 
     protected $casts = [
         'ativo' => 'boolean',
+        'valor_padrao' => 'decimal:2',
+        'prazo_padrao' => 'integer',
+        'autores_padrao' => 'array',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
@@ -55,5 +65,21 @@ class ModeloProposta extends Model
     public function scopeSearch($query, $search)
     {
         return $query->where('nome', 'like', '%' . $search . '%');
+    }
+
+    /**
+     * Scope para filtrar por categoria
+     */
+    public function scopeByCategoria($query, $categoria)
+    {
+        return $query->where('categoria', $categoria);
+    }
+
+    /**
+     * Scope para filtrar por status
+     */
+    public function scopeByStatus($query, $status)
+    {
+        return $query->where('status', $status);
     }
 }

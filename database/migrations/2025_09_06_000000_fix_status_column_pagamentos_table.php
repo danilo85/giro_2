@@ -1,0 +1,42 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('pagamentos', function (Blueprint $table) {
+            // Primeiro, remover a coluna status existente
+            $table->dropColumn('status');
+        });
+
+        Schema::table('pagamentos', function (Blueprint $table) {
+            // Recriar a coluna status com os valores corretos
+            $table->enum('status', ['pendente', 'processando', 'confirmado', 'cancelado'])
+                ->default('pendente')
+                ->after('forma_pagamento');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('pagamentos', function (Blueprint $table) {
+            $table->dropColumn('status');
+        });
+
+        Schema::table('pagamentos', function (Blueprint $table) {
+            $table->enum('status', ['pendente', 'processando', 'confirmado', 'cancelado'])
+                ->default('confirmado')
+                ->after('forma_pagamento');
+        });
+    }
+};

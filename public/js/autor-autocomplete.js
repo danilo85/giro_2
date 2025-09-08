@@ -1,10 +1,10 @@
 class AutorAutocomplete {
-    constructor(inputElement, containerElement) {
+    constructor(inputElement) {
         this.input = inputElement;
-        this.container = containerElement;
         this.dropdown = null;
         this.selectedAutores = [];
         this.debounceTimer = null;
+        this.container = document.getElementById('autores_container');
         
         this.init();
     }
@@ -12,7 +12,7 @@ class AutorAutocomplete {
     init() {
         this.createDropdown();
         this.bindEvents();
-        this.loadExistingAutores();
+        this.bindRemoveEvents();
     }
     
     createDropdown() {
@@ -24,13 +24,14 @@ class AutorAutocomplete {
             left: 0;
             right: 0;
             background: white;
-            border: 1px solid #ddd;
-            border-radius: 0.375rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+            border-top: none;
+            border-radius: 0 0 0.375rem 0.375rem;
             max-height: 200px;
             overflow-y: auto;
             z-index: 1000;
             display: none;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         `;
         
         this.input.parentNode.style.position = 'relative';
@@ -46,9 +47,15 @@ class AutorAutocomplete {
         });
         
         this.input.addEventListener('focus', () => {
-            if (this.input.value.trim()) {
+            if (this.input.value.length > 0) {
                 this.search(this.input.value);
             }
+        });
+        
+        this.input.addEventListener('blur', (e) => {
+            setTimeout(() => {
+                this.hideDropdown();
+            }, 150);
         });
         
         this.input.addEventListener('keydown', (e) => {
@@ -67,42 +74,74 @@ class AutorAutocomplete {
         });
     }
     
+    bindRemoveEvents() {
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.remove-autor')) {
+                const autorId = e.target.closest('.remove-autor').dataset.autorId;
+                this.removeAutor(autorId);
+            }
+        });
+    }
+    
     async search(query) {
-        if (!query || query.length < 2) {
+        if (query.length < 2) {
             this.hideDropdown();
             return;
         }
         
         try {
-            const response = await fetch(`/api/budget/autores/autocomplete?q=${encodeURIComponent(query)}`);
+            const response = await fetch(`/autores/autocomplete?q=${encodeURIComponent(query)}`, {
+                credentials: 'same-origin',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                }
+            });
+            
+            if (!response.ok) {
+                console.error('Erro na resposta:', response.status, response.statusText);
+                this.hideDropdown();
+                return;
+            }
+            
             const autores = await response.json();
+            
+            if (!Array.isArray(autores)) {
+                console.error('Resposta não é um array:', autores);
+                this.hideDropdown();
+                return;
+            }
             
             this.showResults(autores, query);
         } catch (error) {
-            console.error('Erro ao buscar autores:', error);
+            console.error('Erro na busca de autores:', error);
+            this.hideDropdown();
         }
     }
     
     showResults(autores, query) {
         this.dropdown.innerHTML = '';
         
+        if (!Array.isArray(autores)) {
+            console.error('autores não é um array:', autores);
+            return;
+        }
+        
         // Filtrar autores já selecionados
-        const availableAutores = autores.filter(autor => 
-            !this.selectedAutores.some(selected => selected.id === autor.id)
+        const autoresDisponiveis = autores.filter(autor => 
+            !this.selectedAutores.includes(autor.id.toString())
         );
         
-        // Mostrar autores existentes
-        availableAutores.forEach(autor => {
-            const item = this.createAutorItem(autor);
-            this.dropdown.appendChild(item);
-        });
-        
-        // Opção para criar novo autor se não encontrou correspondência exata
-        const exactMatch = availableAutores.some(autor => 
-            autor.nome.toLowerCase() === query.toLowerCase()
-        );
-        
-        if (!exactMatch && query.trim()) {
+        if (autoresDisponiveis.length === 0) {
+            const newItem = this.createNewAutorItem(query);
+            this.dropdown.appendChild(newItem);
+        } else {
+            autoresDisponiveis.forEach(autor => {
+                const item = this.createAutorItem(autor);
+                this.dropdown.appendChild(item);
+            });
+            
             const newItem = this.createNewAutorItem(query);
             this.dropdown.appendChild(newItem);
         }
@@ -117,17 +156,12 @@ class AutorAutocomplete {
             padding: 0.75rem;
             cursor: pointer;
             border-bottom: 1px solid #f3f4f6;
-            transition: background-color 0.2s;
+            transition: background-color 0.15s;
         `;
         
         item.innerHTML = `
-            <div class="flex items-center">
-                <div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                <div>
-                    <div class="font-medium text-gray-900">${autor.nome}</div>
-                    ${autor.email ? `<div class="text-sm text-gray-500">${autor.email}</div>` : ''}
-                </div>
-            </div>
+            <div class="font-medium text-gray-900">${autor.nome}</div>
+            ${autor.email ? `<div class="text-sm text-gray-500">${autor.email}</div>` : ''}
         `;
         
         item.addEventListener('mouseenter', () => {
@@ -152,26 +186,24 @@ class AutorAutocomplete {
             padding: 0.75rem;
             cursor: pointer;
             border-bottom: 1px solid #f3f4f6;
-            transition: background-color 0.2s;
-            background-color: #fef3f2;
+            transition: background-color 0.15s;
+            border-top: 1px solid #e5e7eb;
         `;
         
         item.innerHTML = `
-            <div class="flex items-center">
-                <div class="w-2 h-2 bg-red-500 rounded-full mr-2"></div>
-                <div>
-                    <div class="font-medium text-gray-900">Criar novo: "${query}"</div>
-                    <div class="text-sm text-gray-500">Clique para adicionar este autor</div>
-                </div>
+            <div class="font-medium text-blue-600">
+                <i class="fas fa-plus mr-2"></i>
+                Criar novo autor: "${query}"
             </div>
+            <div class="text-sm text-gray-500">Será cadastrado automaticamente ao salvar</div>
         `;
         
         item.addEventListener('mouseenter', () => {
-            item.style.backgroundColor = '#fecaca';
+            item.style.backgroundColor = '#eff6ff';
         });
         
         item.addEventListener('mouseleave', () => {
-            item.style.backgroundColor = '#fef3f2';
+            item.style.backgroundColor = 'white';
         });
         
         item.addEventListener('click', () => {
@@ -182,57 +214,45 @@ class AutorAutocomplete {
     }
     
     selectAutor(autor) {
-        this.selectedAutores.push(autor);
-        this.addAutorToList(autor, 'existing');
+        this.addAutorToContainer(autor, 'existing');
+        this.selectedAutores.push(autor.id.toString());
         this.input.value = '';
         this.hideDropdown();
-        this.updateHiddenInputs();
     }
     
     selectNewAutor(nome) {
-        const newAutor = { 
-            id: 'new:' + nome, 
-            nome: nome, 
-            isNew: true 
-        };
-        this.selectedAutores.push(newAutor);
-        this.addAutorToList(newAutor, 'new');
+        const newAutor = { nome: nome, isNew: true, id: 'new_' + Date.now() };
+        this.addAutorToContainer(newAutor, 'new');
+        this.selectedAutores.push(newAutor.id.toString());
         this.input.value = '';
         this.hideDropdown();
-        this.updateHiddenInputs();
     }
     
-    addAutorToList(autor, type) {
-        const autorItem = document.createElement('div');
-        autorItem.className = 'relative bg-white border border-gray-200 rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow';
-        autorItem.dataset.autorId = autor.id;
+    addAutorToContainer(autor, type) {
+        const autorCard = document.createElement('div');
+        autorCard.className = 'relative bg-white border border-gray-200 rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow';
+        autorCard.setAttribute('data-autor-id', autor.id);
         
-        const tagColor = type === 'existing' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700';
-        const tagText = type === 'existing' ? 'Existente' : 'Novo';
+        const bgColor = type === 'existing' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700';
+        const label = type === 'existing' ? 'Existente' : 'Novo';
+        const inputValue = type === 'existing' ? autor.id : 'new:' + autor.nome;
         
-        // Gerar iniciais do nome para o avatar
-        const initials = autor.nome.split(' ').map(word => word.charAt(0).toUpperCase()).slice(0, 2).join('');
-        const avatarColor = type === 'existing' ? 'bg-blue-500' : 'bg-orange-500';
-        
-        autorItem.innerHTML = `
-            <input type="checkbox" name="autores[]" value="${autor.id}" checked class="hidden">
+        autorCard.innerHTML = `
+            <input type="checkbox" name="autores[]" value="${inputValue}" checked class="hidden">
             
-            <!-- Avatar -->
             <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 ${avatarColor} rounded-full flex items-center justify-center text-white font-semibold text-sm">
-                    ${initials}
+                <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                    ${autor.nome.substring(0, 2).toUpperCase()}
                 </div>
                 
-                <!-- Nome e Badge -->
                 <div class="flex-1 min-w-0">
                     <p class="text-sm font-medium text-gray-900 truncate">${autor.nome}</p>
-                    <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium ${tagColor}">
-                        ${tagText}
+                    <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium ${bgColor}">
+                        ${label}
                     </span>
                 </div>
             </div>
             
-            <!-- Botão de remoção -->
             <button type="button" class="absolute top-2 right-2 text-gray-400 hover:text-red-500 remove-autor" data-autor-id="${autor.id}">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -240,53 +260,15 @@ class AutorAutocomplete {
             </button>
         `;
         
-        // Adicionar evento de remoção
-        const removeBtn = autorItem.querySelector('.remove-autor');
-        removeBtn.addEventListener('click', () => {
-            this.removeAutor(autor.id);
-        });
-        
-        this.container.appendChild(autorItem);
+        this.container.appendChild(autorCard);
     }
     
     removeAutor(autorId) {
-        // Remover da lista de selecionados
-        this.selectedAutores = this.selectedAutores.filter(autor => autor.id !== autorId);
-        
-        // Remover do DOM
-        const autorItem = this.container.querySelector(`[data-autor-id="${autorId}"]`);
-        if (autorItem) {
-            autorItem.remove();
+        const autorCard = document.querySelector(`[data-autor-id="${autorId}"]`);
+        if (autorCard) {
+            autorCard.remove();
+            this.selectedAutores = this.selectedAutores.filter(id => id !== autorId.toString());
         }
-        
-        this.updateHiddenInputs();
-    }
-    
-    updateHiddenInputs() {
-        // Remover inputs hidden existentes
-        const existingInputs = this.container.querySelectorAll('input[name="autores[]"]');
-        existingInputs.forEach(input => {
-            if (!input.closest('[data-autor-id]')) {
-                input.remove();
-            }
-        });
-    }
-    
-    loadExistingAutores() {
-        // Carregar autores já selecionados (para página de edição)
-        const existingCheckboxes = this.container.querySelectorAll('input[name="autores[]"]:checked');
-        existingCheckboxes.forEach(checkbox => {
-            const autorItem = checkbox.closest('[data-autor-id]');
-            if (autorItem) {
-                const autorId = autorItem.dataset.autorId;
-                const autorNome = autorItem.querySelector('.font-medium').textContent;
-                
-                this.selectedAutores.push({
-                    id: autorId,
-                    nome: autorNome
-                });
-            }
-        });
     }
     
     handleEnter() {
@@ -298,6 +280,8 @@ class AutorAutocomplete {
             } else {
                 this.selectNewAutor(this.input.value.trim());
             }
+        } else if (this.input.value.trim()) {
+            this.selectNewAutor(this.input.value.trim());
         }
     }
     
@@ -313,9 +297,8 @@ class AutorAutocomplete {
 // Inicializar quando o DOM estiver pronto
 document.addEventListener('DOMContentLoaded', function() {
     const autorInput = document.getElementById('autor_autocomplete');
-    const autorContainer = document.getElementById('autores_container');
     
-    if (autorInput && autorContainer) {
-        new AutorAutocomplete(autorInput, autorContainer);
+    if (autorInput) {
+        new AutorAutocomplete(autorInput);
     }
 });

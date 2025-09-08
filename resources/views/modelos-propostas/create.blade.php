@@ -1,248 +1,326 @@
 @extends('layouts.app')
 
-@section('title', 'Novo Modelo - Giro')
+@section('title', 'Novo Modelo de Proposta')
 
 @section('content')
 <div class="max-w-7xl mx-auto">
     <!-- Breadcrumb -->
-    <x-breadcrumb :items="[
-        ['label' => 'Home', 'url' => route('dashboard'), 'icon' => 'fas fa-home'],
-        ['label' => 'Modelos de Propostas', 'url' => route('modelos-propostas.index')],
-        ['label' => 'Novo Modelo']
-    ]" />
-    
+    <nav class="flex mb-8" aria-label="Breadcrumb">
+        <ol class="inline-flex items-center space-x-1 md:space-x-3">
+            <li class="inline-flex items-center">
+                <a href="{{ route('dashboard') }}" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
+                    <svg class="w-3 h-3 mr-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z"/>
+                    </svg>
+                    Home
+                </a>
+            </li>
+            <li>
+                <div class="flex items-center">
+                    <svg class="w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                    </svg>
+                    <a href="{{ route('modelos-propostas.index') }}" class="ml-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ml-2 dark:text-gray-400 dark:hover:text-white">Modelos de Propostas</a>
+                </div>
+            </li>
+            <li aria-current="page">
+                <div class="flex items-center">
+                    <svg class="w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                    </svg>
+                    <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400">Novo Modelo</span>
+                </div>
+            </li>
+        </ol>
+    </nav>
+
     <!-- Header -->
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Novo Modelo de Proposta</h1>
-            <p class="text-gray-600 dark:text-gray-400 mt-1">Crie um novo modelo para suas propostas</p>
-        </div>
-        
-        <div class="flex space-x-3 mt-4 sm:mt-0">
-            <a href="{{ route('modelos-propostas.index') }}" 
-               class="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg transition-colors">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                </svg>
-                Voltar
-            </a>
+    <div class="mb-8">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <a href="{{ route('modelos-propostas.index') }}" 
+                   class="inline-flex items-center justify-center w-10 h-10 text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                </a>
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Novo Modelo de Proposta</h1>
+                    <p class="mt-2 text-gray-600 dark:text-gray-400">Criar um novo modelo de proposta</p>
+                </div>
+            </div>
         </div>
     </div>
-    
-    <!-- Formulário -->
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-        <form method="POST" action="{{ route('modelos-propostas.store') }}" class="p-6 space-y-6">
-            @csrf
-            
-            <!-- Informações Básicas -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label for="nome" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nome do Modelo *</label>
-                    <input type="text" 
-                           id="nome" 
-                           name="nome" 
-                           value="{{ old('nome') }}"
-                           required
-                           class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white @error('nome') border-red-500 @enderror"
-                           placeholder="Ex: Modelo Website Corporativo">
-                    @error('nome')
-                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                    @enderror
-                </div>
-                
-                <div>
-                    <label for="categoria" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Categoria</label>
-                    <input type="text" 
-                           id="categoria" 
-                           name="categoria" 
-                           value="{{ old('categoria') }}"
-                           class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white @error('categoria') border-red-500 @enderror"
-                           placeholder="Ex: Websites, Aplicativos, Design">
-                    @error('categoria')
-                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                    @enderror
-                </div>
-            </div>
-            
-            <!-- Descrição -->
-            <div>
-                <label for="descricao" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Descrição</label>
-                <textarea id="descricao" 
-                          name="descricao" 
-                          rows="3"
-                          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white @error('descricao') border-red-500 @enderror"
-                          placeholder="Descreva o propósito e características deste modelo...">{{ old('descricao') }}</textarea>
-                @error('descricao')
-                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                @enderror
-            </div>
-            
-            <!-- Conteúdo do Modelo -->
-            <div>
-                <label for="conteudo" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Conteúdo do Modelo *</label>
-                <div class="mb-2">
-                    <p class="text-sm text-gray-600 dark:text-gray-400">Use as seguintes variáveis que serão substituídas automaticamente:</p>
-                    <div class="mt-2 flex flex-wrap gap-2">
-                        <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">{{'cliente_nome'}}</span>
-                        <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">{{'cliente_email'}}</span>
-                        <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">{{'cliente_empresa'}}</span>
-                        <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">{{'data_atual'}}</span>
-                        <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">{{'valor_total'}}</span>
-                    </div>
-                </div>
-                <textarea id="conteudo" 
-                          name="conteudo" 
-                          rows="15"
-                          required
-                          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white font-mono text-sm @error('conteudo') border-red-500 @enderror"
-                          placeholder="Digite o conteúdo do modelo aqui...
 
-Exemplo:
-Prezado(a) {{'cliente_nome'}},
-
-Segue nossa proposta para desenvolvimento de website para {{'cliente_empresa'}}.
-
-Valor total: {{'valor_total'}}
-Data: {{'data_atual'}}
-
-Atenciosamente,
-Equipe">{{ old('conteudo') }}</textarea>
-                @error('conteudo')
-                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                @enderror
-            </div>
-            
-            <!-- Configurações Avançadas -->
-            <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
-                <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Configurações Avançadas</h3>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label for="valor_padrao" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Valor Padrão</label>
-                        <div class="relative">
-                            <span class="absolute left-3 top-2 text-gray-500 dark:text-gray-400">R$</span>
-                            <input type="number" 
-                                   id="valor_padrao" 
-                                   name="valor_padrao" 
-                                   value="{{ old('valor_padrao') }}"
-                                   step="0.01"
-                                   min="0"
-                                   class="w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white @error('valor_padrao') border-red-500 @enderror"
-                                   placeholder="0,00">
-                        </div>
-                        @error('valor_padrao')
-                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                        @enderror
-                    </div>
+    <!-- Grid Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Formulário Principal -->
+        <div class="lg:col-span-2">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+                <div class="p-6">
+                    <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-6">Informações do Modelo</h2>
                     
-                    <div>
-                        <label for="prazo_padrao" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Prazo Padrão (dias)</label>
-                        <input type="number" 
-                               id="prazo_padrao" 
-                               name="prazo_padrao" 
-                               value="{{ old('prazo_padrao') }}"
-                               min="1"
-                               class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white @error('prazo_padrao') border-red-500 @enderror"
-                               placeholder="30">
-                        @error('prazo_padrao')
-                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                        @enderror
-                    </div>
-                </div>
-                
-                <!-- Autores Padrão -->
-                <div class="mt-6">
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Autores Padrão</label>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                        @foreach($autores as $autor)
-                            <label class="flex items-center p-3 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer">
-                                <input type="checkbox" 
-                                       name="autores_padrao[]" 
-                                       value="{{ $autor->id }}"
-                                       {{ in_array($autor->id, old('autores_padrao', [])) ? 'checked' : '' }}
-                                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                                <div class="ml-3 flex items-center">
-                                    @if($autor->avatar)
-                                        <img src="{{ Storage::url($autor->avatar) }}" 
-                                             alt="{{ $autor->nome }}" 
-                                             class="h-6 w-6 rounded-full object-cover">
-                                    @else
-                                        <div class="h-6 w-6 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
-                                            <span class="text-xs font-medium text-gray-600 dark:text-gray-300">{{ substr($autor->nome, 0, 1) }}</span>
-                                        </div>
-                                    @endif
-                                    <span class="ml-2 text-sm text-gray-900 dark:text-white">{{ $autor->nome }}</span>
-                                </div>
+                    <form method="POST" action="{{ route('modelos-propostas.store') }}" class="space-y-6">
+                        @csrf
+                        
+                        <!-- Nome -->
+                        <div>
+                            <label for="nome" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Nome do Modelo <span class="text-red-500">*</span>
                             </label>
-                        @endforeach
-                    </div>
-                    @error('autores_padrao')
-                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                    @enderror
+                            <input type="text" 
+                                   id="nome" 
+                                   name="nome" 
+                                   value="{{ old('nome') }}"
+                                   required
+                                   maxlength="200"
+                                   placeholder="Digite o nome do modelo"
+                                   class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white @error('nome') border-red-500 @enderror">
+                            @error('nome')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        
+                        <!-- Categoria -->
+                        <div>
+                            <label for="categoria" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Categoria
+                            </label>
+                            <input type="text" 
+                                   id="categoria" 
+                                   name="categoria" 
+                                   value="{{ old('categoria') }}"
+                                   maxlength="100"
+                                   placeholder="Ex: Desenvolvimento Web, Design, Consultoria"
+                                   class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white @error('categoria') border-red-500 @enderror">
+                            @error('categoria')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        
+                        <!-- Descrição -->
+                        <div>
+                            <label for="descricao" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Descrição
+                            </label>
+                            <textarea id="descricao" 
+                                      name="descricao" 
+                                      rows="3"
+                                      placeholder="Breve descrição do modelo de proposta..."
+                                      class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white @error('descricao') border-red-500 @enderror">{{ old('descricao') }}</textarea>
+                            @error('descricao')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Valor Padrão -->
+                            <div>
+                                <label for="valor_padrao" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Valor Padrão
+                                </label>
+                                <div class="relative">
+                                    <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400">R$</span>
+                                    <input type="number" 
+                                           id="valor_padrao" 
+                                           name="valor_padrao" 
+                                           step="0.01" 
+                                           min="0"
+                                           value="{{ old('valor_padrao') }}"
+                                           placeholder="0,00"
+                                           class="w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white @error('valor_padrao') border-red-500 @enderror">
+                                </div>
+                                @error('valor_padrao')
+                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            
+                            <!-- Prazo Padrão -->
+                            <div>
+                                <label for="prazo_padrao" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Prazo Padrão (dias)
+                                </label>
+                                <input type="number" 
+                                       id="prazo_padrao" 
+                                       name="prazo_padrao" 
+                                       min="1"
+                                       value="{{ old('prazo_padrao') }}"
+                                       placeholder="Ex: 30"
+                                       class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white @error('prazo_padrao') border-red-500 @enderror">
+                                @error('prazo_padrao')
+                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+                        
+                        <!-- Status -->
+                        <div>
+                            <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Status <span class="text-red-500">*</span>
+                            </label>
+                            <select id="status" 
+                                    name="status" 
+                                    required
+                                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white @error('status') border-red-500 @enderror">
+                                <option value="ativo" {{ old('status', 'ativo') == 'ativo' ? 'selected' : '' }}>Ativo</option>
+                                <option value="inativo" {{ old('status') == 'inativo' ? 'selected' : '' }}>Inativo</option>
+                                <option value="rascunho" {{ old('status') == 'rascunho' ? 'selected' : '' }}>Rascunho</option>
+                            </select>
+                            @error('status')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        
+                        <!-- Conteúdo -->
+                        <div>
+                            <label for="conteudo" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Conteúdo da Proposta <span class="text-red-500">*</span>
+                            </label>
+                            <textarea id="conteudo" 
+                                      name="conteudo" 
+                                      rows="8"
+                                      required
+                                      placeholder="Digite o conteúdo do modelo de proposta..."
+                                      class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white @error('conteudo') border-red-500 @enderror">{{ old('conteudo') }}</textarea>
+                            @error('conteudo')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        
+                        <!-- Observações -->
+                        <div>
+                            <label for="observacoes" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Observações
+                            </label>
+                            <textarea id="observacoes" 
+                                      name="observacoes" 
+                                      rows="4"
+                                      placeholder="Informações adicionais sobre o modelo..."
+                                      class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white @error('observacoes') border-red-500 @enderror">{{ old('observacoes') }}</textarea>
+                            @error('observacoes')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        
+                        <!-- Botões -->
+                        <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
+                            <a href="{{ route('modelos-propostas.index') }}" 
+                               class="px-4 py-2 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
+                                Cancelar
+                            </a>
+                            <button type="submit" 
+                                    class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors">
+                                Criar Modelo
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
-            
-            <!-- Observações -->
-            <div>
-                <label for="observacoes" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Observações</label>
-                <textarea id="observacoes" 
-                          name="observacoes" 
-                          rows="3"
-                          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white @error('observacoes') border-red-500 @enderror"
-                          placeholder="Observações internas sobre este modelo...">{{ old('observacoes') }}</textarea>
-                @error('observacoes')
-                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                @enderror
+        </div>
+        
+        <!-- Seção de Preview -->
+        <div class="lg:col-span-1">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+                <div class="p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Preview do Modelo</h3>
+                    
+                    <div class="space-y-4">
+                        <div class="text-center p-6 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                            <div class="mx-auto h-16 w-16 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center mb-4">
+                                <svg class="h-8 w-8 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                            </div>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Valor padrão</p>
+                            <p id="preview-valor" class="text-2xl font-bold text-gray-900 dark:text-white">R$ 0,00</p>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-500 dark:text-gray-400">Nome:</span>
+                                <span id="preview-nome" class="text-sm font-medium text-gray-900 dark:text-white">-</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-500 dark:text-gray-400">Categoria:</span>
+                                <span id="preview-categoria" class="text-sm font-medium text-gray-900 dark:text-white">-</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-500 dark:text-gray-400">Prazo:</span>
+                                <span id="preview-prazo" class="text-sm font-medium text-gray-900 dark:text-white">-</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-500 dark:text-gray-400">Status:</span>
+                                <span id="preview-status" class="text-sm font-medium text-gray-900 dark:text-white">Ativo</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            
-            <!-- Botões -->
-            <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
-                <a href="{{ route('modelos-propostas.index') }}" 
-                   class="px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-medium">
-                    Cancelar
-                </a>
-                <button type="submit" 
-                        class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors">
-                    Criar Modelo
-                </button>
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
 <script>
-// Preview das variáveis
 document.addEventListener('DOMContentLoaded', function() {
-    const conteudoTextarea = document.getElementById('conteudo');
+    const nomeInput = document.getElementById('nome');
+    const categoriaInput = document.getElementById('categoria');
+    const valorInput = document.getElementById('valor_padrao');
+    const prazoInput = document.getElementById('prazo_padrao');
+    const statusSelect = document.getElementById('status');
     
-    // Adicionar exemplo se estiver vazio
-    if (!conteudoTextarea.value.trim()) {
-        conteudoTextarea.value = `Prezado(a) {{'cliente_nome'}},
-
-Segue nossa proposta comercial para {{'cliente_empresa'}}.
-
-=== DETALHES DO PROJETO ===
-
-Descrição: [Descrever o projeto aqui]
-
-Valor Total: {{'valor_total'}}
-Data da Proposta: {{'data_atual'}}
-
-=== CONDIÇÕES ===
-
-• Prazo de execução: [X] dias úteis
-• Forma de pagamento: [Definir condições]
-• Validade da proposta: 30 dias
-
-=== PRÓXIMOS PASSOS ===
-
-1. Aprovação da proposta
-2. Assinatura do contrato
-3. Início do desenvolvimento
-
-Atenciosamente,
-Equipe de Desenvolvimento`;
+    // Preview elements
+    const previewNome = document.getElementById('preview-nome');
+    const previewCategoria = document.getElementById('preview-categoria');
+    const previewValor = document.getElementById('preview-valor');
+    const previewPrazo = document.getElementById('preview-prazo');
+    const previewStatus = document.getElementById('preview-status');
+    
+    // Function to update preview
+    function updatePreview() {
+        // Update nome
+        previewNome.textContent = nomeInput.value || '-';
+        
+        // Update categoria
+        previewCategoria.textContent = categoriaInput.value || '-';
+        
+        // Update valor
+        const valor = valorInput.value;
+        if (valor) {
+            const valorFormatted = new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(parseFloat(valor));
+            previewValor.textContent = valorFormatted;
+        } else {
+            previewValor.textContent = 'R$ 0,00';
+        }
+        
+        // Update prazo
+        const prazo = prazoInput.value;
+        if (prazo) {
+            previewPrazo.textContent = prazo + ' dias';
+        } else {
+            previewPrazo.textContent = '-';
+        }
+        
+        // Update status
+        const statusText = {
+            'ativo': 'Ativo',
+            'inativo': 'Inativo',
+            'rascunho': 'Rascunho'
+        };
+        previewStatus.textContent = statusText[statusSelect.value] || 'Ativo';
     }
+    
+    // Add event listeners for preview updates
+    nomeInput.addEventListener('input', updatePreview);
+    categoriaInput.addEventListener('input', updatePreview);
+    valorInput.addEventListener('input', updatePreview);
+    prazoInput.addEventListener('input', updatePreview);
+    statusSelect.addEventListener('change', updatePreview);
+    
+    // Initial preview update
+    updatePreview();
 });
 </script>
 @endsection

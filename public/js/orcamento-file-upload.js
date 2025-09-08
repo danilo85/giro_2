@@ -4,10 +4,11 @@
  */
 class OrcamentoFileUpload {
     constructor(options = {}) {
+        console.log('OrcamentoFileUpload constructor called with options:', options);
         // Default options
         this.options = {
             uploadUrl: '/api/budget/orcamentos/{orcamento_id}/files/upload',
-            getFilesUrl: '/api/budget/orcamentos/',
+            getFilesUrl: '/orcamentos/',
             deleteUrl: '/api/budget/orcamentos/files/',
             downloadUrl: '/api/budget/orcamentos/files/',
             maxFileSize: 10 * 1024 * 1024, // 10MB
@@ -17,21 +18,29 @@ class OrcamentoFileUpload {
             ...options
         };
         
+        console.log('Final options:', this.options);
+        
         this.container = document.getElementById(this.options.containerId || 'file-upload-container');
         if (!this.container) {
             console.error('Container element not found');
             return;
         }
         
+        console.log('Container found, initializing...');
         this.init();
     }
     
     init() {
+        console.log('Initializing OrcamentoFileUpload...');
         this.createUploadArea();
         this.bindEvents();
         
+        // Load existing files if orcamentoId is provided
         if (this.options.orcamentoId) {
+            console.log('Loading existing files for orcamentoId:', this.options.orcamentoId);
             this.loadExistingFiles();
+        } else {
+            console.log('No orcamentoId provided, skipping file loading');
         }
     }
     
@@ -227,10 +236,14 @@ class OrcamentoFileUpload {
     }
     
     async loadExistingFiles() {
-        if (!this.options.orcamentoId) return;
+        if (!this.options.orcamentoId) {
+            console.log('No orcamentoId provided');
+            return;
+        }
         
         try {
-            const url = `${this.options.getFilesUrl}${this.options.orcamentoId}/files?categoria=${this.options.categoria}`;
+            const url = `/api/budget/orcamentos/${this.options.orcamentoId}/files?categoria=${this.options.categoria}`;
+            console.log('Loading files from URL:', url);
             
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
@@ -247,11 +260,15 @@ class OrcamentoFileUpload {
             });
             
             clearTimeout(timeoutId);
+            console.log('Response status:', response.status);
             
             const result = await response.json();
+            console.log('Files data received:', result);
             
             if (result.success) {
                 this.renderFiles(result.files);
+            } else {
+                console.error('Failed to load files:', result.message);
             }
         } catch (error) {
             if (error.name === 'AbortError') {
@@ -264,7 +281,7 @@ class OrcamentoFileUpload {
     
     renderFiles(files) {
         const filesGrid = this.container.querySelector('#files-grid');
-        const filesList = this.container.querySelector('.files-list');
+        const filesList = this.container.querySelector('#files-list');
         
         if (files.length === 0) {
             filesList.classList.add('hidden');
@@ -478,4 +495,4 @@ class OrcamentoFileUpload {
 }
 
 // Global instance for easy access
-let orcamentoFileUpload;
+// Variable will be declared in the blade template

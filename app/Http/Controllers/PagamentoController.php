@@ -118,6 +118,7 @@ class PagamentoController extends Controller
                 'valor' => 'required|numeric|min:0.01',
                 'data_pagamento' => 'required|date',
                 'forma_pagamento' => 'required|in:dinheiro,pix,cartao_credito,cartao_debito,transferencia,boleto',
+                'status' => 'required|in:pendente,processando,confirmado,cancelado',
                 'observacoes' => 'nullable|string',
                 'bank_id' => 'nullable|integer',
                 'transaction_id' => 'nullable|string|max:255'
@@ -150,7 +151,16 @@ class PagamentoController extends Controller
 
         $pagamento = null;
         DB::transaction(function() use ($request, $orcamento, &$pagamento) {
-            $pagamento = Pagamento::create($request->all());
+            $pagamento = Pagamento::create([
+                'orcamento_id' => $request->orcamento_id,
+                'bank_id' => $request->bank_id,
+                'valor' => $request->valor,
+                'data_pagamento' => $request->data_pagamento,
+                'forma_pagamento' => $request->forma_pagamento,
+                'status' => $request->status,
+                'observacoes' => $request->observacoes,
+                'transaction_id' => $request->transaction_id
+            ]);
 
             // Integrar com sistema financeiro
             $this->integrarSistemaFinanceiro($pagamento);
@@ -254,6 +264,7 @@ class PagamentoController extends Controller
             'valor' => 'required|numeric|min:0.01',
             'data_pagamento' => 'required|date',
             'forma_pagamento' => 'required|in:dinheiro,pix,cartao_credito,cartao_debito,transferencia,boleto',
+            'status' => 'required|in:pendente,processando,confirmado,cancelado',
             'observacoes' => 'nullable|string',
             'bank_id' => 'nullable|integer',
             'transaction_id' => 'nullable|string|max:255'
@@ -270,7 +281,16 @@ class PagamentoController extends Controller
             // Remover integração anterior
             $this->removerIntegracaoFinanceira($pagamento);
             
-            $pagamento->update($request->all());
+            $pagamento->update([
+                'orcamento_id' => $request->orcamento_id,
+                'bank_id' => $request->bank_id,
+                'valor' => $request->valor,
+                'data_pagamento' => $request->data_pagamento,
+                'forma_pagamento' => $request->forma_pagamento,
+                'status' => $request->status,
+                'observacoes' => $request->observacoes,
+                'transaction_id' => $request->transaction_id
+            ]);
 
             // Integrar novamente com sistema financeiro
             $this->integrarSistemaFinanceiro($pagamento);
@@ -422,5 +442,45 @@ class PagamentoController extends Controller
             // Log do erro mas não interrompe o fluxo
             \Log::error('Erro ao remover integração financeira: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Gerar token público para o recibo
+     */
+    public function gerarRecibo(Pagamento $pagamento)
+    {
+        // Verificar se o pagamento pertence ao usuário
+        if ($pagamento->orcamento->cliente->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        // Gerar token se não existir
+        if (!$pagamento->hasTokenPublico()) {
+            $pagamento->generateTokenPublico();
+        }
+
+        // Registrar no histórico
+        HistoricoOrcamento::create([
+            'user_id' => Auth::id(),
+            'orcamento_id' => $pagamento->orcamento_id,
+            'acao' => 'recibo_gerado',
+            'descricao' => 'Recibo público gerado para o pagamento',
+            'dados_novos' => ['token_publico' => $pagamento->token_publico]
+        ]);
+
+        return redirect()->route('pagamentos.show', $pagamento)
+                       ->with('success', 'Recibo público gerado com sucesso!');
+    }
+
+    /**
+     * Visualizar recibo público
+     */
+    public function showReciboPublico($token)
+    {
+        $pagamento = Pagamento::where('token_publico', $token)
+                             ->with(['orcamento.cliente.user'])
+                             ->firstOrFail();
+
+        return view('pagamentos.public', compact('pagamento'));
     }
 }
