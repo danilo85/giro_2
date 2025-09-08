@@ -54,7 +54,41 @@ class TransactionController extends Controller
         $creditCards = CreditCard::forUser(Auth::id())->active()->get();
         $categories = Category::forUser(Auth::id())->active()->get();
         
-        return view('financial.transactions.index', compact('transactions', 'banks', 'creditCards', 'categories'));
+        // Calcular dados de resumo para os cards
+        $baseQuery = Transaction::forUser(Auth::id());
+        
+        // Aplicar os mesmos filtros da consulta principal
+        if ($request->has('status') && in_array($request->status, ['pendente', 'pago'])) {
+            $baseQuery->byStatus($request->status);
+        }
+        
+        if ($request->has('tipo') && in_array($request->tipo, ['receita', 'despesa'])) {
+            $baseQuery->where('tipo', $request->tipo);
+        }
+        
+        if ($request->has('mes') && $request->has('ano')) {
+            $baseQuery->byMonth($request->ano, $request->mes);
+        }
+        
+        if ($request->has('bank_id')) {
+            $baseQuery->where('bank_id', $request->bank_id);
+        }
+        
+        if ($request->has('credit_card_id')) {
+            $baseQuery->where('credit_card_id', $request->credit_card_id);
+        }
+        
+        if ($request->has('category_id')) {
+            $baseQuery->where('category_id', $request->category_id);
+        }
+        
+        // Calcular totais
+        $receitas = (clone $baseQuery)->where('tipo', 'receita')->sum('valor');
+        $despesas = (clone $baseQuery)->where('tipo', 'despesa')->sum('valor');
+        $saldo = $receitas - $despesas;
+        $pendentes = (clone $baseQuery)->where('status', 'pendente')->sum('valor');
+        
+        return view('financial.transactions.index', compact('transactions', 'banks', 'creditCards', 'categories', 'receitas', 'despesas', 'saldo', 'pendentes'));
     }
 
     /**

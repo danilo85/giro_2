@@ -15,6 +15,22 @@ function initTheme() {
     }
 }
 
+// Update theme toggle icon
+window.updateThemeIcon = function() {
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    
+    if (themeToggleDarkIcon && themeToggleLightIcon) {
+        if (document.documentElement.classList.contains('dark')) {
+            themeToggleLightIcon.classList.remove('hidden');
+            themeToggleDarkIcon.classList.add('hidden');
+        } else {
+            themeToggleDarkIcon.classList.remove('hidden');
+            themeToggleLightIcon.classList.add('hidden');
+        }
+    }
+};
+
 // Toggle theme function
 window.toggleTheme = function() {
     if (document.documentElement.classList.contains('dark')) {
@@ -24,6 +40,9 @@ window.toggleTheme = function() {
         document.documentElement.classList.add('dark');
         localStorage.theme = 'dark';
     }
+    
+    // Update icon after theme change
+    updateThemeIcon();
 };
 
 // Initialize theme on page load

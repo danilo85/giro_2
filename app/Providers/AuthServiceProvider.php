@@ -12,6 +12,8 @@ use App\Models\Transaction;
 use App\Policies\TransactionPolicy;
 use App\Models\Autor;
 use App\Policies\AuthorPolicy;
+use App\Models\ModeloProposta;
+use App\Policies\ModeloPropostaPolicy;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -25,6 +27,7 @@ class AuthServiceProvider extends ServiceProvider
         Category::class => CategoryPolicy::class,
         Transaction::class => TransactionPolicy::class,
         Autor::class => AuthorPolicy::class,
+        ModeloProposta::class => ModeloPropostaPolicy::class,
     ];
 
     /**

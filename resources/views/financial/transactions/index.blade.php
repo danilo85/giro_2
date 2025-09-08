@@ -2568,4 +2568,20 @@ document.addEventListener('click', function(event) {
     </div>
 </div>
 
+<script>
+// Inicializar cards com dados do PHP
+document.addEventListener('DOMContentLoaded', function() {
+    // Dados passados do controller
+    const summaryData = {
+        receitas: {{ $receitas ?? 0 }},
+        despesas: {{ $despesas ?? 0 }},
+        saldo: {{ $saldo ?? 0 }},
+        pendentes: {{ $pendentes ?? 0 }}
+    };
+    
+    // Atualizar cards com os dados iniciais
+    updateSummary(summaryData);
+});
+</script>
+
 @endsection

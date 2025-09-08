@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ModeloProposta;
+use App\Models\Autor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -13,6 +14,7 @@ class ModeloPropostaController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', ModeloProposta::class);
         $query = ModeloProposta::forUser(Auth::id())->orderBy('nome');
 
         // Filtro de busca
@@ -39,7 +41,9 @@ class ModeloPropostaController extends Controller
      */
     public function create()
     {
-        return view('modelos-propostas.create');
+        $this->authorize('create', ModeloProposta::class);
+        $autores = Autor::forUser(Auth::id())->orderBy('nome')->get();
+        return view('modelos-propostas.create', compact('autores'));
     }
 
     /**
@@ -47,6 +51,7 @@ class ModeloPropostaController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', ModeloProposta::class);
         $request->validate([
             'nome' => 'required|string|max:255',
             'conteudo' => 'required|string',
@@ -68,11 +73,7 @@ class ModeloPropostaController extends Controller
      */
     public function show(ModeloProposta $modeloProposta)
     {
-        // Verificar se o modelo pertence ao usuário
-        if ($modeloProposta->user_id !== Auth::id()) {
-            abort(403);
-        }
-
+        $this->authorize('view', $modeloProposta);
         return view('modelos-propostas.show', compact('modeloProposta'));
     }
 
@@ -81,11 +82,7 @@ class ModeloPropostaController extends Controller
      */
     public function edit(ModeloProposta $modeloProposta)
     {
-        // Verificar se o modelo pertence ao usuário
-        if ($modeloProposta->user_id !== Auth::id()) {
-            abort(403);
-        }
-
+        $this->authorize('update', $modeloProposta);
         return view('modelos-propostas.edit', compact('modeloProposta'));
     }
 
@@ -94,24 +91,18 @@ class ModeloPropostaController extends Controller
      */
     public function update(Request $request, ModeloProposta $modeloProposta)
     {
-        // Verificar se o modelo pertence ao usuário
-        if ($modeloProposta->user_id !== Auth::id()) {
-            abort(403);
-        }
+        $this->authorize('update', $modeloProposta);
 
         $request->validate([
-            'nome' => 'required|string|max:255',
+            'nome' => 'required|string|max:200',
             'conteudo' => 'required|string',
             'ativo' => 'boolean'
         ]);
 
-        $data = $request->only(['nome', 'conteudo']);
-        $data['ativo'] = $request->has('ativo');
+        $modeloProposta->update($request->all());
 
-        $modeloProposta->update($data);
-
-        return redirect()->route('modelos-propostas.show', $modeloProposta)
-                       ->with('success', 'Modelo de proposta atualizado com sucesso!');
+        return redirect()->route('modelos-propostas.index')
+            ->with('success', 'Modelo de proposta atualizado com sucesso!');
     }
 
     /**
@@ -119,15 +110,12 @@ class ModeloPropostaController extends Controller
      */
     public function destroy(ModeloProposta $modeloProposta)
     {
-        // Verificar se o modelo pertence ao usuário
-        if ($modeloProposta->user_id !== Auth::id()) {
-            abort(403);
-        }
-
+        $this->authorize('delete', $modeloProposta);
+        
         $modeloProposta->delete();
-
+        
         return redirect()->route('modelos-propostas.index')
-                       ->with('success', 'Modelo de proposta excluído com sucesso!');
+            ->with('success', 'Modelo de proposta excluído com sucesso!');
     }
 
     /**
@@ -152,15 +140,31 @@ class ModeloPropostaController extends Controller
      */
     public function getConteudo(ModeloProposta $modeloProposta)
     {
-        // Verificar se o modelo pertence ao usuário
-        if ($modeloProposta->user_id !== Auth::id()) {
-            abort(403);
-        }
+        $this->authorize('view', $modeloProposta);
 
         return response()->json([
             'id' => $modeloProposta->id,
             'nome' => $modeloProposta->nome,
             'conteudo' => $modeloProposta->conteudo
         ]);
+    }
+
+    /**
+     * Duplicar um modelo de proposta
+     */
+    public function duplicate(ModeloProposta $modeloProposta)
+    {
+        $this->authorize('duplicate', $modeloProposta);
+
+        // Criar uma cópia do modelo
+        $novoModelo = ModeloProposta::create([
+            'nome' => 'Cópia de ' . $modeloProposta->nome,
+            'conteudo' => $modeloProposta->conteudo,
+            'ativo' => $modeloProposta->ativo,
+            'user_id' => Auth::id()
+        ]);
+
+        return redirect()->route('modelos-propostas.show', $novoModelo)
+                       ->with('success', 'Modelo duplicado com sucesso!');
     }
 }

@@ -89,7 +89,6 @@
                                         data-conteudo="{{ $modelo->conteudo }}"
                                         data-valor="{{ $modelo->valor_padrao }}"
                                         data-prazo="{{ $modelo->prazo_padrao }}"
-                                        data-autores="{{ $modelo->autores->pluck('id')->toJson() }}"
                                         {{ old('modelo_proposta_id') == $modelo->id ? 'selected' : '' }}>
                                     {{ $modelo->nome }} - {{ $modelo->categoria }}
                                 </option>

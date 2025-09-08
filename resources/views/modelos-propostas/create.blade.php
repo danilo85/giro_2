@@ -1,22 +1,31 @@
 @extends('layouts.app')
 
-@section('title', 'Novo Modelo de Proposta')
+@section('title', 'Novo Modelo - Giro')
 
 @section('content')
-<div class="max-w-4xl mx-auto">
+<div class="max-w-7xl mx-auto">
+    <!-- Breadcrumb -->
+    <x-breadcrumb :items="[
+        ['label' => 'Home', 'url' => route('dashboard'), 'icon' => 'fas fa-home'],
+        ['label' => 'Modelos de Propostas', 'url' => route('modelos-propostas.index')],
+        ['label' => 'Novo Modelo']
+    ]" />
+    
     <!-- Header -->
-    <div class="mb-8">
-        <div class="flex items-center space-x-4">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Novo Modelo de Proposta</h1>
+            <p class="text-gray-600 dark:text-gray-400 mt-1">Crie um novo modelo para suas propostas</p>
+        </div>
+        
+        <div class="flex space-x-3 mt-4 sm:mt-0">
             <a href="{{ route('modelos-propostas.index') }}" 
-               class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+               class="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg transition-colors">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                 </svg>
+                Voltar
             </a>
-            <div>
-                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Novo Modelo de Proposta</h1>
-                <p class="mt-2 text-gray-600 dark:text-gray-400">Crie um template para agilizar a criação de orçamentos</p>
-            </div>
         </div>
     </div>
     
@@ -75,10 +84,10 @@
                     <p class="text-sm text-gray-600 dark:text-gray-400">Use as seguintes variáveis que serão substituídas automaticamente:</p>
                     <div class="mt-2 flex flex-wrap gap-2">
                         <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">{{'cliente_nome'}}</span>
-                        <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">{{cliente_email}}</span>
-                        <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">{{cliente_empresa}}</span>
-                        <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">{{data_atual}}</span>
-                        <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">{{valor_total}}</span>
+                        <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">{{'cliente_email'}}</span>
+                        <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">{{'cliente_empresa'}}</span>
+                        <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">{{'data_atual'}}</span>
+                        <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">{{'valor_total'}}</span>
                     </div>
                 </div>
                 <textarea id="conteudo" 

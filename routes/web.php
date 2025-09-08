@@ -187,6 +187,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/files/temp/{tempId}', [FileUploadController::class, 'getTempFiles']);
         Route::post('/files/move-temp-to-transaction', [FileUploadController::class, 'moveTempFilesToTransaction']);
         Route::delete('/files/temp/{fileId}', [FileUploadController::class, 'deleteTempFile']);
+        
     });
 
     // Budget Management Module (Módulo de Orçamentos)
@@ -204,6 +205,47 @@ Route::middleware(['auth'])->group(function () {
 
     // Modelos de Propostas
     Route::resource('modelos-propostas', ModeloPropostaController::class);
+    Route::post('modelos-propostas/{modelo_proposta}/duplicate', [ModeloPropostaController::class, 'duplicate'])->name('modelos-propostas.duplicate');
+   
+
+
+
+    // Debug Routes (apenas para desenvolvimento)
+    Route::prefix('debug')->name('debug.')->group(function () {
+        Route::get('/csrf', function () {
+            return view('debug.csrf');
+        })->name('csrf');
+        
+        Route::get('/session-check', function () {
+            return view('debug.session-check');
+        })->name('session-check');
+        
+        Route::post('/test-csrf', function () {
+            return response()->json([
+                'success' => true,
+                'message' => 'CSRF funcionando corretamente!',
+                'data' => request()->all(),
+                'session_id' => session()->getId(),
+                'csrf_token' => csrf_token()
+            ]);
+        })->name('test-csrf');
+        
+        Route::get('/test-payment', function () {
+            return view('debug.test-payment');
+        });
+        
+        Route::get('/csrf-fix', function () {
+            return view('debug.csrf-fix');
+        });
+        
+        Route::post('/csrf-refresh', function () {
+            return response()->json([
+                'success' => true,
+                'token' => csrf_token(),
+                'session_id' => session()->getId()
+            ]);
+        });
+    });
 
     // API Routes for Budget Module
     Route::prefix('api/budget')->name('api.budget.')->group(function () {

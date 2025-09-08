@@ -70,8 +70,10 @@ class PagamentoController extends Controller
         
         $totalPix = $baseQuery->whereIn('forma_pagamento', ['pix', 'transferencia'])
                              ->sum('valor');
+        
+        $totalPagamentos = $baseQuery->count();
 
-        return view('pagamentos.index', compact('pagamentos', 'orcamentos', 'totalRecebido', 'totalMes', 'totalCartao', 'totalPix'));
+        return view('pagamentos.index', compact('pagamentos', 'orcamentos', 'totalRecebido', 'totalMes', 'totalCartao', 'totalPix', 'totalPagamentos'));
     }
 
     /**
@@ -103,20 +105,48 @@ class PagamentoController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'orcamento_id' => 'required|exists:orcamentos,id',
-            'valor' => 'required|numeric|min:0.01',
-            'data_pagamento' => 'required|date',
-            'forma_pagamento' => 'required|in:dinheiro,pix,cartao_credito,cartao_debito,transferencia,boleto',
-            'observacoes' => 'nullable|string',
-            'bank_id' => 'nullable|integer',
-            'transaction_id' => 'nullable|string|max:255'
+        \Log::info('PagamentoController@store - Iniciando', [
+            'user_id' => Auth::id(),
+            'request_data' => $request->all(),
+            'session_id' => session()->getId(),
+            'csrf_token' => csrf_token()
         ]);
 
-        // Verificar se o orçamento pertence ao usuário
-        $orcamento = Orcamento::whereHas('cliente', function($q) {
-            $q->where('user_id', Auth::id());
-        })->findOrFail($request->orcamento_id);
+        try {
+            // Validação básica primeiro
+            $request->validate([
+                'valor' => 'required|numeric|min:0.01',
+                'data_pagamento' => 'required|date',
+                'forma_pagamento' => 'required|in:dinheiro,pix,cartao_credito,cartao_debito,transferencia,boleto',
+                'observacoes' => 'nullable|string',
+                'bank_id' => 'nullable|integer',
+                'transaction_id' => 'nullable|string|max:255'
+            ]);
+
+            \Log::info('PagamentoController@store - Validação básica passou');
+
+            // Verificar se o orçamento existe e pertence ao usuário
+            if (!$request->filled('orcamento_id')) {
+                \Log::error('PagamentoController@store - orcamento_id não fornecido');
+                return back()->withErrors(['orcamento_id' => 'Orçamento é obrigatório'])->withInput();
+            }
+
+            $orcamento = Orcamento::whereHas('cliente', function($q) {
+                $q->where('user_id', Auth::id());
+            })->find($request->orcamento_id);
+
+            if (!$orcamento) {
+                \Log::error('PagamentoController@store - Orçamento não encontrado ou não pertence ao usuário', [
+                    'orcamento_id' => $request->orcamento_id,
+                    'user_id' => Auth::id()
+                ]);
+                return back()->withErrors(['orcamento_id' => 'Orçamento não encontrado ou você não tem permissão para acessá-lo'])->withInput();
+            }
+
+            \Log::info('PagamentoController@store - Orçamento encontrado', [
+                'orcamento_id' => $orcamento->id,
+                'cliente_user_id' => $orcamento->cliente->user_id
+            ]);
 
         $pagamento = null;
         DB::transaction(function() use ($request, $orcamento, &$pagamento) {
@@ -150,8 +180,26 @@ class PagamentoController extends Controller
             }
         });
 
-        return redirect()->route('pagamentos.index')
-                       ->with('success', 'Pagamento registrado com sucesso!');
+            \Log::info('PagamentoController@store - Pagamento criado com sucesso', [
+                'pagamento_id' => $pagamento->id
+            ]);
+
+            return redirect()->route('pagamentos.index')
+                           ->with('success', 'Pagamento registrado com sucesso!');
+        } catch (\Exception $e) {
+            \Log::error('PagamentoController@store - Erro', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'user_id' => Auth::id(),
+                'request_data' => $request->all()
+            ]);
+            
+            if ($e->getCode() == 403 || strpos($e->getMessage(), '403') !== false) {
+                \Log::error('PagamentoController@store - Erro 403 detectado');
+            }
+            
+            throw $e;
+        }
     }
 
     /**
