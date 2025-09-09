@@ -65,6 +65,17 @@
         <!-- Receipt Header -->
         <div class="bg-white rounded-lg shadow-lg border border-gray-200 p-8 mb-8">
             <div class="text-center mb-8">
+                <!-- Logo/Avatar do usuário -->
+                @if(optional($pagamento->orcamento->cliente->user)->getLogoByType('icone'))
+                    <img src="{{ asset(storage/' . $pagamento->orcamento->cliente->user->getLogoByType('icone')->caminho) }}" 
+                         alt="Logo" 
+                         class="w-16 h-16 rounded-full object-cover border-2 border-gray-300">
+                @else
+                    <div class="w-16 h-16 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-xl border-2 border-gray-300">
+                        {{ strtoupper(substr(optional($pagamento->orcamento->cliente->user)->name ?? 'U', 0, 1)) }}
+                    </div>
+                @endif
+                
                 <h1 class="text-3xl font-bold text-gray-900 mb-2">RECIBO DE PAGAMENTO</h1>
                 <p class="text-lg text-gray-600">Nº {{ str_pad($pagamento->id, 6, '0', STR_PAD_LEFT) }}</p>
                 <p class="text-sm text-gray-500 mt-2">
@@ -264,11 +275,20 @@
                     </div>
                 </div>
                 
-                @if($pagamento->orcamento->autores->count() > 0)
+                <!-- Assinatura Digital do Usuário -->
+                @if(optional($pagamento->orcamento->cliente->user)->assinatura_digital)
                     <div class="text-center">
-                        <div class="border-t border-gray-400 pt-2 mt-16">
-                            <p class="text-sm text-gray-600">{{ $pagamento->orcamento->autores->first()->nome }}</p>
-                            <p class="text-xs text-gray-500">Recebedor</p>
+                        <img src="{{ asset('storage/' . $pagamento->orcamento->cliente->user->assinatura_digital) }}" 
+                             alt="Assinatura Digital" 
+                             class="max-h-16 mx-auto mb-2">
+                        <div class="border-t border-gray-400 pt-1">
+                            <p class="text-sm font-medium">{{ optional($pagamento->orcamento->cliente->user)->name }}</p>
+                        </div>
+                    </div>
+                @else
+                    <div class="text-center">
+                        <div class="border-t border-gray-400 pt-1 mt-12">
+                            <p class="text-sm font-medium">{{ optional($pagamento->orcamento->cliente->user)->name }}</p>
                         </div>
                     </div>
                 @endif

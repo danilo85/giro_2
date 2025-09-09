@@ -89,6 +89,8 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/profile/logo', [ProfileController::class, 'deleteLogo'])->name('profile.logo.delete');
     Route::delete('/profile/signature', [ProfileController::class, 'deleteSignature'])->name('profile.signature.delete');
     Route::delete('/profile', [ProfileController::class, 'delete'])->name('profile.delete');
+    Route::put('/profile/social-media', [ProfileController::class, 'updateSocialMedia'])->name('profile.social-media.update');
+    Route::delete('/profile/social-media/{platform}', [ProfileController::class, 'deleteSocialMedia'])->name('profile.social-media.delete');
 
     // Settings
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings');

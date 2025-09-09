@@ -546,7 +546,7 @@ class OrcamentoController extends Controller
     public function showPublic($token)
     {
         $orcamento = Orcamento::where('token_publico', $token)
-                             ->with(['cliente', 'autores'])
+                             ->with(['cliente.user', 'autores'])
                              ->firstOrFail();
         
         return view('orcamentos.public', compact('orcamento'));

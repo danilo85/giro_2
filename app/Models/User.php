@@ -30,6 +30,17 @@ class User extends Authenticatable
         'last_activity_at',
         'cpf_cnpj',
         'assinatura_digital',
+        'facebook_url',
+        'instagram_url',
+        'twitter_url',
+        'linkedin_url',
+        'youtube_url',
+        'tiktok_url',
+        'whatsapp_url',
+        'website_url',
+        'telefone_whatsapp',
+        'email_extra',
+        'biografia',
     ];
 
     /**
@@ -183,5 +194,38 @@ class User extends Authenticatable
     public function getLogosGroupedAttribute()
     {
         return $this->logos->groupBy('tipo');
+    }
+
+    /**
+     * Get social media URLs as an array.
+     */
+    public function getSocialMediaAttribute()
+    {
+        return [
+            'facebook' => $this->facebook_url,
+            'instagram' => $this->instagram_url,
+            'twitter' => $this->twitter_url,
+            'linkedin' => $this->linkedin_url,
+            'youtube' => $this->youtube_url,
+            'tiktok' => $this->tiktok_url,
+            'whatsapp' => $this->whatsapp_url,
+            'website' => $this->website_url,
+        ];
+    }
+
+    /**
+     * Check if user has any social media configured.
+     */
+    public function hasSocialMedia()
+    {
+        return !empty(array_filter($this->social_media));
+    }
+
+    /**
+     * Get social media platforms with configured URLs.
+     */
+    public function getConfiguredSocialMediaAttribute()
+    {
+        return array_filter($this->social_media);
     }
 }

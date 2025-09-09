@@ -2,6 +2,60 @@ import './bootstrap';
 import '../css/app.css';
 import Alpine from 'alpinejs';
 
+// Initialize Alpine.js store before Alpine starts
+document.addEventListener('alpine:init', () => {
+    Alpine.store('sidebar', {
+        open: false,
+        collapsed: false,
+        isMobile: false,
+
+        init() {
+            this.isMobile = window.innerWidth < 768;
+            this.updateState();
+            this.setupResizeListener();
+        },
+
+        updateState() {
+            if (this.isMobile) {
+                this.collapsed = true;
+                this.open = false;
+            } else {
+                this.collapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+                this.open = true;
+            }
+        },
+
+        setupResizeListener() {
+            let resizeTimeout;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                    const wasMobile = this.isMobile;
+                    this.isMobile = window.innerWidth < 768;
+                    if (wasMobile !== this.isMobile) {
+                        this.updateState();
+                    }
+                }, 150);
+            });
+        },
+
+        toggle() {
+            if (this.isMobile) {
+                this.open = !this.open;
+            } else {
+                this.collapsed = !this.collapsed;
+                localStorage.setItem('sidebarCollapsed', this.collapsed);
+            }
+        },
+
+        close() {
+            if (this.isMobile) {
+                this.open = false;
+            }
+        }
+    });
+});
+
 // Initialize Alpine.js
 window.Alpine = Alpine;
 Alpine.start();
@@ -47,12 +101,3 @@ window.toggleTheme = function() {
 
 // Initialize theme on page load
 initTheme();
-
-// Sidebar state management
-window.sidebarState = {
-    expanded: localStorage.getItem('sidebarExpanded') === 'true',
-    toggle() {
-        this.expanded = !this.expanded;
-        localStorage.setItem('sidebarExpanded', this.expanded);
-    }
-};

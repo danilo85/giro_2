@@ -142,11 +142,12 @@
         <div class="header">
             <h1 class="titulo">RECIBO</h1>
             <div class="logo">
-                @php
-                    $logo = $pagamento->orcamento->cliente->user->logos()->where('tipo', 'logo')->first();
-                @endphp
-                @if($logo && $logo->caminho)
-                    <img src="{{ $logo->url }}" alt="Logo" style="max-height: 60px; max-width: 60px; object-fit: contain;">
+                @if(optional($pagamento->orcamento->cliente->user)->getLogoByType('icone'))
+                    <img src="{{ asset($pagamento->orcamento->cliente->user->getLogoByType('icone')) }}" alt="Logo" style="max-height: 50px; max-width: 150px;">
+                @elseif(optional($pagamento->orcamento->cliente->user)->name)
+                    <div style="width: 50px; height: 50px; background-color: #007bff; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px;">
+                        {{ strtoupper(substr($pagamento->orcamento->cliente->user->name, 0, 1)) }}
+                    </div>
                 @else
                     Logomarca
                 @endif
@@ -173,7 +174,7 @@
         <div class="info-section">
             <p style="line-height: 1.8; font-size: 16px; color: #333;">
                 Eu, <strong>{{ $pagamento->orcamento->cliente->user->name }}</strong>, 
-                inscrito(a) no CPF/CNPJ sob o nº <strong>{{ config('app.cnpj', 'Não informado') }}</strong>, 
+                inscrito(a) no CPF/CNPJ sob o nº <strong>{{ optional($pagamento->orcamento->cliente->user)->cpf_cnpj ?: 'Não informado' }}</strong>, 
                 declaro para os devidos fins que recebi de <strong>{{ $pagamento->orcamento->cliente->nome }}</strong>, 
                 a importância de <strong>{{ $pagamento->valor_formatted }}</strong> 
                 <span style="font-style: italic;">({{ $pagamento->valor_extenso }})</span>, 
@@ -189,15 +190,13 @@
         @endif
         
         <div class="assinatura-section">
-            @php
-                $assinatura = $pagamento->orcamento->cliente->user->logos()->where('tipo', 'signature')->first();
-            @endphp
-            @if($assinatura && $assinatura->caminho)
-                <img src="{{ $assinatura->url }}" alt="Assinatura" style="max-height: 48px; margin: 40px auto 10px; display: block;">
+            @if(optional($pagamento->orcamento->cliente->user)->assinatura_digital)
+                <img src="{{ asset($pagamento->orcamento->cliente->user->assinatura_digital) }}" alt="Assinatura Digital" style="max-height: 80px; max-width: 200px; margin-bottom: 5px;">
+                <div class="assinatura-nome">{{ $pagamento->orcamento->cliente->user->name }}</div>
             @else
                 <div class="assinatura-linha"></div>
+                <div class="assinatura-nome">{{ optional($pagamento->orcamento->cliente->user)->name ?: 'Administrator' }}</div>
             @endif
-            <div class="assinatura-nome">{{ $pagamento->orcamento->cliente->user->name }}</div>
         </div>
         
         <div class="botao-imprimir">

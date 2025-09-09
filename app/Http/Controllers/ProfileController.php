@@ -24,10 +24,13 @@ class ProfileController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
             'cpf_cnpj' => ['nullable', 'string', 'max:18'],
+            'telefone_whatsapp' => ['nullable', 'string', 'max:20'],
+            'email_extra' => ['nullable', 'email', 'max:255'],
+            'biografia' => ['nullable', 'string', 'max:5000'],
             'avatar' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ]);
         
-        $data = $request->only(['name', 'email', 'cpf_cnpj']);
+        $data = $request->only(['name', 'email', 'cpf_cnpj', 'telefone_whatsapp', 'email_extra', 'biografia']);
         
         // Handle avatar upload
         if ($request->hasFile('avatar')) {
@@ -307,5 +310,83 @@ class ProfileController extends Controller
         }
         
         return back()->with('error', 'Nenhuma assinatura digital encontrada.');
+    }
+
+    /**
+     * Update the user's social media information.
+     */
+    public function updateSocialMedia(Request $request)
+    {
+        $user = Auth::user();
+        
+        // Validação dos URLs das redes sociais
+        $request->validate([
+            'facebook_url' => ['nullable', 'url', 'regex:/^https?:\/\/(www\.)?facebook\.com\/.*/'],
+            'instagram_url' => ['nullable', 'url', 'regex:/^https?:\/\/(www\.)?instagram\.com\/.*/'],
+            'twitter_url' => ['nullable', 'url', 'regex:/^https?:\/\/(www\.)?(twitter|x)\.com\/.*/'],
+            'linkedin_url' => ['nullable', 'url', 'regex:/^https?:\/\/(www\.)?linkedin\.com\/.*/'],
+            'youtube_url' => ['nullable', 'url', 'regex:/^https?:\/\/(www\.)?youtube\.com\/.*/'],
+            'tiktok_url' => ['nullable', 'url', 'regex:/^https?:\/\/(www\.)?tiktok\.com\/.*/'],
+            'whatsapp_url' => ['nullable', 'url', 'regex:/^https?:\/\/(wa\.me|api\.whatsapp\.com)\/.*/'],
+            'website_url' => ['nullable', 'url'],
+        ], [
+            '*.url' => 'O campo deve ser uma URL válida.',
+            'facebook_url.regex' => 'A URL do Facebook deve ser válida.',
+            'instagram_url.regex' => 'A URL do Instagram deve ser válida.',
+            'twitter_url.regex' => 'A URL do Twitter/X deve ser válida.',
+            'linkedin_url.regex' => 'A URL do LinkedIn deve ser válida.',
+            'youtube_url.regex' => 'A URL do YouTube deve ser válida.',
+            'tiktok_url.regex' => 'A URL do TikTok deve ser válida.',
+            'whatsapp_url.regex' => 'A URL do WhatsApp deve ser válida.',
+        ]);
+        
+        $socialMediaData = $request->only([
+            'facebook_url',
+            'instagram_url', 
+            'twitter_url',
+            'linkedin_url',
+            'youtube_url',
+            'tiktok_url',
+            'whatsapp_url',
+            'website_url'
+        ]);
+        
+        $user->update($socialMediaData);
+        
+        return back()->with('success', 'Redes sociais atualizadas com sucesso!');
+    }
+    
+    /**
+     * Delete a specific social media platform.
+     */
+    public function deleteSocialMedia(Request $request, $platform)
+    {
+        $user = Auth::user();
+        
+        $allowedPlatforms = [
+            'facebook' => 'facebook_url',
+            'instagram' => 'instagram_url',
+            'twitter' => 'twitter_url',
+            'linkedin' => 'linkedin_url',
+            'youtube' => 'youtube_url',
+            'tiktok' => 'tiktok_url',
+            'whatsapp' => 'whatsapp_url',
+            'website' => 'website_url'
+        ];
+        
+        if (!array_key_exists($platform, $allowedPlatforms)) {
+            return back()->with('error', 'Plataforma não reconhecida.');
+        }
+        
+        $field = $allowedPlatforms[$platform];
+        
+        $user->update([$field => null]);
+        
+        $platformName = ucfirst($platform);
+        if ($platform === 'website') {
+            $platformName = 'Website';
+        }
+        
+        return back()->with('success', $platformName . ' removido com sucesso!');
     }
 }

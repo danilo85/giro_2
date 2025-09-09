@@ -204,6 +204,97 @@
                         </div>
                     </div>
                     
+                    <!-- Telefone/WhatsApp -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                        <div>
+                            <label for="telefone_whatsapp" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Telefone/WhatsApp
+                            </label>
+                            <input type="tel" 
+                                   id="telefone_whatsapp" 
+                                   name="telefone_whatsapp" 
+                                   value="{{ old('telefone_whatsapp', auth()->user()->telefone_whatsapp) }}"
+                                   class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                                   placeholder="(11) 99999-9999 - Digite apenas números"
+                                   maxlength="15"
+                                   title="Digite seu telefone ou WhatsApp com DDD">
+                            @error('telefone_whatsapp')
+                                <p class="text-sm text-red-600 dark:text-red-400 mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        
+                        <!-- Email Extra -->
+                        <div>
+                            <label for="email_extra" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Email Adicional
+                            </label>
+                            <input type="email" 
+                                   id="email_extra" 
+                                   name="email_extra" 
+                                   value="{{ old('email_extra', auth()->user()->email_extra) }}"
+                                   class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                                   placeholder="email@exemplo.com">
+                            @error('email_extra')
+                                <p class="text-sm text-red-600 dark:text-red-400 mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+                    
+                    <!-- Biografia -->
+                    <div class="mt-6">
+                        <label for="biografia" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Biografia
+                        </label>
+                        
+                        <!-- Editor Toolbar -->
+                        <div class="border border-gray-300 dark:border-gray-600 rounded-t-md bg-gray-50 dark:bg-gray-800 p-2 flex flex-wrap gap-1">
+                            <button type="button" onclick="formatText('bold')" class="editor-btn" title="Negrito">
+                                <i class="fas fa-bold"></i>
+                            </button>
+                            <button type="button" onclick="formatText('italic')" class="editor-btn" title="Itálico">
+                                <i class="fas fa-italic"></i>
+                            </button>
+                            <button type="button" onclick="formatText('underline')" class="editor-btn" title="Sublinhado">
+                                <i class="fas fa-underline"></i>
+                            </button>
+                            <button type="button" onclick="formatText('strikeThrough')" class="editor-btn" title="Riscado">
+                                <i class="fas fa-strikethrough"></i>
+                            </button>
+                            <div class="border-l border-gray-300 dark:border-gray-600 mx-1"></div>
+                            <button type="button" onclick="formatText('insertOrderedList')" class="editor-btn" title="Lista Numerada">
+                                <i class="fas fa-list-ol"></i>
+                            </button>
+                            <button type="button" onclick="formatText('insertUnorderedList')" class="editor-btn" title="Lista com Marcadores">
+                                <i class="fas fa-list-ul"></i>
+                            </button>
+                            <div class="border-l border-gray-300 dark:border-gray-600 mx-1"></div>
+                            <button type="button" onclick="showLinkModal()" class="editor-btn" title="Link">
+                                <i class="fas fa-link"></i>
+                            </button>
+                            <button type="button" onclick="insertLineBreak()" class="editor-btn" title="Quebra de Linha">
+                                <i class="fas fa-level-down-alt"></i>
+                            </button>
+                            <div class="border-l border-gray-300 dark:border-gray-600 mx-1"></div>
+                            <button type="button" onclick="undoEdit()" class="editor-btn" title="Desfazer">
+                                <i class="fas fa-undo"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Editor Content -->
+                        <div id="biografia-editor" 
+                             contenteditable="true"
+                             class="w-full min-h-[150px] px-3 py-2 border border-t-0 border-gray-300 dark:border-gray-600 rounded-b-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                             style="max-height: 300px; overflow-y: auto;"
+                             placeholder="Conte um pouco sobre você ou sua empresa...">{!! old('biografia', auth()->user()->biografia) !!}</div>
+                        
+                        <!-- Hidden input to store the content -->
+                        <input type="hidden" id="biografia" name="biografia" value="{{ old('biografia', auth()->user()->biografia) }}">
+                        
+                        @error('biografia')
+                            <p class="text-sm text-red-600 dark:text-red-400 mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    
                     <!-- Save Button -->
                     <div class="flex justify-end mt-6">
                         <button type="submit" 
@@ -215,6 +306,25 @@
                         </button>
                     </div>
                 </form>
+            </div>
+
+            <!-- Modal para inserir link -->
+            <div id="linkModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+                <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-96 max-w-md mx-4">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Inserir Link</h3>
+                    <div class="mb-4">
+                        <label for="linkText" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Texto do Link:</label>
+                        <input type="text" id="linkText" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Digite o texto do link">
+                    </div>
+                    <div class="mb-6">
+                        <label for="linkUrl" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">URL:</label>
+                        <input type="url" id="linkUrl" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="https://exemplo.com">
+                    </div>
+                    <div class="flex justify-end space-x-3">
+                        <button type="button" onclick="closeLinkModal()" class="px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200">Cancelar</button>
+                        <button type="button" onclick="insertLinkFromModal()" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">Inserir Link</button>
+                    </div>
+                </div>
             </div>
             
             <!-- Logomarcas Section -->
@@ -427,6 +537,205 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                             </svg>
                             Salvar Assinatura
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Social Media Section -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mt-8">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">Redes Sociais</h2>
+                
+                <form id="social-media-form" action="{{ route('profile.social-media.update') }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    
+                    <div class="space-y-6">
+                        <!-- Facebook -->
+                        <div>
+                            <label for="facebook_url" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                <div class="flex items-center">
+                                    <svg class="w-5 h-5 mr-2 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                                    </svg>
+                                    Facebook
+                                </div>
+                            </label>
+                            <input type="url" id="facebook_url" name="facebook_url" 
+                                   value="{{ old('facebook_url', auth()->user()->facebook_url) }}"
+                                   placeholder="https://facebook.com/seu-perfil"
+                                   class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
+                            @error('facebook_url')
+                                <p class="text-sm text-red-600 dark:text-red-400 mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        
+                        <!-- Instagram -->
+                        <div>
+                            <label for="instagram_url" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                <div class="flex items-center">
+                                    <svg class="w-5 h-5 mr-2 text-pink-600" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 6.62 5.367 11.987 11.988 11.987 6.62 0 11.987-5.367 11.987-11.987C24.014 5.367 18.637.001 12.017.001zM8.449 16.988c-1.297 0-2.448-.49-3.323-1.297C4.198 14.895 3.708 13.744 3.708 12.447s.49-2.448 1.418-3.323c.875-.807 2.026-1.297 3.323-1.297s2.448.49 3.323 1.297c.928.875 1.418 2.026 1.418 3.323s-.49 2.448-1.418 3.244c-.875.807-2.026 1.297-3.323 1.297zm7.83-9.608c-.384 0-.735-.147-.997-.384-.262-.262-.384-.613-.384-.997 0-.384.122-.735.384-.997.262-.237.613-.384.997-.384s.735.147.997.384c.262.262.384.613.384.997 0 .384-.122.735-.384.997-.262.237-.613.384-.997.384zm.997 2.448c0 .875-.122 1.75-.367 2.448-.245.698-.613 1.297-1.075 1.759-.462.462-1.061.83-1.759 1.075-.698.245-1.573.367-2.448.367-.875 0-1.75-.122-2.448-.367-.698-.245-1.297-.613-1.759-1.075-.462-.462-.83-1.061-1.075-1.759-.245-.698-.367-1.573-.367-2.448 0-.875.122-1.75.367-2.448.245-.698.613-1.297 1.075-1.759.462-.462 1.061-.83 1.759-1.075.698-.245 1.573-.367 2.448-.367.875 0 1.75.122 2.448.367.698.245 1.297.613 1.759 1.075.462.462.83 1.061 1.075 1.759.245.698.367 1.573.367 2.448z"/>
+                                    </svg>
+                                    Instagram
+                                </div>
+                            </label>
+                            <input type="url" id="instagram_url" name="instagram_url" 
+                                   value="{{ old('instagram_url', auth()->user()->instagram_url) }}"
+                                   placeholder="https://instagram.com/seu-perfil"
+                                   class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
+                            @error('instagram_url')
+                                <p class="text-sm text-red-600 dark:text-red-400 mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        
+                        <!-- Twitter/X -->
+                        <div>
+                            <label for="twitter_url" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                <div class="flex items-center">
+                                    <svg class="w-5 h-5 mr-2 text-black dark:text-white" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                                    </svg>
+                                    Twitter/X
+                                </div>
+                            </label>
+                            <input type="url" id="twitter_url" name="twitter_url" 
+                                   value="{{ old('twitter_url', auth()->user()->twitter_url) }}"
+                                   placeholder="https://twitter.com/seu-perfil ou https://x.com/seu-perfil"
+                                   class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
+                            @error('twitter_url')
+                                <p class="text-sm text-red-600 dark:text-red-400 mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        
+                        <!-- LinkedIn -->
+                        <div>
+                            <label for="linkedin_url" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                <div class="flex items-center">
+                                    <svg class="w-5 h-5 mr-2 text-blue-700" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                                    </svg>
+                                    LinkedIn
+                                </div>
+                            </label>
+                            <input type="url" id="linkedin_url" name="linkedin_url" 
+                                   value="{{ old('linkedin_url', auth()->user()->linkedin_url) }}"
+                                   placeholder="https://linkedin.com/in/seu-perfil"
+                                   class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
+                            @error('linkedin_url')
+                                <p class="text-sm text-red-600 dark:text-red-400 mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        
+                        <!-- YouTube -->
+                        <div>
+                            <label for="youtube_url" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                <div class="flex items-center">
+                                    <svg class="w-5 h-5 mr-2 text-red-600" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                                    </svg>
+                                    YouTube
+                                </div>
+                            </label>
+                            <input type="url" id="youtube_url" name="youtube_url" 
+                                   value="{{ old('youtube_url', auth()->user()->youtube_url) }}"
+                                   placeholder="https://youtube.com/c/seu-canal"
+                                   class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
+                            @error('youtube_url')
+                                <p class="text-sm text-red-600 dark:text-red-400 mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        
+                        <!-- TikTok -->
+                        <div>
+                            <label for="tiktok_url" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                <div class="flex items-center">
+                                    <svg class="w-5 h-5 mr-2 text-black dark:text-white" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>
+                                    </svg>
+                                    TikTok
+                                </div>
+                            </label>
+                            <input type="url" id="tiktok_url" name="tiktok_url" 
+                                   value="{{ old('tiktok_url', auth()->user()->tiktok_url) }}"
+                                   placeholder="https://tiktok.com/@seu-perfil"
+                                   class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
+                            @error('tiktok_url')
+                                <p class="text-sm text-red-600 dark:text-red-400 mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        
+                        <!-- WhatsApp -->
+                        <div>
+                            <label for="whatsapp_url" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                <div class="flex items-center">
+                                    <svg class="w-5 h-5 mr-2 text-green-600" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488"/>
+                                    </svg>
+                                    WhatsApp
+                                </div>
+                            </label>
+                            <input type="url" id="whatsapp_url" name="whatsapp_url" 
+                                   value="{{ old('whatsapp_url', auth()->user()->whatsapp_url) }}"
+                                   placeholder="https://wa.me/5511999999999"
+                                   class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
+                            @error('whatsapp_url')
+                                <p class="text-sm text-red-600 dark:text-red-400 mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        
+                        <!-- Website -->
+                        <div>
+                            <label for="website_url" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                <div class="flex items-center">
+                                    <svg class="w-5 h-5 mr-2 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+                                    </svg>
+                                    Website
+                                </div>
+                            </label>
+                            <input type="url" id="website_url" name="website_url" 
+                                   value="{{ old('website_url', auth()->user()->website_url) }}"
+                                   placeholder="https://seu-site.com"
+                                   class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
+                            @error('website_url')
+                                <p class="text-sm text-red-600 dark:text-red-400 mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+                    
+                    <!-- Connected Social Accounts Display -->
+                    @if(auth()->user()->socialAccounts->count() > 0)
+                        <div class="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-md">
+                            <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Contas Conectadas via OAuth:</h4>
+                            <div class="space-y-2">
+                                @foreach(auth()->user()->socialAccounts as $account)
+                                    <div class="flex items-center justify-between p-2 bg-white dark:bg-gray-600 rounded border">
+                                        <div class="flex items-center">
+                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300 capitalize">{{ $account->provider }}</span>
+                                            <span class="ml-2 text-xs text-gray-500 dark:text-gray-400">Conectado</span>
+                                        </div>
+                                        <form action="{{ route('profile.social-disconnect', $account->id) }}" method="POST" class="inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-xs text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">
+                                                Desconectar
+                                            </button>
+                                        </form>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+                    
+                    <!-- Save Social Media Button -->
+                    <div class="flex justify-end mt-6">
+                        <button type="submit" 
+                                class="inline-flex items-center px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Salvar Redes Sociais
                         </button>
                     </div>
                 </form>
@@ -1201,4 +1510,324 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
-@endsection
+
+<!-- Simple Text Editor JavaScript -->
+<script>
+// Editor functionality
+let editorHistory = [];
+let historyIndex = -1;
+
+// Save state for undo functionality
+function saveState() {
+    const editor = document.getElementById('biografia-editor');
+    const content = editor.innerHTML;
+    
+    // Remove future history if we're not at the end
+    if (historyIndex < editorHistory.length - 1) {
+        editorHistory = editorHistory.slice(0, historyIndex + 1);
+    }
+    
+    editorHistory.push(content);
+    historyIndex = editorHistory.length - 1;
+    
+    // Limit history to 50 states
+    if (editorHistory.length > 50) {
+        editorHistory.shift();
+        historyIndex--;
+    }
+}
+
+// Format text using execCommand
+function formatText(command) {
+    saveState();
+    document.execCommand(command, false, null);
+    updateHiddenInput();
+}
+
+// Show link modal
+function showLinkModal() {
+    const modal = document.getElementById('linkModal');
+    const linkText = document.getElementById('linkText');
+    const linkUrl = document.getElementById('linkUrl');
+    
+    // Limpar campos
+    linkText.value = '';
+    linkUrl.value = '';
+    
+    // Verificar se há texto selecionado
+    const selection = window.getSelection();
+    if (selection.rangeCount > 0 && !selection.isCollapsed) {
+        linkText.value = selection.toString();
+    }
+    
+    modal.classList.remove('hidden');
+    linkText.focus();
+}
+
+// Close link modal
+function closeLinkModal() {
+    const modal = document.getElementById('linkModal');
+    modal.classList.add('hidden');
+}
+
+// Insert link from modal
+function insertLinkFromModal() {
+    const linkText = document.getElementById('linkText').value.trim();
+    const linkUrl = document.getElementById('linkUrl').value.trim();
+    
+    if (!linkUrl) {
+        alert('Por favor, digite uma URL válida.');
+        return;
+    }
+    
+    saveState();
+    
+    const editor = document.getElementById('biografia-editor');
+    editor.focus();
+    
+    const selection = window.getSelection();
+    let range;
+    
+    if (selection.rangeCount > 0) {
+        range = selection.getRangeAt(0);
+    } else {
+        range = document.createRange();
+        range.selectNodeContents(editor);
+        range.collapse(false);
+    }
+    
+    // Criar elemento de link
+    const link = document.createElement('a');
+    link.href = linkUrl;
+    link.textContent = linkText || linkUrl;
+    link.target = '_blank';
+    
+    // Inserir o link
+    if (selection.isCollapsed || linkText) {
+        range.deleteContents();
+        range.insertNode(link);
+    } else {
+        // Se há texto selecionado e não foi fornecido texto personalizado
+        const selectedText = selection.toString();
+        link.textContent = selectedText;
+        range.deleteContents();
+        range.insertNode(link);
+    }
+    
+    // Posicionar cursor após o link
+    range.setStartAfter(link);
+    range.collapse(true);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    
+    updateHiddenInput();
+    closeLinkModal();
+}
+
+// Insert line break
+function insertLineBreak() {
+    saveState();
+    document.execCommand('insertHTML', false, '<br>');
+    updateHiddenInput();
+}
+
+// Undo functionality
+function undoEdit() {
+    if (historyIndex > 0) {
+        historyIndex--;
+        const editor = document.getElementById('biografia-editor');
+        editor.innerHTML = editorHistory[historyIndex];
+        updateHiddenInput();
+    }
+}
+
+// Update hidden input with editor content
+function updateHiddenInput() {
+    const editor = document.getElementById('biografia-editor');
+    const hiddenInput = document.getElementById('biografia');
+    hiddenInput.value = editor.innerHTML;
+}
+
+// Phone mask functions
+function formatPhone(value) {
+    // Remove todos os caracteres não numéricos
+    const numbers = value.replace(/\D/g, '');
+    
+    // Limita a 11 dígitos (DDD + 9 dígitos para celular)
+    const limitedNumbers = numbers.substring(0, 11);
+    
+    // Aplica a formatação baseada no número de dígitos
+    if (limitedNumbers.length <= 2) {
+        return limitedNumbers;
+    } else if (limitedNumbers.length <= 6) {
+        return `(${limitedNumbers.substring(0, 2)}) ${limitedNumbers.substring(2)}`;
+    } else if (limitedNumbers.length <= 10) {
+        // Telefone fixo: (XX) XXXX-XXXX
+        return `(${limitedNumbers.substring(0, 2)}) ${limitedNumbers.substring(2, 6)}-${limitedNumbers.substring(6)}`;
+    } else {
+        // Celular: (XX) XXXXX-XXXX
+        return `(${limitedNumbers.substring(0, 2)}) ${limitedNumbers.substring(2, 7)}-${limitedNumbers.substring(7)}`;
+    }
+}
+
+function cleanPhone(value) {
+    // Remove todos os caracteres não numéricos
+    return value.replace(/\D/g, '');
+}
+
+function applyPhoneMask(input) {
+    const cursorPosition = input.selectionStart;
+    const oldValue = input.value;
+    const oldLength = oldValue.length;
+    
+    // Aplica a formatação
+    const newValue = formatPhone(input.value);
+    input.value = newValue;
+    
+    // Ajusta a posição do cursor
+    const newLength = newValue.length;
+    const lengthDiff = newLength - oldLength;
+    
+    // Calcula nova posição do cursor
+    let newCursorPosition = cursorPosition + lengthDiff;
+    
+    // Garante que o cursor não fique em uma posição inválida
+    if (newCursorPosition < 0) newCursorPosition = 0;
+    if (newCursorPosition > newLength) newCursorPosition = newLength;
+    
+    // Define a nova posição do cursor
+    setTimeout(() => {
+        input.setSelectionRange(newCursorPosition, newCursorPosition);
+    }, 0);
+}
+
+// Initialize editor and phone mask
+document.addEventListener('DOMContentLoaded', function() {
+    const editor = document.getElementById('biografia-editor');
+    const hiddenInput = document.getElementById('biografia');
+    
+    // Save initial state
+    saveState();
+    
+    // Update hidden input on content change
+    editor.addEventListener('input', function() {
+        updateHiddenInput();
+    });
+    
+    // Save state on key events for undo
+    editor.addEventListener('keydown', function(e) {
+        // Save state on significant changes
+        if (e.key === 'Enter' || e.key === 'Backspace' || e.key === 'Delete') {
+            setTimeout(saveState, 10);
+        }
+    });
+    
+    // Handle paste events
+    editor.addEventListener('paste', function(e) {
+        setTimeout(() => {
+            saveState();
+            updateHiddenInput();
+        }, 10);
+    });
+    
+    // Ensure content is synced on form submit
+    const form = editor.closest('form');
+    if (form) {
+        form.addEventListener('submit', function() {
+            updateHiddenInput();
+        });
+    }
+    
+    // Initialize phone mask
+    const phoneInput = document.getElementById('telefone_whatsapp');
+    if (phoneInput) {
+        // Aplica máscara no valor inicial se existir
+        if (phoneInput.value) {
+            phoneInput.value = formatPhone(phoneInput.value);
+        }
+        
+        // Event listener para formatação em tempo real
+        phoneInput.addEventListener('input', function(e) {
+            applyPhoneMask(this);
+        });
+        
+        // Event listener para paste
+        phoneInput.addEventListener('paste', function(e) {
+            setTimeout(() => {
+                applyPhoneMask(this);
+            }, 0);
+        });
+        
+        // Limpa a máscara antes de enviar o formulário
+        const phoneForm = phoneInput.closest('form');
+        if (phoneForm) {
+            phoneForm.addEventListener('submit', function() {
+                // Cria um campo hidden com o valor limpo
+                const cleanValue = cleanPhone(phoneInput.value);
+                const hiddenPhoneInput = document.createElement('input');
+                hiddenPhoneInput.type = 'hidden';
+                hiddenPhoneInput.name = 'telefone_whatsapp_clean';
+                hiddenPhoneInput.value = cleanValue;
+                phoneForm.appendChild(hiddenPhoneInput);
+            });
+        }
+    }
+});
+</script>
+
+<!-- Editor Styles -->
+<style>
+.editor-btn {
+    @apply px-3 py-2 text-gray-600 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-800 hover:text-blue-600 dark:hover:text-blue-300 rounded-md transition-all duration-200 flex items-center justify-center min-w-[36px] min-h-[36px] border border-transparent hover:border-blue-200 dark:hover:border-blue-700;
+}
+
+.editor-btn:hover {
+    @apply bg-blue-100 dark:bg-blue-800 text-blue-600 dark:text-blue-300 border-blue-200 dark:border-blue-700 shadow-sm;
+}
+
+.editor-btn:active {
+    @apply bg-blue-200 dark:bg-blue-700 text-blue-700 dark:text-blue-200 transform scale-95;
+}
+
+.editor-btn i {
+    @apply text-sm;
+}
+
+#biografia-editor:empty:before {
+    content: attr(placeholder);
+    color: #9CA3AF;
+    pointer-events: none;
+}
+
+#biografia-editor:focus {
+    outline: none;
+    @apply ring-2 ring-blue-500 ring-opacity-50;
+}
+
+/* Modal styles */
+#linkModal {
+    @apply fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50;
+}
+
+#linkModal .modal-content {
+    @apply bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-md mx-4;
+}
+
+#linkModal input {
+    @apply w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white;
+}
+
+#linkModal button {
+    @apply px-4 py-2 rounded-md font-medium transition-colors duration-200;
+}
+
+#linkModal .btn-primary {
+    @apply bg-blue-600 hover:bg-blue-700 text-white;
+}
+
+#linkModal .btn-secondary {
+    @apply bg-gray-300 hover:bg-gray-400 text-gray-700 dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-gray-200;
+}
+ </style>
+ 
+ @endsection
