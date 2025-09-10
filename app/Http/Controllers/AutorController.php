@@ -30,7 +30,7 @@ class AutorController extends Controller
         $totalAutores = Autor::forUser(Auth::id())->count();
         $totalOrcamentos = Autor::forUser(Auth::id())->withCount('orcamentos')->get()->sum('orcamentos_count');
         $valorTotalOrcamentos = Autor::forUser(Auth::id())->with(['orcamentos' => function($query) {
-            $query->select('autor_id', 'valor_total');
+            $query->select('orcamentos.id', 'valor_total');
         }])->get()->sum(function($autor) {
             return $autor->orcamentos->sum('valor_total');
         });
@@ -39,7 +39,7 @@ class AutorController extends Controller
         // Buscar autores com orçamentos e contagem
         $autores = $query->withCount('orcamentos')
             ->with(['orcamentos' => function($query) {
-                $query->select('autor_id', 'valor_total');
+                $query->select('orcamentos.id', 'valor_total');
             }])
             ->paginate(15)
             ->appends($request->query());
@@ -285,5 +285,48 @@ class AutorController extends Controller
             ->get(['id', 'nome', 'email']);
 
         return response()->json($autores);
+    }
+
+    /**
+     * API para busca AJAX de autores
+     */
+    public function search(Request $request)
+    {
+        $query = Autor::forUser(Auth::id());
+
+        // Aplicar filtros
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('nome', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('telefone', 'like', "%{$search}%");
+            });
+        }
+
+        // Buscar autores com orçamentos e contagem
+        $autores = $query->withCount('orcamentos')
+            ->with(['orcamentos' => function($query) {
+                $query->select('orcamentos.id', 'valor_total');
+            }])
+            ->paginate(15);
+
+        // Mapear autores com valor total dos orçamentos
+        $autores->getCollection()->transform(function ($autor) {
+            $autor->valor_total_orcamentos = $autor->orcamentos->sum('valor_total');
+            return $autor;
+        });
+
+        return response()->json([
+            'success' => true,
+            'data' => $autores->items(),
+            'pagination' => [
+                'current_page' => $autores->currentPage(),
+                'last_page' => $autores->lastPage(),
+                'per_page' => $autores->perPage(),
+                'total' => $autores->total(),
+                'has_more_pages' => $autores->hasMorePages()
+            ]
+        ]);
     }
 }

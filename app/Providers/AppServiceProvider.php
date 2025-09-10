@@ -6,6 +6,8 @@ use Illuminate\Support\ServiceProvider;
 use Carbon\Carbon;
 use App\Models\Transaction;
 use App\Observers\TransactionObserver;
+use App\Models\Orcamento;
+use App\Observers\OrcamentoObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,5 +30,6 @@ class AppServiceProvider extends ServiceProvider
         
         // Registrar observers
         Transaction::observe(TransactionObserver::class);
+        Orcamento::observe(OrcamentoObserver::class);
     }
 }

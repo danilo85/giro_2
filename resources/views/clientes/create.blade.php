@@ -79,7 +79,7 @@
                            id="avatar" 
                            name="avatar" 
                            accept="image/*"
-                           onchange="previewAvatar(this)"
+                           onchange="previewAvatarImage(this)"
                            class="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900 dark:file:text-blue-300">
                     @error('avatar')
                         <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
@@ -280,24 +280,39 @@
         }, 0);
     }
 
-    // Preview do avatar
-    document.getElementById('avatar').addEventListener('change', function(e) {
-        const file = e.target.files[0];
+    // Função para preview do avatar
+    function previewAvatarImage(input) {
+        const file = input.files[0];
         const preview = document.getElementById('avatar-preview');
+        const previewSidebar = document.getElementById('avatar-preview');
         
         if (file) {
             const reader = new FileReader();
             reader.onload = function(e) {
-                preview.innerHTML = `<img src="${e.target.result}" class="h-24 w-24 object-cover rounded-full">`;
+                // Atualiza o preview principal (formulário)
+                preview.src = e.target.result;
+                // Atualiza o preview da sidebar
+                if (previewSidebar) {
+                    previewSidebar.innerHTML = `<img src="${e.target.result}" class="h-24 w-24 object-cover rounded-full">`;
+                }
             };
             reader.readAsDataURL(file);
         } else {
-            preview.innerHTML = `
-                <svg class="h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                </svg>
-            `;
+            // Reset para imagem padrão
+            preview.src = "data:image/svg+xml,%3csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100' height='100' fill='%23f3f4f6'/%3e%3ctext x='50%25' y='50%25' font-size='18' text-anchor='middle' alignment-baseline='middle' font-family='monospace, sans-serif' fill='%236b7280'%3eAvatar%3c/text%3e%3c/svg%3e";
+            if (previewSidebar) {
+                previewSidebar.innerHTML = `
+                    <svg class="h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                    </svg>
+                `;
+            }
         }
+    }
+    
+    // Preview do avatar usando event listener também
+    document.getElementById('avatar').addEventListener('change', function(e) {
+        previewAvatarImage(this);
     });
     
     // Preview dos campos de texto

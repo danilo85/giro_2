@@ -21,6 +21,10 @@ use App\Http\Controllers\PagamentoController;
 use App\Http\Controllers\ModeloPropostaController;
 use App\Http\Controllers\OrcamentoFileController;
 use App\Http\Controllers\ExtratoController;
+use App\Http\Controllers\HistoricoController;
+use App\Http\Controllers\PortfolioController;
+use App\Http\Controllers\PortfolioCategoryController;
+use App\Http\Controllers\PortfolioApiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -181,6 +185,7 @@ Route::middleware(['auth'])->group(function () {
         
         // Credit Card Invoices API
         Route::get('/credit-card-invoices', [TransactionController::class, 'getCreditCardInvoices']);
+        Route::get('/credit-card-invoices/details', [TransactionController::class, 'getCreditCardInvoiceDetails']);
         Route::post('/credit-card-invoices/pay', [TransactionController::class, 'payCreditCardInvoice']);
         Route::post('/credit-card-invoices/undo-payment', [TransactionController::class, 'undoCreditCardInvoicePayment']);
 
@@ -207,6 +212,20 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/orcamentos/{orcamento}/quitar', [OrcamentoController::class, 'quitar'])->name('orcamentos.quitar');
     Route::patch('/orcamentos/{orcamento}/update-status', [OrcamentoController::class, 'atualizarStatus'])->name('orcamentos.update-status');
 
+    // Histórico do Projeto
+    Route::prefix('orcamentos/{orcamento}/historico')->name('orcamentos.historico.')->group(function () {
+        Route::get('/', [HistoricoController::class, 'index'])->name('index');
+        Route::get('/create', [HistoricoController::class, 'create'])->name('create');
+        Route::post('/', [HistoricoController::class, 'store'])->name('store');
+        Route::put('/{historico}', [HistoricoController::class, 'update'])->name('update');
+        Route::delete('/{historico}', [HistoricoController::class, 'destroy'])->name('destroy');
+        Route::patch('/{historico}/toggle-status', [HistoricoController::class, 'toggleStatus'])->name('toggle-status');
+        Route::post('/upload', [HistoricoController::class, 'upload'])->name('upload');
+        Route::delete('/files/{file}', [HistoricoController::class, 'deleteFile'])->name('files.delete');
+        Route::get('/api', [HistoricoController::class, 'api'])->name('api');
+        Route::get('/files/{file}/download', [HistoricoController::class, 'download'])->name('files.download');
+    });
+
     // Clientes
     Route::resource('clientes', ClienteController::class);
     Route::post('/clientes/{cliente}/gerar-token-extrato', [ClienteController::class, 'gerarTokenExtrato'])->name('clientes.gerar-token-extrato');
@@ -223,6 +242,28 @@ Route::middleware(['auth'])->group(function () {
     // Modelos de Propostas
     Route::resource('modelos-propostas', ModeloPropostaController::class)->parameters(['modelos-propostas' => 'modeloProposta']);
     Route::post('modelos-propostas/{modeloProposta}/duplicate', [ModeloPropostaController::class, 'duplicate'])->name('modelos-propostas.duplicate');
+
+    // Portfolio Module (Módulo de Portfólio)
+    Route::prefix('portfolio')->name('portfolio.')->group(function () {
+        // Página principal do portfólio
+        Route::get('/', [PortfolioController::class, 'index'])->name('index');
+        
+        // Pipeline de orçamentos finalizados
+        Route::get('/pipeline', [PortfolioController::class, 'pipeline'])->name('pipeline');
+        
+        // CRUD de categorias
+        Route::resource('categories', PortfolioCategoryController::class)->except(['show']);
+        Route::patch('/categories/{category}/toggle-status', [PortfolioCategoryController::class, 'toggleStatus'])->name('categories.toggle-status');
+        Route::patch('/categories/update-order', [PortfolioCategoryController::class, 'updateOrder'])->name('categories.update-order');
+        
+        // CRUD de trabalhos
+        Route::get('/works', [PortfolioController::class, 'worksIndex'])->name('works.index');
+        Route::resource('works', PortfolioController::class)->except(['index', 'pipeline']);
+        Route::post('/works/{work}/images/upload', [PortfolioController::class, 'uploadImages'])->name('works.images.upload');
+        Route::delete('/works/images/{image}', [PortfolioController::class, 'deleteImage'])->name('works.images.delete');
+        Route::patch('/works/images/{image}/set-cover', [PortfolioController::class, 'setCoverImage'])->name('works.images.set-cover');
+        Route::patch('/works/images/update-order', [PortfolioController::class, 'updateImagesOrder'])->name('works.images.update-order');
+    });
    
 
 
@@ -279,9 +320,11 @@ Route::prefix('api/budget')->name('api.budget.')->group(function () {
         
         // Clientes API
         Route::get('/clientes/autocomplete', [ClienteController::class, 'autocomplete'])->name('clientes.autocomplete');
+        Route::get('/clientes/search', [ClienteController::class, 'search'])->name('clientes.search');
         
         // Autores API
         Route::get('/autores/autocomplete', [AutorController::class, 'autocomplete'])->name('autores.autocomplete');
+        Route::get('/autores/search', [AutorController::class, 'search'])->name('autores.search');
         
         // Modelos de Propostas API
         Route::get('/modelos-propostas/autocomplete', [ModeloPropostaController::class, 'autocomplete'])->name('modelos-propostas.autocomplete');
@@ -293,6 +336,20 @@ Route::prefix('api/budget')->name('api.budget.')->group(function () {
         Route::delete('/orcamentos/files/{file}', [OrcamentoFileController::class, 'delete'])->name('orcamentos.files.delete');
         Route::get('/orcamentos/files/{file}/download', [OrcamentoFileController::class, 'download'])->name('orcamentos.files.download');
         Route::patch('/orcamentos/files/{file}/description', [OrcamentoFileController::class, 'updateDescription'])->name('orcamentos.files.description');
+        
+        // Portfolio API Routes (APIs internas do portfólio)
+        Route::prefix('portfolio')->name('portfolio.')->group(function () {
+            // API de categorias
+            Route::get('/categories/api', [PortfolioCategoryController::class, 'api'])->name('categories.api');
+            
+            // API de trabalhos
+            Route::get('/works/api', [PortfolioController::class, 'api'])->name('works.api');
+            Route::get('/works/{work}/images', [PortfolioController::class, 'getImages'])->name('works.images.get');
+            
+            // API para pipeline
+            Route::get('/pipeline/api', [PortfolioController::class, 'pipelineApi'])->name('pipeline.api');
+            Route::post('/pipeline/{orcamento}/create-work', [PortfolioController::class, 'createWorkFromBudget'])->name('pipeline.create-work');
+        });
     });
 });
 
@@ -308,6 +365,21 @@ Route::prefix('public')->name('public.')->group(function () {
     
     // Rotas públicas para extrato do cliente
     Route::get('/extrato/{cliente_id}/{token}', [ExtratoController::class, 'show'])->name('extrato.public');
+    
+    // Rotas públicas do portfólio
+    Route::prefix('portfolio')->name('portfolio.public.')->group(function () {
+        // Página principal do portfólio
+        Route::get('/', [PortfolioApiController::class, 'index'])->name('index');
+        
+        // Página de categoria específica
+        Route::get('/categoria/{category:slug}', [PortfolioApiController::class, 'category'])->name('category');
+        
+        // Página de trabalho específico
+        Route::get('/trabalho/{work:slug}', [PortfolioApiController::class, 'workDetail'])->name('work');
+        
+        // Página de autor específico
+        Route::get('/autor/{author:slug}', [PortfolioApiController::class, 'authorPortfolio'])->name('author');
+    });
 });
 
 // File upload routes moved to RouteServiceProvider (without any middleware)

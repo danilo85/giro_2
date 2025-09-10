@@ -69,11 +69,11 @@
                             class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white @error('tipo_conta') border-red-500 @enderror"
                             required>
                         <option value="">Selecione o tipo</option>
-                        <option value="corrente" {{ old('tipo_conta', $bank->tipo_conta) == 'corrente' ? 'selected' : '' }}>Conta Corrente</option>
-                        <option value="poupanca" {{ old('tipo_conta', $bank->tipo_conta) == 'poupanca' ? 'selected' : '' }}>Conta Poupança</option>
-                        <option value="salario" {{ old('tipo_conta', $bank->tipo_conta) == 'salario' ? 'selected' : '' }}>Conta Salário</option>
-                        <option value="investimento" {{ old('tipo_conta', $bank->tipo_conta) == 'investimento' ? 'selected' : '' }}>Conta Investimento</option>
-                        <option value="digital" {{ old('tipo_conta', $bank->tipo_conta) == 'digital' ? 'selected' : '' }}>Conta Digital</option>
+                        <option value="Conta Corrente" {{ old('tipo_conta', $bank->tipo_conta) == 'Conta Corrente' ? 'selected' : '' }}>Conta Corrente</option>
+                        <option value="Conta Poupança" {{ old('tipo_conta', $bank->tipo_conta) == 'Conta Poupança' ? 'selected' : '' }}>Conta Poupança</option>
+                        <option value="Conta Salário" {{ old('tipo_conta', $bank->tipo_conta) == 'Conta Salário' ? 'selected' : '' }}>Conta Salário</option>
+                        <option value="Conta Investimento" {{ old('tipo_conta', $bank->tipo_conta) == 'Conta Investimento' ? 'selected' : '' }}>Conta Investimento</option>
+                        <option value="Conta Digital" {{ old('tipo_conta', $bank->tipo_conta) == 'Conta Digital' ? 'selected' : '' }}>Conta Digital</option>
                     </select>
                     @error('tipo_conta')
                         <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
@@ -296,16 +296,32 @@ document.getElementById('saldo').addEventListener('input', function(e) {
     e.target.value = value;
 });
 
-// Format agency and account inputs
+// Format agency input - maximum 4 digits
 document.getElementById('agencia').addEventListener('input', function(e) {
-    e.target.value = e.target.value.replace(/\D/g, '');
+    let value = e.target.value.replace(/\D/g, '');
+    if (value.length > 4) {
+        value = value.substring(0, 4);
+    }
+    e.target.value = value;
 });
 
+// Format account input - number with check digit (format: 12345-6)
 document.getElementById('conta').addEventListener('input', function(e) {
-    let value = e.target.value.replace(/\D/g, '');
-    if (value.length > 1) {
+    let value = e.target.value.replace(/[^\d-]/g, '');
+    
+    // Remove existing hyphens to reformat
+    value = value.replace(/-/g, '');
+    
+    // Add hyphen before the last digit if there are at least 2 digits
+    if (value.length >= 2) {
         value = value.slice(0, -1) + '-' + value.slice(-1);
     }
+    
+    // Limit to reasonable account number length (max 10 digits + hyphen)
+    if (value.replace(/-/g, '').length > 10) {
+        value = value.substring(0, 11); // 10 digits + 1 hyphen
+    }
+    
     e.target.value = value;
 });
 </script>

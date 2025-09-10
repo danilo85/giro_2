@@ -77,8 +77,8 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Data de Vencimento</label>
                         <p class="text-lg text-gray-900 dark:text-white">
-                            @if($creditCard->dia_vencimento)
-                                Dia {{ $creditCard->dia_vencimento }}
+                            @if($creditCard->data_vencimento)
+                    Dia {{ $creditCard->data_vencimento }}
                             @else
                                 Não informado
                             @endif
@@ -88,8 +88,8 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Data de Fechamento</label>
                         <p class="text-lg text-gray-900 dark:text-white">
-                            @if($creditCard->dia_fechamento)
-                                Dia {{ $creditCard->dia_fechamento }}
+                            @if($creditCard->data_fechamento)
+                    Dia {{ $creditCard->data_fechamento }}
                             @else
                                 Não informado
                             @endif

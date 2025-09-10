@@ -397,7 +397,7 @@
                                 class="{{ request()->routeIs('clientes.*') ? 'bg-blue-100 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white' }} group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
                                 :class="{ 'justify-center': $store.sidebar.collapsed }">
                                  <svg class="{{ request()->routeIs('clientes.*') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }} flex-shrink-0 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 515.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 919.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 00-5.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                                  </svg>
                                  <span x-show="!$store.sidebar.collapsed || $store.sidebar.isMobile" 
                                        x-transition:enter="transition ease-in-out duration-150"
@@ -455,6 +455,87 @@
                                        x-transition:leave-start="opacity-100 transform scale-100"
                                        x-transition:leave-end="opacity-0 transform scale-95"
                                        class="ml-3">Modelos</span>
+                             </a>
+                         </div>
+                     </div>
+
+                     <!-- Portfolio Section -->
+                     <div class="mt-8" x-data="{ open: JSON.parse(localStorage.getItem('sidebar_portfolio') || 'true') }" 
+                          x-init="$watch('open', value => localStorage.setItem('sidebar_portfolio', JSON.stringify(value)))">
+                         <button @click="open = !open" 
+                                 class="w-full flex items-center justify-between px-3 py-3 text-left text-sm font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider hover:text-gray-900 dark:hover:text-white transition-colors bg-gray-50 dark:bg-gray-800 rounded-md"
+                                 x-show="!$store.sidebar.collapsed || $store.sidebar.isMobile"
+                                 x-transition:enter="transition ease-in-out duration-150"
+                                 x-transition:enter-start="opacity-0 transform scale-95"
+                                 x-transition:enter-end="opacity-100 transform scale-100"
+                                 x-transition:leave="transition ease-in-out duration-150"
+                                 x-transition:leave-start="opacity-100 transform scale-100"
+                                 x-transition:leave-end="opacity-0 transform scale-95">
+                             <span class="flex items-center">
+                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                                 </svg>
+                                 Portfólio
+                             </span>
+                             <svg class="w-4 h-4 transform transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                             </svg>
+                         </button>
+                         
+                         <div class="mt-2 space-y-1" :class="{ 'mt-0': $store.sidebar.collapsed }" 
+                              x-show="open" 
+                              x-transition:enter="transition ease-out duration-200"
+                              x-transition:enter-start="opacity-0 transform scale-95"
+                              x-transition:enter-end="opacity-100 transform scale-100"
+                              x-transition:leave="transition ease-in duration-150"
+                              x-transition:leave-start="opacity-100 transform scale-100"
+                              x-transition:leave-end="opacity-0 transform scale-95">
+                             <a href="{{ route('portfolio.pipeline') }}" 
+                                class="{{ request()->routeIs('portfolio.pipeline') ? 'bg-blue-100 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white' }} group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
+                                :class="{ 'justify-center': $store.sidebar.collapsed }">
+                                 <svg class="{{ request()->routeIs('portfolio.pipeline') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }} flex-shrink-0 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+                                 </svg>
+                                 <span x-show="!$store.sidebar.collapsed || $store.sidebar.isMobile" 
+                                       x-transition:enter="transition ease-in-out duration-150"
+                                       x-transition:enter-start="opacity-0 transform scale-95"
+                                       x-transition:enter-end="opacity-100 transform scale-100"
+                                       x-transition:leave="transition ease-in-out duration-150"
+                                       x-transition:leave-start="opacity-100 transform scale-100"
+                                       x-transition:leave-end="opacity-0 transform scale-95"
+                                       class="ml-3">Pipeline</span>
+                             </a>
+
+                             <a href="{{ route('portfolio.categories.index') }}" 
+                                class="{{ request()->routeIs('portfolio.categories.*') ? 'bg-blue-100 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white' }} group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
+                                :class="{ 'justify-center': $store.sidebar.collapsed }">
+                                 <svg class="{{ request()->routeIs('portfolio.categories.*') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }} flex-shrink-0 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                                 </svg>
+                                 <span x-show="!$store.sidebar.collapsed || $store.sidebar.isMobile" 
+                                       x-transition:enter="transition ease-in-out duration-150"
+                                       x-transition:enter-start="opacity-0 transform scale-95"
+                                       x-transition:enter-end="opacity-100 transform scale-100"
+                                       x-transition:leave="transition ease-in-out duration-150"
+                                       x-transition:leave-start="opacity-100 transform scale-100"
+                                       x-transition:leave-end="opacity-0 transform scale-95"
+                                       class="ml-3">Categorias</span>
+                             </a>
+
+                             <a href="{{ route('portfolio.works.index') }}" 
+                                class="{{ request()->routeIs('portfolio.works.*') ? 'bg-blue-100 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white' }} group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
+                                :class="{ 'justify-center': $store.sidebar.collapsed }">
+                                 <svg class="{{ request()->routeIs('portfolio.works.*') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }} flex-shrink-0 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                                 </svg>
+                                 <span x-show="!$store.sidebar.collapsed || $store.sidebar.isMobile" 
+                                       x-transition:enter="transition ease-in-out duration-150"
+                                       x-transition:enter-start="opacity-0 transform scale-95"
+                                       x-transition:enter-end="opacity-100 transform scale-100"
+                                       x-transition:leave="transition ease-in-out duration-150"
+                                       x-transition:leave-start="opacity-100 transform scale-100"
+                                       x-transition:leave-end="opacity-0 transform scale-95"
+                                       class="ml-3">Trabalhos</span>
                              </a>
                          </div>
                      </div>

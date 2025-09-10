@@ -278,15 +278,15 @@
                                     @if(old('status', $orcamento->status) === 'aprovado') border-green-500 bg-green-50 dark:bg-green-900/20
                                     @elseif(old('status', $orcamento->status) === 'analisando') border-yellow-500 bg-yellow-50 dark:bg-yellow-900/20
                                     @elseif(old('status', $orcamento->status) === 'rejeitado') border-red-500 bg-red-50 dark:bg-red-900/20
-                                    @elseif(old('status', $orcamento->status) === 'pago') border-purple-500 bg-purple-50 dark:bg-purple-900/20
+                                    @elseif(old('status', $orcamento->status) === 'quitado') border-purple-500 bg-purple-50 dark:bg-purple-900/20
                                     @else border-gray-500 bg-gray-50 dark:bg-gray-900/20
                                     @endif">
                                 <option value="rascunho" {{ old('status', $orcamento->status) == 'rascunho' ? 'selected' : '' }}>⚪ Rascunho</option>
                                 <option value="analisando" {{ old('status', $orcamento->status) == 'analisando' ? 'selected' : '' }}>🟡 Analisando</option>
                                 <option value="rejeitado" {{ old('status', $orcamento->status) == 'rejeitado' ? 'selected' : '' }}>🔴 Rejeitado</option>
                                 <option value="aprovado" {{ old('status', $orcamento->status) == 'aprovado' ? 'selected' : '' }}>🟢 Aprovado</option>
-                                <option value="finalizado" {{ old('status', $orcamento->status) == 'finalizado' ? 'selected' : '' }}>✅ Finalizado</option>
-                                <option value="pago" {{ old('status', $orcamento->status) == 'pago' ? 'selected' : '' }}>🟣 Pago</option>
+                                <option value="finalizado" {{ old('status', $orcamento->status) == 'finalizado' ? 'selected' : '' }}>🔵 Finalizado</option>
+                                <option value="quitado" {{ old('status', $orcamento->status) == 'quitado' ? 'selected' : '' }}>🟣 Quitado</option>
                             </select>
                             <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
                                 <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

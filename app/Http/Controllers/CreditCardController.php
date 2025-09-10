@@ -33,22 +33,36 @@ class CreditCardController extends Controller
     public function store(Request $request)
     {
         // Converter valores monetários do formato brasileiro para decimal
-        $limite = str_replace(['.', ','], ['', '.'], $request->limite ?? '0');
-        $limiteUtilizado = str_replace(['.', ','], ['', '.'], $request->limite_utilizado ?? '0');
+        $limite = $this->cleanMonetaryValue($request->limite_total ?? '0');
+        $limiteUtilizado = $this->cleanMonetaryValue($request->limite_utilizado ?? '0');
         
         $validator = Validator::make(array_merge($request->all(), [
             'limite_decimal' => $limite,
             'limite_utilizado_decimal' => $limiteUtilizado
         ]), [
-            'nome' => 'required|string|max:255',
+            'nome_cartao' => 'required|string|max:255',
             'bandeira' => 'required|string|max:100',
             'numero' => 'nullable|string|min:13|max:19',
             'limite_decimal' => 'required|numeric|min:0',
             'limite_utilizado_decimal' => 'required|numeric|min:0',
-            'dia_vencimento' => 'required|integer|min:1|max:31',
-            'dia_fechamento' => 'required|integer|min:1|max:31',
+            'data_vencimento' => 'required|integer|min:1|max:31',
+            'data_fechamento' => 'required|integer|min:1|max:31',
             'observacoes' => 'nullable|string|max:1000',
             'ativo' => 'nullable|boolean'
+        ], [
+            'nome_cartao.required' => 'O campo nome do cartão é obrigatório.',
+            'bandeira.required' => 'O campo bandeira é obrigatório.',
+            'limite_decimal.required' => 'O campo limite total é obrigatório.',
+            'limite_decimal.numeric' => 'O campo limite total deve ser um número.',
+            'limite_utilizado_decimal.numeric' => 'O campo limite utilizado deve ser um número.',
+            'data_vencimento.required' => 'O campo dia de vencimento é obrigatório.',
+            'data_vencimento.integer' => 'O campo dia de vencimento deve ser um número inteiro.',
+            'data_vencimento.min' => 'O dia de vencimento deve ser entre 1 e 31.',
+            'data_vencimento.max' => 'O dia de vencimento deve ser entre 1 e 31.',
+            'data_fechamento.required' => 'O campo dia de fechamento é obrigatório.',
+            'data_fechamento.integer' => 'O campo dia de fechamento deve ser um número inteiro.',
+            'data_fechamento.min' => 'O dia de fechamento deve ser entre 1 e 31.',
+            'data_fechamento.max' => 'O dia de fechamento deve ser entre 1 e 31.',
         ]);
 
         if ($validator->fails()) {
@@ -76,15 +90,28 @@ class CreditCardController extends Controller
                 ->withInput();
         }
 
+        // Validar se dia de fechamento é antes do dia de vencimento
+        if ($request->data_fechamento >= $request->data_vencimento) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'errors' => ['data_fechamento' => ['O dia de fechamento deve ser anterior ao dia de vencimento.']]
+                ], 422);
+            }
+            return redirect()->back()
+                ->withErrors(['data_fechamento' => 'O dia de fechamento deve ser anterior ao dia de vencimento.'])
+                ->withInput();
+        }
+
         $creditCard = CreditCard::create([
-            'user_id' => Auth::id(),
-            'nome_cartao' => $request->nome,
+            'user_id' => auth()->id(),
+            'nome_cartao' => $request->nome_cartao,
             'bandeira' => $request->bandeira,
             'numero' => $request->numero,
             'limite_total' => $limite,
             'limite_utilizado' => $limiteUtilizado,
-            'data_fechamento' => $request->dia_fechamento,
-            'data_vencimento' => $request->dia_vencimento,
+            'data_vencimento' => $request->data_vencimento,
+            'data_fechamento' => $request->data_fechamento,
             'observacoes' => $request->observacoes,
             'ativo' => $request->has('ativo') ? true : false
         ]);
@@ -169,31 +196,76 @@ class CreditCardController extends Controller
     {
         $this->authorize('update', $creditCard);
 
-        try {
-            $request->validate([
-                'nome_cartao' => 'required|string|max:255',
-                'bandeira' => 'required|string|max:255',
-                'numero' => 'nullable|string|max:20', // Tornado não obrigatório
-                'limite_total' => 'required|numeric|min:0',
-                'limite_utilizado' => 'nullable|numeric|min:0',
-                'data_vencimento' => 'nullable|integer|min:1|max:31',
-                'data_fechamento' => 'nullable|integer|min:1|max:31',
-                'observacoes' => 'nullable|string',
-                'ativo' => 'boolean',
-            ]);
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        // Converter valores monetários do formato brasileiro para decimal
+        $limite = $this->cleanMonetaryValue($request->limite_total ?? '0');
+        $limite_utilizado = $this->cleanMonetaryValue($request->limite_utilizado ?? '0');
+        
+        $validator = Validator::make(array_merge($request->all(), [
+            'limite_decimal' => $limite,
+            'limite_utilizado_decimal' => $limite_utilizado
+        ]), [
+            'nome_cartao' => 'required|string|max:255',
+            'bandeira' => 'required|string|max:100',
+            'numero' => 'nullable|string|min:13|max:19',
+            'limite_decimal' => 'required|numeric|min:0',
+            'limite_utilizado_decimal' => 'required|numeric|min:0',
+            'data_vencimento' => 'required|integer|min:1|max:31',
+            'data_fechamento' => 'required|integer|min:1|max:31',
+            'observacoes' => 'nullable|string|max:1000',
+            'ativo' => 'nullable|boolean'
+        ], [
+            'nome_cartao.required' => 'O campo nome do cartão é obrigatório.',
+            'bandeira.required' => 'O campo bandeira é obrigatório.',
+            'limite_decimal.required' => 'O campo limite total é obrigatório.',
+            'limite_decimal.numeric' => 'O campo limite total deve ser um número.',
+            'limite_utilizado_decimal.numeric' => 'O campo limite utilizado deve ser um número.',
+            'data_vencimento.required' => 'O campo dia de vencimento é obrigatório.',
+            'data_vencimento.integer' => 'O campo dia de vencimento deve ser um número inteiro.',
+            'data_vencimento.min' => 'O dia de vencimento deve ser entre 1 e 31.',
+            'data_vencimento.max' => 'O dia de vencimento deve ser entre 1 e 31.',
+            'data_fechamento.required' => 'O campo dia de fechamento é obrigatório.',
+            'data_fechamento.integer' => 'O campo dia de fechamento deve ser um número inteiro.',
+            'data_fechamento.min' => 'O dia de fechamento deve ser entre 1 e 31.',
+            'data_fechamento.max' => 'O dia de fechamento deve ser entre 1 e 31.',
+        ]);
+
+        if ($validator->fails()) {
             if ($request->ajax()) {
                 return response()->json([
                     'success' => false,
-                    'errors' => $e->errors()
+                    'errors' => $validator->errors()
                 ], 422);
             }
-            throw $e;
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
         }
 
-        // Converter valores monetários usando função robusta
-        $limite = $this->cleanMonetaryValue($request->limite_total);
-        $limite_utilizado = $this->cleanMonetaryValue($request->limite_utilizado);
+        // Validar se limite utilizado não é maior que o limite total
+        if ($limite_utilizado > $limite) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'errors' => ['limite_utilizado' => ['O limite utilizado não pode ser maior que o limite total.']]
+                ], 422);
+            }
+            return redirect()->back()
+                ->withErrors(['limite_utilizado' => 'O limite utilizado não pode ser maior que o limite total.'])
+                ->withInput();
+        }
+
+        // Validar se dia de fechamento é antes do dia de vencimento
+        if ($request->data_fechamento >= $request->data_vencimento) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'errors' => ['data_fechamento' => ['O dia de fechamento deve ser anterior ao dia de vencimento.']]
+                ], 422);
+            }
+            return redirect()->back()
+                ->withErrors(['data_fechamento' => 'O dia de fechamento deve ser anterior ao dia de vencimento.'])
+                ->withInput();
+        }
 
         $creditCard->update([
             'nome_cartao' => $request->nome_cartao,

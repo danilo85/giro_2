@@ -347,6 +347,7 @@
         <div class="flex items-center gap-2 mb-4 ml-16">
             <span class="transaction-category-badge inline-flex items-center px-2 py-1 text-xs font-medium rounded-full"></span>
             <span class="transaction-status-badge px-3 py-1 text-xs font-medium rounded-full"></span>
+            <span class="transaction-account-badge hidden px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300"></span>
         </div>
         
         <div class="flex items-center justify-between mb-4">
@@ -426,6 +427,8 @@
             </div>
         </div>
         
+
+        
         <div class="flex items-center justify-between pt-4 border-t border-purple-200 dark:border-purple-700">
             <div class="flex space-x-2">
                 <button class="btn-view-transactions px-3 py-2 text-sm bg-purple-100 hover:bg-purple-200 dark:bg-purple-800 dark:hover:bg-purple-700 text-purple-700 dark:text-purple-200 rounded-lg transition-colors" title="Ver Transações">
@@ -433,7 +436,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                     </svg>
-                    Ver
+                    <span class="view-text">Ver</span>
                 </button>
             </div>
             <button class="btn-toggle-invoice px-4 py-2 text-sm font-medium rounded-lg transition-colors">
@@ -448,6 +451,9 @@ let currentMonth = new Date().getMonth() + 1;
 let currentYear = new Date().getFullYear();
 let currentFilters = {};
 let fabOpen = false;
+
+// Função updateSummary - definida antes de ser usada
+
 
 // Verificação de autenticação
 function checkAuthentication() {
@@ -959,7 +965,12 @@ function renderCreditCardInvoices(invoices) {
         
         // Botão ver transações
         if (viewBtn) {
-            viewBtn.onclick = () => viewInvoiceTransactions(invoice.credit_card_id, invoice.month, invoice.year);
+            // Adicionar atributos de dados para identificação
+            viewBtn.setAttribute('data-credit-card-id', invoice.credit_card_id);
+            viewBtn.setAttribute('data-month', invoice.month);
+            viewBtn.setAttribute('data-year', invoice.year);
+            
+            viewBtn.onclick = () => toggleInvoiceFilter(viewBtn, invoice.credit_card_id, invoice.month, invoice.year);
         }
         
         container.appendChild(card);
@@ -1054,6 +1065,91 @@ function renderCreditCardInvoices(invoices) {
      }
  }
  
+function clearAllFilters() {
+    // Limpar filtros globais
+    currentFilters = {};
+    
+    // Resetar campos de filtro na interface
+    const accountFilter = document.getElementById('filter-account');
+    const monthFilter = document.getElementById('month-filter');
+    const yearFilter = document.getElementById('year-filter');
+    const categoryFilter = document.getElementById('filter-category');
+    const typeFilter = document.getElementById('filter-type');
+    const statusFilter = document.getElementById('filter-status');
+    
+    if (accountFilter) accountFilter.value = '';
+    if (monthFilter) monthFilter.value = currentMonth;
+    if (yearFilter) yearFilter.value = currentYear;
+    if (categoryFilter) categoryFilter.value = '';
+    if (typeFilter) typeFilter.value = '';
+    if (statusFilter) statusFilter.value = '';
+    
+    // Recarregar transações sem filtros
+    loadTransactions();
+    
+    // Atualizar todos os botões "Ver" para o estado inicial
+    updateAllViewButtons();
+}
+
+function toggleInvoiceFilter(button, creditCardId, month, year) {
+    const viewText = button.querySelector('.view-text');
+    
+    if (!viewText) {
+        console.error('View text element not found in button');
+        return;
+    }
+    
+    // Verificar se já existe um filtro ativo para este cartão
+    const isCurrentlyFiltered = currentFilters.credit_card_id === creditCardId && 
+                               currentMonth === month && 
+                               currentYear === year;
+    
+    if (isCurrentlyFiltered) {
+        // Limpar filtros
+        clearAllFilters();
+        // Atualizar todos os botões "Ver" para o estado inicial
+        updateAllViewButtons();
+        showToast('Filtros removidos', 'info');
+    } else {
+        // Aplicar filtro
+        viewInvoiceTransactions(creditCardId, month, year);
+        // Atualizar todos os botões "Ver" para refletir o estado atual
+        updateAllViewButtons(creditCardId, month, year);
+    }
+}
+
+function updateAllViewButtons(activeCreditCardId = null, activeMonth = null, activeYear = null) {
+    const viewButtons = document.querySelectorAll('.btn-view-transactions');
+    
+    viewButtons.forEach(button => {
+        const viewText = button.querySelector('.view-text');
+        if (viewText) {
+            // Se não há filtro ativo, todos os botões mostram "Ver"
+            if (!activeCreditCardId) {
+                viewText.textContent = 'Ver';
+                button.title = 'Ver Transações';
+            } else {
+                // Verificar se este botão corresponde ao filtro ativo
+                const buttonCreditCardId = button.getAttribute('data-credit-card-id');
+                const buttonMonth = button.getAttribute('data-month');
+                const buttonYear = button.getAttribute('data-year');
+                
+                if (buttonCreditCardId == activeCreditCardId && 
+                    buttonMonth == activeMonth && 
+                    buttonYear == activeYear) {
+                    viewText.textContent = 'Limpar Filtro';
+                    button.title = 'Limpar Filtro';
+                } else {
+                    viewText.textContent = 'Ver';
+                    button.title = 'Ver Transações';
+                }
+            }
+        }
+    });
+}
+
+
+
  function viewInvoiceTransactions(creditCardId, month, year) {
     // Aplicar filtro para mostrar apenas transações do cartão específico no mês
     const accountFilter = document.getElementById('filter-account');
@@ -1188,6 +1284,18 @@ function renderTransactions(transactions) {
                 categoryBadgeEl.classList.add('bg-green-100', 'text-green-800', 'dark:bg-green-900', 'dark:text-green-200');
             } else {
                 categoryBadgeEl.classList.add('bg-red-100', 'text-red-800', 'dark:bg-red-900', 'dark:text-red-200');
+            }
+        }
+        
+        // Badge de conta/cartão - só mostrar quando não há filtro ativo
+        const accountBadgeEl = card.querySelector('.transaction-account-badge');
+        if (accountBadgeEl) {
+            const hasActiveFilter = currentFilters.credit_card_id;
+            if (!hasActiveFilter && (transaction.bank || transaction.credit_card)) {
+                accountBadgeEl.textContent = getAccountName(transaction);
+                accountBadgeEl.classList.remove('hidden');
+            } else {
+                accountBadgeEl.classList.add('hidden');
             }
         }
         
@@ -2501,6 +2609,63 @@ document.addEventListener('click', function(event) {
 
 .invoices-section {
     margin-bottom: 32px;
+}
+
+/* Estilos para detalhes expansíveis da fatura */
+.invoice-details {
+    background: rgba(255, 255, 255, 0.1);
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    margin-top: 16px;
+    border-radius: 8px;
+    transition: all 0.3s ease-in-out;
+    overflow: hidden;
+}
+
+.invoice-details.hidden {
+    max-height: 0;
+    padding: 0;
+    margin-top: 0;
+    opacity: 0;
+}
+
+.invoice-details:not(.hidden) {
+    max-height: 500px;
+    padding: 16px;
+    opacity: 1;
+}
+
+.chevron-icon {
+    transition: transform 0.3s ease-in-out;
+}
+
+.btn-toggle-details {
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-toggle-details:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.invoice-transactions-list {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-bottom: 12px;
+}
+
+.invoice-categories-summary {
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    padding-top: 12px;
+}
+
+/* Dark mode adjustments */
+.dark .invoice-details {
+    background: rgba(0, 0, 0, 0.2);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dark .invoice-categories-summary {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .invoices-title {

@@ -141,10 +141,11 @@
                     <span class="w-2 h-2 bg-blue-400 rounded-full mr-1.5"></span>
                     Finalizado
                 </a>
-                <a href="{{ route('orcamentos.index', ['status' => 'pago'] + request()->except('status')) }}" 
-                   class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-full transition-colors duration-200 {{ request('status') == 'pago' ? 'bg-purple-500 text-white' : 'bg-purple-100 text-purple-700 hover:bg-purple-200 dark:bg-purple-900 dark:text-purple-300 dark:hover:bg-purple-800' }}">
+
+                <a href="{{ route('orcamentos.index', ['status' => 'quitado'] + request()->except('status')) }}" 
+                   class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-full transition-colors duration-200 {{ request('status') == 'quitado' ? 'bg-purple-500 text-white' : 'bg-purple-100 text-purple-700 hover:bg-purple-200 dark:bg-purple-900 dark:text-purple-300 dark:hover:bg-purple-800' }}">
                     <span class="w-2 h-2 bg-purple-400 rounded-full mr-1.5"></span>
-                    Pago
+                    Quitado
                 </a>
             </div>
         </div>
@@ -193,7 +194,8 @@
                                 'section' => 'bg-blue-100 dark:bg-blue-800/40',
                                 'text' => 'text-blue-700 dark:text-blue-300'
                             ],
-                            'pago' => [
+
+                            'quitado' => [
                                 'bg' => 'bg-purple-50 dark:bg-purple-900/20',
                                 'border' => 'border-purple-200 dark:border-purple-600',
                                 'hover' => 'hover:bg-purple-50 dark:hover:bg-purple-800/30',
@@ -245,7 +247,8 @@
                                         'aprovado' => 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
                                         'rejeitado' => 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
                                         'finalizado' => 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-                                        'pago' => 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
+                                        'pago' => 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
+                                        'quitado' => 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
                                     ];
                                     $allStatuses = [
                                         'rascunho' => 'Rascunho',
@@ -253,7 +256,7 @@
                                         'aprovado' => 'Aprovado',
                                         'rejeitado' => 'Rejeitado',
                                         'finalizado' => 'Finalizado',
-                                        'pago' => 'Pago'
+                                        'quitado' => 'Quitado'
                                     ];
                                 @endphp
                                 <div class="relative inline-block status-dropdown" data-orcamento-id="{{ $orcamento->id }}">
@@ -276,7 +279,7 @@
                                                         'aprovado' => 'text-green-800 dark:text-green-200',
                                                         'rejeitado' => 'text-red-800 dark:text-red-200',
                                                         'finalizado' => 'text-blue-800 dark:text-blue-200',
-                                                        'pago' => 'text-purple-800 dark:text-purple-200'
+                                                        'quitado' => 'text-purple-800 dark:text-purple-200'
                                                     ];
                                                 @endphp
                                                 <button type="button" 
@@ -375,6 +378,13 @@
                                        title="Editar Orçamento">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                        </svg>
+                                    </a>
+                                    <a href="{{ route('orcamentos.historico.index', $orcamento) }}" 
+                                       class="p-2 rounded-lg text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 transition-all duration-200 hover:bg-purple-50 dark:hover:bg-purple-900/20" 
+                                       title="Histórico do Projeto">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                         </svg>
                                     </a>
                                 </div>
@@ -639,7 +649,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Function to update orcamento status
 function updateOrcamentoStatus(orcamentoId, newStatus, dropdownElement) {
-    fetch(`/orcamentos/${orcamentoId}/status`, {
+    fetch(`/orcamentos/${orcamentoId}/update-status`, {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
@@ -695,7 +705,7 @@ function updateBadgeDisplay(dropdownElement, newStatus) {
         'aprovado': 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
         'rejeitado': 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
         'finalizado': 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-        'pago': 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
+        'quitado': 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
     };
     const statusLabels = {
         'rascunho': 'Rascunho',
@@ -703,7 +713,7 @@ function updateBadgeDisplay(dropdownElement, newStatus) {
         'aprovado': 'Aprovado',
         'rejeitado': 'Rejeitado',
         'finalizado': 'Finalizado',
-        'pago': 'Pago'
+        'quitado': 'Quitado'
     };
     
     // Remove all status classes
@@ -775,7 +785,7 @@ function updateCardColors(dropdownElement, newStatus) {
             'section': 'bg-blue-100 dark:bg-blue-800/40',
             'text': 'text-blue-700 dark:text-blue-300'
         },
-        'pago': {
+        'quitado': {
             'bg': 'bg-purple-50 dark:bg-purple-900/20',
             'border': 'border-purple-200 dark:border-purple-600',
             'hover': 'hover:bg-purple-50 dark:hover:bg-purple-800/30',

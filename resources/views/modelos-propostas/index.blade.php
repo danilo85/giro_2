@@ -120,7 +120,33 @@
         </div>
     </div>
     
+    <!-- Filtros -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 mb-6">
+        <!-- Filtro de busca completo -->
+        <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+            <div class="flex items-center gap-3">
+                <div class="flex-1 relative">
+                    <input type="text" 
+                           id="search" 
+                           name="search" 
+                           value="{{ request('search') }}"
+                           placeholder="Buscar por cliente, título ou autor..."
+                           class="w-full pl-10 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
+                    <svg class="absolute left-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    @if(request()->filled('search'))
+                        <button type="button" id="clearSearch" class="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    @endif
+                </div>
 
+            </div>
+        </div>
+      </div>
     
     <!-- Models Grid -->
     @if($modelos->count() > 0)
@@ -507,30 +533,69 @@ document.addEventListener('keydown', function(event) {
             });
         }
         
-        // Search functionality
+        // Search functionality - versão melhorada
         if (searchInput) {
-            searchInput.addEventListener('input', function() {
-                const searchTerm = this.value.toLowerCase();
+            let searchTimeout;
+            
+            function filterModels() {
+                const searchTerm = searchInput.value.toLowerCase().trim();
                 const modelCards = document.querySelectorAll('.modelo-card');
+                let visibleCount = 0;
                 
                 if (modelCards.length > 0) {
                     modelCards.forEach(card => {
                         const modelName = card.querySelector('.modelo-name');
                         const modelCategory = card.querySelector('.modelo-category');
+                        const modelDescription = card.querySelector('.model-description');
                         
                         if (modelName && modelCategory) {
                             const nameText = modelName.textContent.toLowerCase();
                             const categoryText = modelCategory.textContent.toLowerCase();
+                            const descriptionText = modelDescription ? modelDescription.textContent.toLowerCase() : '';
                             
-                            if (nameText.includes(searchTerm) || categoryText.includes(searchTerm)) {
+                            const isVisible = nameText.includes(searchTerm) || 
+                                            categoryText.includes(searchTerm) || 
+                                            descriptionText.includes(searchTerm);
+                            
+                            if (isVisible) {
                                 card.style.display = '';
+                                visibleCount++;
                             } else {
                                 card.style.display = 'none';
                             }
                         }
                     });
                 }
+                
+                // Mostrar/ocultar botão de limpar
+                const clearButton = document.getElementById('clearSearch');
+                if (clearButton) {
+                    if (searchTerm) {
+                        clearButton.classList.remove('hidden');
+                    } else {
+                        clearButton.classList.add('hidden');
+                    }
+                }
+            }
+            
+            // Busca com debounce para melhor performance
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(filterModels, 300);
             });
+            
+            // Busca instantânea ao pressionar Enter
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    clearTimeout(searchTimeout);
+                    filterModels();
+                }
+            });
+            
+            // Inicializar busca se houver valor no campo
+            if (searchInput.value.trim()) {
+                filterModels();
+            }
         }
     });
 </script>

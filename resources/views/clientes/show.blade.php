@@ -276,6 +276,125 @@
         </div>
     </div>
     
+    <!-- Portfólio do Cliente -->
+    <div class="mt-8">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                        </svg>
+                        Portfólio
+                    </h3>
+                    <a href="{{ route('portfolio.works.create', ['cliente_id' => $cliente->id]) }}" 
+                       class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors duration-200">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        Novo Trabalho
+                    </a>
+                </div>
+
+                @php
+                    $portfolioWorks = $cliente->portfolioWorks()->with(['category', 'images'])->latest()->take(6)->get();
+                @endphp
+
+                @if($portfolioWorks->count() > 0)
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+                        @foreach($portfolioWorks as $work)
+                            <div class="group relative bg-gray-50 dark:bg-gray-700 rounded-lg overflow-hidden hover:shadow-md transition-shadow duration-200">
+                                @if($work->featured_image)
+                                    <div class="aspect-w-16 aspect-h-9 bg-gray-200 dark:bg-gray-600">
+                                        <img src="{{ Storage::url($work->featured_image) }}" 
+                                             alt="{{ $work->title }}" 
+                                             class="w-full h-32 object-cover group-hover:scale-105 transition-transform duration-200">
+                                    </div>
+                                @else
+                                    <div class="h-32 bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-800 dark:to-purple-900 flex items-center justify-center">
+                                        <svg class="w-8 h-8 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                        </svg>
+                                    </div>
+                                @endif
+                                
+                                <div class="p-3">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h4 class="font-medium text-gray-900 dark:text-white text-sm truncate">{{ $work->title }}</h4>
+                                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
+                                            @if($work->status === 'published') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300
+                                            @elseif($work->status === 'draft') bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300
+                                            @else bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300 @endif">
+                                            {{ ucfirst($work->status) }}
+                                        </span>
+                                    </div>
+                                    
+                                    @if($work->category)
+                                        <div class="flex items-center mb-2">
+                                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300">
+                                                {{ $work->category->name }}
+                                            </span>
+                                        </div>
+                                    @endif
+                                    
+                                    <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+                                        <span>{{ $work->created_at->format('d/m/Y') }}</span>
+                                        <div class="flex space-x-2">
+                                            <a href="{{ route('portfolio.works.edit', $work) }}" 
+                                               class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                                </svg>
+                                            </a>
+                                            @if($work->status === 'published')
+                                                <a href="{{ route('portfolio.public.work', $work->slug) }}" 
+                                                   target="_blank"
+                                                   class="text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300 transition-colors">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                                    </svg>
+                                                </a>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                    
+                    @if($cliente->portfolioWorks()->count() > 6)
+                        <div class="text-center">
+                            <a href="{{ route('portfolio.works.index', ['cliente_id' => $cliente->id]) }}" 
+                               class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors duration-200">
+                                Ver todos os trabalhos ({{ $cliente->portfolioWorks()->count() }})
+                                <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </a>
+                        </div>
+                    @endif
+                @else
+                    <div class="text-center py-8">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                        </svg>
+                        <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">Nenhum trabalho no portfólio</h3>
+                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Comece criando o primeiro trabalho para este cliente.</p>
+                        <div class="mt-6">
+                            <a href="{{ route('portfolio.works.create', ['cliente_id' => $cliente->id]) }}" 
+                               class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                                <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                </svg>
+                                Criar Primeiro Trabalho
+                            </a>
+                        </div>
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
+    
     <!-- Timeline de Orçamentos do Cliente -->
     @if($cliente->orcamentos->count() > 0)
     <div class="mt-8">

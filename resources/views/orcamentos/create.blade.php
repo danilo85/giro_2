@@ -258,19 +258,11 @@
                                     required
                                     onchange="updateStatusColors(this)"
                                     class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white text-sm appearance-none pr-8
-                                    @if(old('status', 'rascunho') === 'aprovado') border-green-500 bg-green-50 dark:bg-green-900/20
-                                    @elseif(old('status', 'rascunho') === 'analisando') border-yellow-500 bg-yellow-50 dark:bg-yellow-900/20
-                                    @elseif(old('status', 'rascunho') === 'rejeitado') border-red-500 bg-red-50 dark:bg-red-900/20
-                                    @elseif(old('status', 'rascunho') === 'pago') border-purple-500 bg-purple-50 dark:bg-purple-900/20
-                                    @elseif(old('status', 'rascunho') === 'finalizado') border-blue-500 bg-blue-50 dark:bg-blue-900/20
+                                    @if(old('status', 'rascunho') === 'analisando') border-yellow-500 bg-yellow-50 dark:bg-yellow-900/20
                                     @else border-gray-500 bg-gray-50 dark:bg-gray-900/20
                                     @endif @error('status') border-red-500 @enderror">
                                 <option value="rascunho" {{ old('status', 'rascunho') == 'rascunho' ? 'selected' : '' }}>⚪ Rascunho</option>
                                 <option value="analisando" {{ old('status') == 'analisando' ? 'selected' : '' }}>🟡 Analisando</option>
-                                <option value="rejeitado" {{ old('status') == 'rejeitado' ? 'selected' : '' }}>🔴 Rejeitado</option>
-                                <option value="aprovado" {{ old('status') == 'aprovado' ? 'selected' : '' }}>🟢 Aprovado</option>
-                                <option value="finalizado" {{ old('status') == 'finalizado' ? 'selected' : '' }}>🔵 Finalizado</option>
-                                <option value="pago" {{ old('status') == 'pago' ? 'selected' : '' }}>🟣 Pago</option>
                             </select>
                             <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
                                 <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

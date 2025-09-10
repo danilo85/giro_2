@@ -122,14 +122,13 @@
                                 </label>
                                 <div class="relative">
                                     <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400">R$</span>
-                                    <input type="number" 
+                                    <input type="text" 
                                            id="valor_padrao" 
                                            name="valor_padrao" 
-                                           step="0.01" 
-                                           min="0"
-                                           value="{{ old('valor_padrao', $modeloProposta->valor_padrao) }}"
+                                           value="{{ old('valor_padrao', number_format($modeloProposta->valor_padrao ?? 0, 2, ',', '.')) }}"
                                            placeholder="0,00"
                                            class="w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white @error('valor_padrao') border-red-500 @enderror">
+                                    <input type="hidden" id="valor_padrao_raw" name="valor_padrao_raw" value="{{ old('valor_padrao_raw', $modeloProposta->valor_padrao ?? 0) }}">
                                 </div>
                                 @error('valor_padrao')
                                     <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
@@ -294,6 +293,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const nomeInput = document.getElementById('nome');
     const categoriaInput = document.getElementById('categoria');
     const valorInput = document.getElementById('valor_padrao');
+    const valorRawInput = document.getElementById('valor_padrao_raw');
     const prazoInput = document.getElementById('prazo_padrao');
     const statusSelect = document.getElementById('status');
     
@@ -304,6 +304,40 @@ document.addEventListener('DOMContentLoaded', function() {
     const previewPrazo = document.getElementById('preview-prazo');
     const previewStatus = document.getElementById('preview-status');
     
+    // Função para formatar valor como moeda
+    function formatCurrency(value) {
+        // Remove tudo que não é dígito
+        const numericValue = value.replace(/\D/g, '');
+        
+        if (!numericValue) return '';
+        
+        // Converte para número e divide por 100 para ter os centavos
+        const number = parseInt(numericValue) / 100;
+        
+        // Formata como moeda brasileira
+        return new Intl.NumberFormat('pt-BR', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }).format(number);
+    }
+    
+    // Função para obter valor numérico
+    function getNumericValue(formattedValue) {
+        return formattedValue.replace(/\D/g, '') / 100;
+    }
+    
+    // Event listener para formatação do valor em tempo real
+    valorInput.addEventListener('input', function(e) {
+        const formatted = formatCurrency(e.target.value);
+        e.target.value = formatted;
+        
+        // Atualiza o campo hidden com o valor numérico
+        const numericValue = getNumericValue(formatted);
+        valorRawInput.value = numericValue;
+        
+        updatePreview();
+    });
+    
     // Function to update preview
     function updatePreview() {
         // Update nome
@@ -313,7 +347,7 @@ document.addEventListener('DOMContentLoaded', function() {
         previewCategoria.textContent = categoriaInput.value || '-';
         
         // Update valor
-        const valor = valorInput.value;
+        const valor = valorRawInput.value;
         if (valor) {
             const valorFormatted = new Intl.NumberFormat('pt-BR', {
                 style: 'currency',
@@ -344,7 +378,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Add event listeners for preview updates
     nomeInput.addEventListener('input', updatePreview);
     categoriaInput.addEventListener('input', updatePreview);
-    valorInput.addEventListener('input', updatePreview);
     prazoInput.addEventListener('input', updatePreview);
     statusSelect.addEventListener('change', updatePreview);
     

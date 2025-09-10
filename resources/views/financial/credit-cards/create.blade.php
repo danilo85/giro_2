@@ -39,7 +39,7 @@
                             <label for="nome" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Nome do Cartão *
                             </label>
-                            <input type="text" id="nome" name="nome" value="{{ old('nome') }}" required
+                            <input type="text" id="nome" name="nome_cartao" value="{{ old('nome_cartao') }}" required
                                 class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-colors"
                                 placeholder="Ex: Cartão Nubank, Itaú Mastercard">
                             @error('nome')
@@ -87,16 +87,16 @@
 
                         <!-- Credit Limit -->
                         <div>
-                            <label for="limite" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            <label for="limite_total" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Limite de Crédito *
                             </label>
                             <div class="relative">
                                 <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400">R$</span>
-                                <input type="text" id="limite" name="limite" value="{{ old('limite') }}" required
+                                <input type="text" id="limite_total" name="limite_total" value="{{ old('limite_total') }}" required
                                     class="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-colors"
                                     placeholder="0,00">
                             </div>
-                            @error('limite')
+                            @error('limite_total')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
                         </div>
@@ -122,36 +122,36 @@
                     <div class="space-y-6">
                         <!-- Due Day -->
                         <div>
-                            <label for="dia_vencimento" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Dia do Vencimento
+                            <label for="data_vencimento" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Dia de Vencimento *
                             </label>
-                            <select id="dia_vencimento" name="dia_vencimento"
+                            <select id="data_vencimento" name="data_vencimento"
                                 class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-colors">
                                 <option value="">Selecione o dia</option>
                                 @for($i = 1; $i <= 31; $i++)
-                                    <option value="{{ $i }}" {{ old('dia_vencimento') == $i ? 'selected' : '' }}>{{ $i }}</option>
+                                    <option value="{{ $i }}" {{ old('data_vencimento') == $i ? 'selected' : '' }}>{{ $i }}</option>
                                 @endfor
                             </select>
-                            @error('dia_vencimento')
-                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                            @enderror
+                            @error('data_vencimento')
+                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+            @enderror
                         </div>
 
                         <!-- Closing Day -->
                         <div>
-                            <label for="dia_fechamento" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Dia do Fechamento
+                            <label for="data_fechamento" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Dia de Fechamento *
                             </label>
-                            <select id="dia_fechamento" name="dia_fechamento"
+                            <select id="data_fechamento" name="data_fechamento"
                                 class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-colors">
                                 <option value="">Selecione o dia</option>
                                 @for($i = 1; $i <= 31; $i++)
-                                    <option value="{{ $i }}" {{ old('dia_fechamento') == $i ? 'selected' : '' }}>{{ $i }}</option>
+                                    <option value="{{ $i }}" {{ old('data_fechamento') == $i ? 'selected' : '' }}>{{ $i }}</option>
                                 @endfor
                             </select>
-                            @error('dia_fechamento')
-                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                            @enderror
+                            @error('data_fechamento')
+                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+            @enderror
                         </div>
 
                         <!-- Observations -->
@@ -243,7 +243,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Format currency inputs
-    const currencyInputs = ['limite', 'limite_utilizado'];
+    const currencyInputs = ['limite_total', 'limite_utilizado'];
     currencyInputs.forEach(inputId => {
         const input = document.getElementById(inputId);
         input.addEventListener('input', function(e) {
@@ -257,7 +257,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Update preview on input changes
-    const inputs = ['nome', 'bandeira', 'dia_vencimento', 'dia_fechamento'];
+    const inputs = ['nome', 'bandeira', 'data_vencimento', 'data_fechamento'];
     inputs.forEach(inputId => {
         const input = document.getElementById(inputId);
         input.addEventListener('input', updatePreview);
@@ -268,9 +268,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const nome = document.getElementById('nome').value || 'Nome do Cartão';
         const bandeira = document.getElementById('bandeira').value || 'Bandeira';
         const numero = document.getElementById('numero').value || '•••• •••• •••• ••••';
-        const limite = document.getElementById('limite').value || '0,00';
-        const diaVencimento = document.getElementById('dia_vencimento').value;
-        const diaFechamento = document.getElementById('dia_fechamento').value;
+        const limite = document.getElementById('limite_total').value || '0,00';
+        const diaVencimento = document.getElementById('data_vencimento').value;
+            const diaFechamento = document.getElementById('data_fechamento').value;
 
         document.getElementById('preview-name').textContent = nome;
         document.getElementById('preview-brand').textContent = bandeira;
@@ -295,12 +295,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Form validation
     document.getElementById('credit-card-form').addEventListener('submit', function(e) {
-        const limite = parseFloat(document.getElementById('limite').value.replace(/\./g, '').replace(',', '.'));
-        const limiteUtilizado = parseFloat(document.getElementById('limite_utilizado').value.replace(/\./g, '').replace(',', '.'));
+        // Convert formatted values to decimal format for backend
+        const limiteInput = document.getElementById('limite_total');
+        const limiteUtilizadoInput = document.getElementById('limite_utilizado');
+        const limiteValue = limiteInput.value.replace(/\./g, '').replace(',', '.');
+        const limiteUtilizadoValue = limiteUtilizadoInput.value.replace(/\./g, '').replace(',', '.');
+        
+        // Validate numeric values
+        const limite = parseFloat(limiteValue) || 0;
+        const limiteUtilizado = parseFloat(limiteUtilizadoValue) || 0;
 
         if (limiteUtilizado > limite) {
             e.preventDefault();
             alert('O limite utilizado não pode ser maior que o limite total do cartão.');
+            return false;
+        }
+
+        const diaVencimento = parseInt(document.getElementById('data_vencimento').value);
+            const diaFechamento = parseInt(document.getElementById('data_fechamento').value);
+        
+        if (diaFechamento && diaVencimento && diaFechamento >= diaVencimento) {
+            e.preventDefault();
+            alert('O dia de fechamento deve ser anterior ao dia de vencimento.');
             return false;
         }
 
@@ -310,6 +326,10 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('O número do cartão deve ter entre 13 e 19 dígitos.');
             return false;
         }
+        
+        // Set the decimal values for form submission
+        limiteInput.value = limiteValue;
+        limiteUtilizadoInput.value = limiteUtilizadoValue;
     });
 
     // Initialize preview

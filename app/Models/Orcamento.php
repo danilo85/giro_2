@@ -45,6 +45,7 @@ class Orcamento extends Model
     const STATUS_APROVADO = 'aprovado';
     const STATUS_FINALIZADO = 'finalizado';
     const STATUS_PAGO = 'pago';
+    const STATUS_QUITADO = 'quitado';
 
     public static function getStatusOptions()
     {
@@ -54,7 +55,8 @@ class Orcamento extends Model
             self::STATUS_REJEITADO => 'Rejeitado',
             self::STATUS_APROVADO => 'Aprovado',
             self::STATUS_FINALIZADO => 'Finalizado',
-            self::STATUS_PAGO => 'Pago'
+            self::STATUS_PAGO => 'Pago',
+            self::STATUS_QUITADO => 'Quitado'
         ];
     }
 
@@ -135,6 +137,14 @@ class Orcamento extends Model
     public function logos(): HasMany
     {
         return $this->hasMany(OrcamentoFile::class)->where('categoria', 'logo');
+    }
+
+    /**
+     * Relacionamento com Portfolio Work
+     */
+    public function portfolioWork()
+    {
+        return $this->hasOne(PortfolioWork::class, 'orcamento_id');
     }
 
     /**

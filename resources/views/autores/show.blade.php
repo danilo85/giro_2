@@ -303,6 +303,127 @@
     </div>
     @endif
     
+    <!-- Portfólio do Autor -->
+    <div class="mt-8">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
+                <svg class="w-6 h-6 mr-3 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                </svg>
+                Portfólio
+            </h2>
+            <a href="{{ route('portfolio.works.create', ['autor_id' => $autor->id]) }}" 
+               class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors duration-200">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+                Novo Trabalho
+            </a>
+        </div>
+
+        @php
+            $portfolioWorks = $autor->portfolioWorks()->with(['category', 'images', 'client'])->latest()->take(6)->get();
+        @endphp
+
+        @if($portfolioWorks->count() > 0)
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+                @foreach($portfolioWorks as $work)
+                    <div class="group bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-md transition-shadow duration-200">
+                        @if($work->featured_image)
+                            <div class="aspect-w-16 aspect-h-9 bg-gray-200 dark:bg-gray-600">
+                                <img src="{{ Storage::url($work->featured_image) }}" 
+                                     alt="{{ $work->title }}" 
+                                     class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-200">
+                            </div>
+                        @else
+                            <div class="h-48 bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-800 dark:to-purple-900 flex items-center justify-center">
+                                <svg class="w-12 h-12 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                            </div>
+                        @endif
+                        
+                        <div class="p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="font-semibold text-gray-900 dark:text-white text-lg truncate">{{ $work->title }}</h3>
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
+                                    @if($work->status === 'published') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300
+                                    @elseif($work->status === 'draft') bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300
+                                    @else bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300 @endif">
+                                    {{ ucfirst($work->status) }}
+                                </span>
+                            </div>
+                            
+                            @if($work->excerpt)
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2">{{ $work->excerpt }}</p>
+                            @endif
+                            
+                            <div class="flex items-center justify-between mb-3">
+                                @if($work->category)
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300">
+                                        {{ $work->category->name }}
+                                    </span>
+                                @endif
+                                
+                                @if($work->client)
+                                    <span class="text-xs text-gray-500 dark:text-gray-400">{{ $work->client->nome }}</span>
+                                @endif
+                            </div>
+                            
+                            <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+                                <span>{{ $work->created_at->format('d/m/Y') }}</span>
+                                <div class="flex space-x-2">
+                                    <a href="{{ route('portfolio.works.edit', $work) }}" 
+                                       class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                        </svg>
+                                    </a>
+                                    @if($work->status === 'published')
+                                        <a href="{{ route('portfolio.public.work', $work->slug) }}" 
+                                           target="_blank"
+                                           class="text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300 transition-colors">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                            </svg>
+                                        </a>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+            
+            @if($autor->portfolioWorks()->count() > 6)
+                <div class="text-center">
+                    <a href="{{ route('portfolio.works.index', ['autor_id' => $autor->id]) }}" 
+                       class="inline-flex items-center px-6 py-3 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors duration-200">
+                        Ver todos os trabalhos no portfólio ({{ $autor->portfolioWorks()->count() }})
+                        <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </a>
+                </div>
+            @endif
+        @else
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-8 text-center">
+                <svg class="mx-auto h-16 w-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                </svg>
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Nenhum trabalho no portfólio</h3>
+                <p class="text-gray-500 dark:text-gray-400 mb-6">Este autor ainda não tem trabalhos publicados no portfólio.</p>
+                <a href="{{ route('portfolio.works.create', ['autor_id' => $autor->id]) }}" 
+                   class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                    <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                    Criar Primeiro Trabalho
+                </a>
+            </div>
+        @endif
+    </div>
+    
     <!-- Lista de Trabalhos -->
     <div class="mt-8">
         <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Trabalhos Realizados</h2>

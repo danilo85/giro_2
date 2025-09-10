@@ -48,6 +48,14 @@ class Cliente extends Model
     }
 
     /**
+     * Relacionamento com Portfolio Works
+     */
+    public function portfolioWorks(): HasMany
+    {
+        return $this->hasMany(PortfolioWork::class, 'client_id');
+    }
+
+    /**
      * Scope para filtrar por usuário
      */
     public function scopeForUser($query, $userId)

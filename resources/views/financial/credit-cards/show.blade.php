@@ -81,11 +81,11 @@
                     <div class="flex justify-between items-center">
                         <div>
                             <p class="text-xs opacity-80">Vencimento</p>
-                            <p class="text-sm font-medium">{{ $creditCard->dia_vencimento ?: '--' }}</p>
+                            <p class="text-sm font-medium">{{ $creditCard->data_vencimento ?: '--' }}</p>
                         </div>
                         <div>
                             <p class="text-xs opacity-80">Fechamento</p>
-                            <p class="text-sm font-medium">{{ $creditCard->dia_fechamento ?: '--' }}</p>
+                            <p class="text-sm font-medium">{{ $creditCard->data_fechamento ?: '--' }}</p>
                         </div>
                         <div class="text-right">
                             <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {{ $creditCard->ativo ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
@@ -165,12 +165,12 @@
                         
                         <div>
                             <label class="block text-sm font-medium text-gray-500 dark:text-gray-400">Dia do Vencimento</label>
-                            <p class="text-gray-900 dark:text-white font-medium">{{ $creditCard->dia_vencimento ?: 'Não definido' }}</p>
+                            <p class="text-gray-900 dark:text-white font-medium">{{ $creditCard->data_vencimento ?: 'Não definido' }}</p>
                         </div>
                         
                         <div>
                             <label class="block text-sm font-medium text-gray-500 dark:text-gray-400">Dia do Fechamento</label>
-                            <p class="text-gray-900 dark:text-white font-medium">{{ $creditCard->dia_fechamento ?: 'Não definido' }}</p>
+                            <p class="text-gray-900 dark:text-white font-medium">{{ $creditCard->data_fechamento ?: 'Não definido' }}</p>
                         </div>
                     </div>
                 </div>
@@ -235,13 +235,13 @@
             @endif
 
             <!-- Next Due Date -->
-            @if($creditCard->dia_vencimento)
+            @if($creditCard->data_vencimento)
             @php
                 $nextDueDate = \Carbon\Carbon::now();
-                if ($nextDueDate->day > $creditCard->dia_vencimento) {
+                if ($nextDueDate->day > $creditCard->data_vencimento) {
                     $nextDueDate->addMonth();
                 }
-                $nextDueDate->day = $creditCard->dia_vencimento;
+                $nextDueDate->day = $creditCard->data_vencimento;
                 $daysUntilDue = $nextDueDate->diffInDays(\Carbon\Carbon::now());
             @endphp
             

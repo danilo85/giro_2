@@ -47,6 +47,17 @@ class PagamentoController extends Controller
 
         $pagamentos = $query->paginate(15);
 
+        // Agrupar pagamentos por orçamento_id para efeito de cartas empilhadas
+        $pagamentosAgrupados = collect();
+        foreach ($pagamentos->groupBy('orcamento_id') as $orcamentoId => $gruposPagamentos) {
+            $pagamentosAgrupados->push([
+                'orcamento_id' => $orcamentoId,
+                'pagamentos' => $gruposPagamentos,
+                'count' => $gruposPagamentos->count(),
+                'total_valor' => $gruposPagamentos->sum('valor')
+            ]);
+        }
+
         // Carregar orçamentos para o filtro
         $orcamentos = Orcamento::whereHas('cliente', function($q) {
             $q->where('user_id', Auth::id());
@@ -73,7 +84,7 @@ class PagamentoController extends Controller
         
         $totalPagamentos = $baseQuery->count();
 
-        return view('pagamentos.index', compact('pagamentos', 'orcamentos', 'totalRecebido', 'totalMes', 'totalCartao', 'totalPix', 'totalPagamentos'));
+        return view('pagamentos.index', compact('pagamentos', 'pagamentosAgrupados', 'orcamentos', 'totalRecebido', 'totalMes', 'totalCartao', 'totalPix', 'totalPagamentos'));
     }
 
     /**

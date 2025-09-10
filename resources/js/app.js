@@ -59,6 +59,22 @@ Alpine.store('sidebar', {
     }
 });
 
+// Initialize modal store
+Alpine.store('modal', {
+    show: false,
+    name: null,
+    
+    open(modalName) {
+        this.name = modalName;
+        this.show = true;
+    },
+    
+    close() {
+        this.show = false;
+        this.name = null;
+    }
+});
+
 Alpine.start();
 
 // Theme management

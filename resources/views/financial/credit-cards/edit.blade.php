@@ -124,10 +124,10 @@
                     <div class="space-y-6">
                         <!-- Due Day -->
                         <div>
-                            <label for="dia_vencimento" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Dia do Vencimento
+                            <label for="data_vencimento" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Dia de Vencimento *
                             </label>
-                            <select id="data_vencimento" name="data_vencimento"
+                            <select id="data_vencimento" name="data_vencimento" required
                                 class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-colors">
                                 <option value="">Selecione o dia</option>
                                 @for($i = 1; $i <= 31; $i++)
@@ -141,10 +141,10 @@
 
                         <!-- Closing Day -->
                         <div>
-                            <label for="dia_fechamento" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Dia do Fechamento
+                            <label for="data_fechamento" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Dia de Fechamento *
                             </label>
-                            <select id="data_fechamento" name="data_fechamento"
+                            <select id="data_fechamento" name="data_fechamento" required
                                 class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-colors">
                                 <option value="">Selecione o dia</option>
                                 @for($i = 1; $i <= 31; $i++)

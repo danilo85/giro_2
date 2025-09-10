@@ -12,14 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('facebook_url')->nullable()->after('assinatura_digital');
-            $table->string('instagram_url')->nullable()->after('facebook_url');
-            $table->string('twitter_url')->nullable()->after('instagram_url');
-            $table->string('linkedin_url')->nullable()->after('twitter_url');
-            $table->string('youtube_url')->nullable()->after('linkedin_url');
-            $table->string('tiktok_url')->nullable()->after('youtube_url');
-            $table->string('whatsapp_url')->nullable()->after('tiktok_url');
-            $table->string('website_url')->nullable()->after('whatsapp_url');
+            $table->string('facebook_url')->nullable();
+            $table->string('instagram_url')->nullable();
+            $table->string('twitter_url')->nullable();
+            $table->string('linkedin_url')->nullable();
+            $table->string('youtube_url')->nullable();
+            $table->string('tiktok_url')->nullable();
+            $table->string('whatsapp_url')->nullable();
+            $table->string('website_url')->nullable();
         });
     }
 

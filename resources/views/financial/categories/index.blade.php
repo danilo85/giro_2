@@ -92,29 +92,29 @@
     </div>
 
 
-    @if($categories->count() > 0)
-        <!-- Categories Grid -->
-        <div id="categories-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            <!-- Loading State -->
-            <div class="col-span-full flex items-center justify-center py-12">
-                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                <span class="ml-2 text-gray-600 dark:text-gray-400">Carregando categorias...</span>
-            </div>
+    <!-- Categories Grid -->
+    <div id="categories-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <!-- Loading State -->
+        <div class="col-span-full flex items-center justify-center py-12">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <span class="ml-2 text-gray-600 dark:text-gray-400">Carregando categorias...</span>
         </div>
-        
-        <!-- No Results State -->
-        <div id="no-results" class="hidden text-center py-12">
-            <div class="w-24 h-24 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                </svg>
-            </div>
-            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">Nenhuma categoria encontrada</h3>
-            <p class="text-gray-600 dark:text-gray-400 mb-8 max-w-md mx-auto">Não encontramos categorias que correspondam à sua pesquisa. Tente usar termos diferentes.</p>
+    </div>
+    
+    <!-- No Results State -->
+    <div id="no-results" class="hidden text-center py-12">
+        <div class="w-24 h-24 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
         </div>
-    @else
+        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">Nenhuma categoria encontrada</h3>
+        <p class="text-gray-600 dark:text-gray-400 mb-8 max-w-md mx-auto">Não encontramos categorias que correspondam à sua pesquisa. Tente usar termos diferentes.</p>
+    </div>
+
+    @if($categories->count() == 0)
         <!-- Empty State -->
-        <div class="text-center py-12">
+        <div id="empty-state" class="text-center py-12">
             <div class="w-24 h-24 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 rounded-full flex items-center justify-center mx-auto mb-6">
                 <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
@@ -488,6 +488,7 @@ function updateTypeCounters(deletedCategoryType) {
 function renderCategories() {
     const container = document.getElementById('categories-container');
     const template = document.getElementById('category-card-template');
+    const emptyState = document.getElementById('empty-state');
     
     if (!container) {
         console.error('Container categories-container not found');
@@ -505,26 +506,18 @@ function renderCategories() {
     // Clear container
     container.innerHTML = '';
     
-    // Show empty state if no categories
+    // Show/hide empty state
     if (categories.length === 0) {
-        container.innerHTML = `
-            <div class="col-span-full text-center py-12">
-                <div class="w-24 h-24 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
-                    </svg>
-                </div>
-                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">Nenhuma categoria encontrada</h3>
-                <p class="text-gray-600 dark:text-gray-400 mb-8 max-w-md mx-auto">Comece criando sua primeira categoria para organizar suas receitas e despesas de forma eficiente.</p>
-                <a href="/financial/categories/create" class="inline-flex items-center px-6 py-3 bg-gradient-to-br from-emerald-500 to-green-600 text-white rounded-lg hover:shadow-lg transition-all duration-200 group">
-                    <svg class="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                    </svg>
-                    Criar Primeira Categoria
-                </a>
-            </div>
-        `;
+        container.style.display = 'none';
+        if (emptyState) {
+            emptyState.style.display = 'block';
+        }
         return;
+    } else {
+        container.style.display = 'grid';
+        if (emptyState) {
+            emptyState.style.display = 'none';
+        }
     }
     
     // Render each category
@@ -729,11 +722,16 @@ function confirmDelete() {
             'Content-Type': 'application/json'
         }
     })
-    .then(response => {
+    .then(async response => {
+        const data = await response.json();
+        
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            // Capturar mensagem específica do servidor para erros 422 e outros
+            const errorMessage = data.message || `HTTP error! status: ${response.status}`;
+            throw new Error(errorMessage);
         }
-        return response.json();
+        
+        return data;
     })
     .then(data => {
         if (data.success) {
@@ -772,7 +770,7 @@ function confirmDelete() {
     .catch(error => {
         console.error('Error deleting category:', error);
         hideModal();
-        showToast('Erro ao excluir categoria: ' + error.message, 'error');
+        showToast(error.message, 'error');
     })
     .finally(() => {
         deleteSpinner.classList.add('hidden');

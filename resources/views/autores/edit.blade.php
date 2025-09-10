@@ -134,6 +134,8 @@
                                        value="{{ old('telefone', $autor->telefone) }}"
                                        placeholder="(11) 99999-9999"
                                        onkeyup="updatePreview()"
+                                       oninput="applyPhoneMask(this)"
+                                       maxlength="15"
                                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white @error('telefone') border-red-500 @enderror">
                                 @error('telefone')
                                     <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
@@ -150,6 +152,8 @@
                                        value="{{ old('whatsapp', $autor->whatsapp) }}"
                                        placeholder="(11) 99999-9999"
                                        onkeyup="updatePreview()"
+                                       oninput="applyPhoneMask(this)"
+                                       maxlength="15"
                                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white @error('whatsapp') border-red-500 @enderror">
                                 @error('whatsapp')
                                     <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
@@ -318,6 +322,17 @@ function previewAvatar(input) {
         }
         reader.readAsDataURL(input.files[0]);
     }
+}
+
+function applyPhoneMask(input) {
+    let value = input.value.replace(/\D/g, '');
+    
+    if (value.length <= 11) {
+        value = value.replace(/(\d{2})(\d)/, '($1) $2');
+        value = value.replace(/(\d{4,5})(\d{4})$/, '$1-$2');
+    }
+    
+    input.value = value;
 }
 
 function updatePreview() {

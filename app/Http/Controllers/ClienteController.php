@@ -191,6 +191,36 @@ class ClienteController extends Controller
     }
 
     /**
+     * Busca AJAX para clientes
+     */
+    public function search(Request $request)
+    {
+        $search = $request->get('search', '');
+        
+        $query = Cliente::forUser(Auth::id())->withCount('orcamentos')
+            ->with(['orcamentos' => function($query) {
+                $query->select('cliente_id', 'valor_total');
+            }])
+            ->orderBy('nome');
+
+        if (!empty($search)) {
+            $query->where(function($q) use ($search) {
+                $q->where('nome', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('pessoa_contato', 'like', "%{$search}%")
+                  ->orWhere('telefone', 'like', "%{$search}%");
+            });
+        }
+
+        $clientes = $query->paginate(15);
+        
+        return response()->json([
+            'html' => view('clientes.partials.lista', compact('clientes'))->render(),
+            'pagination' => $clientes->links()->render()
+        ]);
+    }
+
+    /**
      * Gerar token para extrato público do cliente
      */
     public function gerarTokenExtrato(Cliente $cliente)

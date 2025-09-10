@@ -292,9 +292,13 @@ document.getElementById('saldo').addEventListener('input', function(e) {
     e.target.value = value;
 });
 
-// Format agency and account inputs
+// Format agency input - maximum 4 digits
 document.getElementById('agencia').addEventListener('input', function(e) {
-    e.target.value = e.target.value.replace(/\D/g, '');
+    let value = e.target.value.replace(/\D/g, '');
+    if (value.length > 4) {
+        value = value.substring(0, 4);
+    }
+    e.target.value = value;
 });
 
 // Debug: Add form submission listener
@@ -319,11 +323,23 @@ document.querySelector('form').addEventListener('submit', function(e) {
     }
 });
 
+// Format account input - number with check digit (format: 12345-6)
 document.getElementById('conta').addEventListener('input', function(e) {
-    let value = e.target.value.replace(/\D/g, '');
-    if (value.length > 1) {
+    let value = e.target.value.replace(/[^\d-]/g, '');
+    
+    // Remove existing hyphens to reformat
+    value = value.replace(/-/g, '');
+    
+    // Add hyphen before the last digit if there are at least 2 digits
+    if (value.length >= 2) {
         value = value.slice(0, -1) + '-' + value.slice(-1);
     }
+    
+    // Limit to reasonable account number length (max 10 digits + hyphen)
+    if (value.replace(/-/g, '').length > 10) {
+        value = value.substring(0, 11); // 10 digits + 1 hyphen
+    }
+    
     e.target.value = value;
 });
 </script>

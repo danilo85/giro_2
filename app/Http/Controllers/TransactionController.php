@@ -1203,4 +1203,62 @@ class TransactionController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Obter detalhes de uma fatura específica de cartão de crédito
+     */
+    public function getCreditCardInvoiceDetails(Request $request)
+    {
+        $request->validate([
+            'credit_card_id' => 'required|exists:credit_cards,id',
+            'year' => 'required|integer|min:2020|max:2030',
+            'month' => 'required|integer|min:1|max:12'
+        ]);
+        
+        $transactions = Transaction::forUser(Auth::id())
+            ->with(['category'])
+            ->whereNotNull('credit_card_id')
+            ->where('credit_card_id', $request->credit_card_id)
+            ->where('tipo', 'despesa')
+            ->byMonth($request->year, $request->month)
+            ->orderBy('data', 'desc')
+            ->get();
+            
+        // Agrupar por categoria para o resumo
+        $categoriesSummary = $transactions->groupBy('category_id')
+            ->map(function ($categoryTransactions) {
+                $category = $categoryTransactions->first()->category;
+                return [
+                    'name' => $category->nome ?? 'Sem categoria',
+                    'color' => $category->cor_final ?? '#6B7280',
+                    'total' => $categoryTransactions->sum('valor'),
+                    'count' => $categoryTransactions->count()
+                ];
+            })
+            ->sortByDesc('total')
+            ->values();
+            
+        // Formatar transações
+        $formattedTransactions = $transactions->map(function ($transaction) {
+            return [
+                'id' => $transaction->id,
+                'description' => $transaction->descricao,
+                'amount' => $transaction->valor,
+                'date' => $transaction->data,
+                'status' => $transaction->status,
+                'category_name' => $transaction->category->nome ?? 'Sem categoria',
+                'category_color' => $transaction->category->cor_final ?? '#6B7280'
+            ];
+        });
+        
+        return response()->json([
+            'success' => true,
+            'transactions' => $formattedTransactions,
+            'categories_summary' => $categoriesSummary,
+            'total_amount' => $transactions->sum('valor'),
+            'total_count' => $transactions->count(),
+            'paid_amount' => $transactions->where('status', 'pago')->sum('valor'),
+            'pending_amount' => $transactions->where('status', 'pendente')->sum('valor')
+        ]);
+    }
 }

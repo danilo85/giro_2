@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('clientes', function (Blueprint $table) {
-            $table->string('extrato_token', 64)->nullable()->unique();
-            $table->timestamp('extrato_token_generated_at')->nullable();
+        Schema::table('historico_entries', function (Blueprint $table) {
+            $table->boolean('completed')->default(false)->after('metadata');
         });
     }
 
@@ -22,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('clientes', function (Blueprint $table) {
-            $table->dropColumn(['extrato_token', 'extrato_token_generated_at']);
+        Schema::table('historico_entries', function (Blueprint $table) {
+            $table->dropColumn('completed');
         });
     }
 };

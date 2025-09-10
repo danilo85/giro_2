@@ -146,21 +146,21 @@
                                 </span>
                             @endif
                             
-                            @if($card->dia_vencimento)
+                            @if($card->data_vencimento)
                                 <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
                                     <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                     </svg>
-                                    Vence: {{ $card->dia_vencimento }}
+                                    Vence: {{ $card->data_vencimento }}
                                 </span>
                             @endif
                             
-                            @if($card->dia_fechamento)
+                            @if($card->data_fechamento)
                                 <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200">
                                     <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                     </svg>
-                                    Fecha: {{ $card->dia_fechamento }}
+                                    Fecha: {{ $card->data_fechamento }}
                                 </span>
                             @endif
                         </div>
@@ -293,9 +293,9 @@
     <!-- Floating Action Button -->
     @if($creditCards->count() > 0)
         <div class="fixed bottom-6 right-6">
-            <a href="{{ route('financial.credit-cards.create') }}" class="inline-flex items-center justify-center w-14 h-14 rounded-full shadow-lg hover:shadow-xl hover:bg-green-50 dark:hover:bg-green-900/20 transition-all duration-200" title="Adicionar Novo Cartão">
-                <svg class="w-6 h-6 text-green-500 hover:text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            <a href="{{ route('financial.credit-cards.create') }}" class="inline-flex items-center justify-center w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200" title="Adicionar Novo Cartão">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                 </svg>
             </a>
         </div>
@@ -667,63 +667,6 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Search functionality - removed duplicate function
-        
-        if (shouldShow) {
-            card.style.display = 'flex';
-            visibleCount++;
-        } else {
-            card.style.display = 'none';
-        }
-    });
-    
-    // Show/hide empty state message
-    let noResultsMessage = document.getElementById('noResultsMessage');
-    if (visibleCount === 0 && searchTerm !== '') {
-        if (!noResultsMessage) {
-            noResultsMessage = document.createElement('div');
-            noResultsMessage.id = 'noResultsMessage';
-            noResultsMessage.className = 'col-span-full text-center py-12';
-            noResultsMessage.innerHTML = `
-                <div class="w-24 h-24 mx-auto mb-4 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
-                    <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                    </svg>
-                </div>
-                <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Nenhum cartão encontrado</h3>
-                <p class="text-gray-600 dark:text-gray-400">Tente pesquisar com um termo diferente.</p>
-            `;
-            cardsGrid.appendChild(noResultsMessage);
-        }
-        noResultsMessage.style.display = 'block';
-    } else if (noResultsMessage) {
-        noResultsMessage.style.display = 'none';
-    }
-}
-
-function clearSearch() {
-    document.getElementById('searchInput').value = '';
-    filterCreditCards();
-    document.getElementById('searchInput').focus();
-}
-
-// Search event listeners
-document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('searchInput');
-    const clearButton = document.getElementById('clearSearch');
-    
-    if (searchInput) {
-        searchInput.addEventListener('input', filterCreditCards);
-        searchInput.addEventListener('keyup', function(e) {
-            if (e.key === 'Escape') {
-                clearSearch();
-            }
-        });
-    }
-    
-    if (clearButton) {
-        clearButton.addEventListener('click', clearSearch);
-    }
-});
+// Função de busca já implementada anteriormente no arquivo
 </script>
 @endsection

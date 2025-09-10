@@ -37,11 +37,21 @@ class Autor extends Model
     }
 
     /**
-     * Relacionamento com Orçamentos (many-to-many)
+     * Relacionamento com orçamentos (many-to-many)
      */
-    public function orcamentos(): BelongsToMany
+    public function orcamentos()
     {
         return $this->belongsToMany(Orcamento::class, 'orcamento_autores')
+                    ->withTimestamps();
+    }
+
+    /**
+     * Relacionamento com trabalhos de portfólio (many-to-many)
+     */
+    public function portfolioWorks()
+    {
+        return $this->belongsToMany(PortfolioWork::class, 'portfolio_work_authors', 'author_id', 'portfolio_work_id')
+                    ->withPivot('role')
                     ->withTimestamps();
     }
 

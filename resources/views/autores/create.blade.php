@@ -79,7 +79,7 @@
                                        id="avatar" 
                                        name="avatar" 
                                        accept="image/*"
-                                       onchange="previewAvatar(this)"
+                                       onchange="previewAvatarImage(this)"
                                        class="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900 dark:file:text-blue-300">
                                 @error('avatar')
                                     <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
@@ -133,6 +133,8 @@
                                        value="{{ old('telefone') }}"
                                        placeholder="(11) 99999-9999"
                                        onkeyup="updatePreview()"
+                                       oninput="applyPhoneMask(this)"
+                                       maxlength="15"
                                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white @error('telefone') border-red-500 @enderror">
                                 @error('telefone')
                                     <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
@@ -149,6 +151,8 @@
                                        value="{{ old('whatsapp') }}"
                                        placeholder="(11) 99999-9999"
                                        onkeyup="updatePreview()"
+                                       oninput="applyPhoneMask(this)"
+                                       maxlength="15"
                                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white @error('whatsapp') border-red-500 @enderror">
                                 @error('whatsapp')
                                     <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
@@ -243,26 +247,61 @@
 </div>
 
 <script>
-function previewAvatar(input) {
+function previewAvatarImage(input) {
     if (input.files && input.files[0]) {
+        const file = input.files[0];
+        
+        // Validar tipo de arquivo
+        if (!file.type.startsWith('image/')) {
+            alert('Por favor, selecione apenas arquivos de imagem.');
+            input.value = '';
+            return;
+        }
+        
         const reader = new FileReader();
         reader.onload = function(e) {
-            document.getElementById('avatar-preview').src = e.target.result;
-            document.getElementById('preview-avatar').innerHTML = `<img src="${e.target.result}" class="h-24 w-24 rounded-full object-cover">`;
-        }
-        reader.readAsDataURL(input.files[0]);
+            // Atualizar preview no formulário
+            const avatarPreview = document.getElementById('avatar-preview');
+            if (avatarPreview) {
+                avatarPreview.src = e.target.result;
+            }
+            
+            // Atualizar preview na sidebar
+            const previewAvatar = document.getElementById('preview-avatar');
+            if (previewAvatar) {
+                previewAvatar.innerHTML = `<img src="${e.target.result}" class="h-20 w-20 rounded-full object-cover">`;
+            }
+        };
+        
+        reader.onerror = function() {
+            alert('Erro ao ler o arquivo. Tente novamente.');
+            input.value = '';
+        };
+        
+        reader.readAsDataURL(file);
     }
 }
 
+function applyPhoneMask(input) {
+    let value = input.value.replace(/\D/g, '');
+    
+    if (value.length <= 11) {
+        value = value.replace(/(\d{2})(\d)/, '($1) $2');
+        value = value.replace(/(\d{4,5})(\d{4})$/, '$1-$2');
+    }
+    
+    input.value = value;
+}
+
 function updatePreview() {
-    const nome = document.getElementById('nome').value || 'Nome do Autor';
-    const email = document.getElementById('email').value || 'email@exemplo.com';
+    const nome = document.getElementById('nome').value;
+    const email = document.getElementById('email').value;
     const telefone = document.getElementById('telefone').value;
     const whatsapp = document.getElementById('whatsapp').value;
     const biografia = document.getElementById('biografia').value;
     
-    document.getElementById('preview-nome').textContent = nome;
-    document.getElementById('preview-email').textContent = email;
+    document.getElementById('preview-nome').textContent = nome || 'Nome do Autor';
+    document.getElementById('preview-email').textContent = email || 'email@exemplo.com';
     
     // Telefone
     if (telefone) {
@@ -288,5 +327,10 @@ function updatePreview() {
         document.getElementById('preview-biografia-container').style.display = 'none';
     }
 }
+
+// Inicializar preview na carga da página
+document.addEventListener('DOMContentLoaded', function() {
+    updatePreview();
+});
 </script>
 @endsection

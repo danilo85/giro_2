@@ -264,26 +264,31 @@
         </div>
     @else
         <!-- Empty State -->
-        <div class="text-center py-12">
-            <div class="w-24 h-24 mx-auto mb-4 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
-                <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                </svg>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-12">
+            <div class="text-center">
+                <div class="mx-auto w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-6">
+                    <svg class="w-10 h-10 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">Nenhuma conta bancária cadastrada</h3>
+                <p class="text-gray-500 dark:text-gray-400 mb-8 max-w-md mx-auto">
+                    Comece adicionando sua primeira conta bancária para gerenciar suas finanças e acompanhar seus saldos.
+                </p>
+                <a href="{{ route('financial.banks.create') }}" class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm hover:shadow-md transition-all duration-200">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                    Adicionar Primeira Conta
+                </a>
             </div>
-            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Nenhuma conta bancária cadastrada</h3>
-            <p class="text-gray-600 dark:text-gray-400 mb-6">Comece adicionando sua primeira conta bancária para gerenciar suas finanças.</p>
-            <a href="{{ route('financial.banks.create') }}" class="inline-flex items-center p-2 rounded-lg hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors" title="Adicionar Primeira Conta">
-                <svg class="w-5 h-5 text-green-500 hover:text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                </svg>
-            </a>
         </div>
     @endif
 
     <!-- Floating Action Button -->
     <div class="fixed bottom-6 right-6">
-        <a href="{{ route('financial.banks.create') }}" class="inline-flex items-center justify-center w-14 h-14 rounded-full shadow-lg hover:shadow-xl hover:bg-green-50 dark:hover:bg-green-900/20 transition-all duration-200" title="Adicionar Nova Conta">
-            <svg class="w-6 h-6 text-green-500 hover:text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <a href="{{ route('financial.banks.create') }}" class="inline-flex items-center justify-center w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200" title="Adicionar Nova Conta">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
             </svg>
         </a>
