@@ -14,41 +14,14 @@
     <!-- Header -->
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
         <div class="flex items-center space-x-3">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Categorias</h1>
-                <p class="text-gray-600 dark:text-gray-400 mt-1">Gerencie as categorias de receitas e despesas</p>
-            </div>
-            <!-- Search Toggle Icon -->
-            <button id="search-toggle" class="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-all duration-200" title="Pesquisar categorias">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                </svg>
-            </button>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Categorias</h1>
+            <p class="text-gray-600 dark:text-gray-400 mt-1">Gerencie as categorias de receitas e despesas</p>
+        </div>
+
         </div>
     </div>
     
-    <!-- Expandable Search Filter -->
-    <div id="search-container" class="mb-6 hidden">
-        <div class="flex items-center space-x-3 max-w-md">
-            <!-- Search Icon -->
-            <div class="relative flex-1">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                    </svg>
-                </div>
-                <!-- Search Input -->
-                <input type="text" id="category-search" placeholder="Pesquisar por nome da categoria..." 
-                       class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" style="min-width: 300px;">
-            </div>
-            <!-- Clear Button -->
-            <button id="clear-search" class="px-3 py-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors duration-200 hidden" title="Limpar pesquisa">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-            </button>
-        </div>
-    </div>
+
     <!-- Summary Cards -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div class="bg-gradient-to-br from-emerald-500 to-green-600 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 p-6 text-white">
@@ -94,6 +67,29 @@
         </div>
     </div>
 
+    <!-- Campo de Pesquisa -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 mb-6">
+        <div class="p-4">
+            <div class="flex items-center gap-3">
+                <div class="flex-1 relative">
+                    <input type="text" 
+                           id="search" 
+                           name="search" 
+                           value="{{ request('search') }}"
+                           placeholder="Buscar por nome da categoria, tipo ou descrição..."
+                           class="w-full pl-10 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
+                    <svg class="absolute left-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    <button type="button" id="clearSearch" class="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600 hidden">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
     @if($categories->count() > 0)
@@ -250,7 +246,6 @@ const iconMapping = {
 document.addEventListener('DOMContentLoaded', function() {
     loadCategories();
     initializeSearch();
-    initializeSearchToggle();
     
     // Close dropdowns when clicking outside
     document.addEventListener('click', function(e) {
@@ -262,46 +257,12 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Initialize search toggle functionality
-function initializeSearchToggle() {
-    const searchToggle = document.getElementById('search-toggle');
-    const searchContainer = document.getElementById('search-container');
-    const searchInput = document.getElementById('category-search');
-    const clearButton = document.getElementById('clear-search');
-    
-    if (!searchToggle || !searchContainer || !searchInput || !clearButton) {
-        console.error('Search toggle elements not found');
-        return;
-    }
-    
-    // Toggle search visibility
-    searchToggle.addEventListener('click', function() {
-        if (searchContainer.classList.contains('hidden')) {
-            searchContainer.classList.remove('hidden');
-            searchInput.focus();
-        } else {
-            searchContainer.classList.add('hidden');
-            searchInput.value = '';
-            clearButton.classList.add('hidden');
-            filterCategories('');
-        }
-    });
-    
-    // Close search on Escape key
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && !searchContainer.classList.contains('hidden')) {
-            searchContainer.classList.add('hidden');
-            searchInput.value = '';
-            clearButton.classList.add('hidden');
-            filterCategories('');
-        }
-    });
-}
+
 
 // Initialize search functionality
 function initializeSearch() {
-    const searchInput = document.getElementById('category-search');
-    const clearButton = document.getElementById('clear-search');
+    const searchInput = document.getElementById('search');
+    const clearButton = document.getElementById('clearSearch');
     
     if (!searchInput || !clearButton) {
         console.error('Search elements not found:', {

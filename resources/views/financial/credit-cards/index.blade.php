@@ -13,46 +13,9 @@
     
     <!-- Header -->
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
-        <div class="flex items-center space-x-3">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Cartões de Crédito</h1>
-                <p class="text-gray-600 dark:text-gray-400 mt-1">Gerencie seus cartões de crédito e acompanhe os limites</p>
-            </div>
-            <!-- Search Toggle Icon -->
-            <button id="search-toggle" class="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-all duration-200" title="Pesquisar cartões de crédito">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                </svg>
-            </button>
-        </div>
-    </div>
-
-    <!-- Expandable Search Filter -->
-    <div id="search-container" class="mb-6 hidden">
-        <div class="flex items-center space-x-3 max-w-md">
-            <!-- Search Icon -->
-            <div class="relative flex-1">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                    </svg>
-                </div>
-                <!-- Search Input -->
-                <input type="text" id="card-search" placeholder="Pesquisar por nome do cartão..." 
-                       class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
-            </div>
-            <!-- Clear Button -->
-            <button id="clear-search" class="px-3 py-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors duration-200 hidden" title="Limpar pesquisa">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-            </button>
-            <!-- Close Search Button -->
-            <button id="close-search" class="px-3 py-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors duration-200" title="Fechar pesquisa">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-            </button>
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Cartões de Crédito</h1>
+            <p class="text-gray-600 dark:text-gray-400 mt-1">Gerencie seus cartões de crédito e acompanhe os limites</p>
         </div>
     </div>
     <!-- Summary Cards -->
@@ -95,6 +58,30 @@
                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"></path>
                     </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Campo de Pesquisa -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 mb-6">
+        <div class="p-4">
+            <div class="flex items-center gap-3">
+                <div class="flex-1 relative">
+                    <input type="text" 
+                           id="search" 
+                           name="search" 
+                           value="{{ request('search') }}"
+                           placeholder="Buscar por nome do cartão, bandeira ou limite..."
+                           class="w-full pl-10 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
+                    <svg class="absolute left-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    <button type="button" id="clearSearch" class="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600 hidden">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
                 </div>
             </div>
         </div>
@@ -368,43 +355,19 @@
 </div>
 
 <script>
-// Initialize search toggle functionality
-function initializeSearchToggle() {
-    const searchToggle = document.getElementById('search-toggle');
-    const searchContainer = document.getElementById('search-container');
-    const closeSearch = document.getElementById('close-search');
-    const searchInput = document.getElementById('card-search');
+// Initialize search functionality
+function initializeSearch() {
+    const searchInput = document.getElementById('search');
+    const clearButton = document.getElementById('clearSearch');
     
-    if (!searchToggle || !searchContainer || !closeSearch || !searchInput) {
-        console.error('Search toggle elements not found');
+    if (!searchInput || !clearButton) {
+        console.error('Search elements not found');
         return;
     }
-    
-    // Toggle search visibility
-    searchToggle.addEventListener('click', function() {
-        searchContainer.classList.remove('hidden');
-        searchInput.focus();
-    });
-    
-    // Close search
-    closeSearch.addEventListener('click', function() {
-        searchContainer.classList.add('hidden');
-        searchInput.value = '';
-        document.getElementById('clear-search').classList.add('hidden');
-        filterCards('');
-    });
-    
-    // Close search on Escape key
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && !searchContainer.classList.contains('hidden')) {
-            closeSearch.click();
-        }
-    });
     
     // Search input event listener
     searchInput.addEventListener('input', function() {
         const searchTerm = this.value.trim();
-        const clearButton = document.getElementById('clear-search');
         
         if (searchTerm.length > 0) {
             clearButton.classList.remove('hidden');
@@ -416,15 +379,12 @@ function initializeSearchToggle() {
     });
     
     // Clear search button
-    const clearButton = document.getElementById('clear-search');
-    if (clearButton) {
-        clearButton.addEventListener('click', function() {
-            searchInput.value = '';
-            this.classList.add('hidden');
-            filterCards('');
-            searchInput.focus();
-        });
-    }
+    clearButton.addEventListener('click', function() {
+        searchInput.value = '';
+        this.classList.add('hidden');
+        filterCards('');
+        searchInput.focus();
+    });
 }
 
 // Filter credit cards based on search term
@@ -690,7 +650,7 @@ function formatCurrency(value) {
 // Update summary on page load
 document.addEventListener('DOMContentLoaded', function() {
     updateStatisticsRealTime();
-    initializeSearchToggle();
+    initializeSearch();
 });
 
 // Add smooth scroll behavior for better UX
@@ -707,16 +667,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Search functionality
-function filterCreditCards() {
-    const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
-    const cardItems = document.querySelectorAll('.credit-card-item[data-card-id]');
-    const cardsGrid = document.getElementById('credit-cards-grid');
-    let visibleCount = 0;
-    
-    cardItems.forEach(card => {
-        const cardName = card.querySelector('h3').textContent.toLowerCase();
-        const shouldShow = cardName.includes(searchTerm);
+// Search functionality - removed duplicate function
         
         if (shouldShow) {
             card.style.display = 'flex';

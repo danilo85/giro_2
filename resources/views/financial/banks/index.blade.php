@@ -14,47 +14,14 @@
     <!-- Header -->
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
         <div class="flex items-center space-x-3">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Contas Bancárias</h1>
-                <p class="text-gray-600 dark:text-gray-400 mt-1">Gerencie suas contas bancárias e acompanhe os saldos</p>
-            </div>
-            <!-- Search Toggle Icon -->
-            <button id="search-toggle" class="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-all duration-200" title="Pesquisar contas bancárias">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                </svg>
-            </button>
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Contas Bancárias</h1>
+            <p class="text-gray-600 dark:text-gray-400 mt-1">Gerencie suas contas bancárias e acompanhe os saldos</p>
+        </div>
         </div>
     </div>
 
-    <!-- Expandable Search Filter -->
-    <div id="search-container" class="mb-6 hidden">
-        <div class="flex items-center space-x-3 max-w-md">
-            <!-- Search Icon -->
-            <div class="relative flex-1">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                    </svg>
-                </div>
-                <!-- Search Input -->
-                <input type="text" id="bank-search" placeholder="Pesquisar por nome do banco..." 
-                       class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
-            </div>
-            <!-- Clear Button -->
-            <button id="clear-search" class="px-3 py-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors duration-200 hidden" title="Limpar pesquisa">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-            </button>
-            <!-- Close Search Button -->
-            <button id="close-search" class="px-3 py-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors duration-200" title="Fechar pesquisa">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-            </button>
-        </div>
-    </div>
+
     <!-- Summary Cards -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div class="bg-gradient-to-br from-emerald-500 to-green-600 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 p-6 text-white">
@@ -95,6 +62,30 @@
                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
                     </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Campo de Pesquisa -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 mb-6">
+        <div class="p-4">
+            <div class="flex items-center gap-3">
+                <div class="flex-1 relative">
+                    <input type="text" 
+                           id="search" 
+                           name="search" 
+                           value="{{ request('search') }}"
+                           placeholder="Buscar por nome do banco, tipo de conta ou agência..."
+                           class="w-full pl-10 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
+                    <svg class="absolute left-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    <button type="button" id="clearSearch" class="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600 {{ request()->filled('search') ? '' : 'hidden' }}">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
                 </div>
             </div>
         </div>
@@ -354,38 +345,66 @@
 
 @push('scripts')
 <script>
-// Initialize search toggle functionality
-function initializeSearchToggle() {
-    const searchToggle = document.getElementById('search-toggle');
-    const searchContainer = document.getElementById('search-container');
-    const closeSearch = document.getElementById('close-search');
-    const searchInput = document.getElementById('bank-search');
+// Initialize search functionality for the new search model
+function initializeSearch() {
+    const searchInput = document.getElementById('search');
+    const clearButton = document.getElementById('clearSearch');
     
-    if (!searchToggle || !searchContainer || !closeSearch || !searchInput) {
-        console.error('Search toggle elements not found');
-        return;
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const value = this.value;
+            filterBanks(value);
+            
+            if (clearButton) {
+                if (value.trim() !== '') {
+                    clearButton.classList.remove('hidden');
+                } else {
+                    clearButton.classList.add('hidden');
+                }
+            }
+        });
+        
+        searchInput.addEventListener('keyup', function(e) {
+            if (e.key === 'Escape') {
+                clearSearch();
+            }
+        });
     }
     
-    // Toggle search visibility
-    searchToggle.addEventListener('click', function() {
-        searchContainer.classList.remove('hidden');
-        searchInput.focus();
-    });
+    if (clearButton) {
+        clearButton.addEventListener('click', clearSearch);
+    }
     
-    // Close search
-    closeSearch.addEventListener('click', function() {
-        searchContainer.classList.add('hidden');
-        searchInput.value = '';
-        document.getElementById('clear-search').classList.add('hidden');
-        filterBanks('');
+    // Initialize status filter links
+    const statusLinks = document.querySelectorAll('.status-filter');
+    statusLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const status = this.getAttribute('data-status');
+            filterByStatus(status);
+        });
     });
+}
+
+// Filter by status function
+function filterByStatus(status) {
+    const params = new URLSearchParams(window.location.search);
     
-    // Close search on Escape key
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && !searchContainer.classList.contains('hidden')) {
-            closeSearch.click();
-        }
-    });
+    if (status && status !== 'todos') {
+        params.set('status', status);
+    } else {
+        params.delete('status');
+    }
+    
+    // Preserve search parameter
+    const searchInput = document.getElementById('bank-search');
+    if (searchInput && searchInput.value) {
+        params.set('search', searchInput.value);
+    }
+    
+    // Redirect to new URL
+    const newUrl = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+    window.location.href = newUrl;
 }
 
 // Filter banks based on search term
@@ -609,29 +628,54 @@ function hideModal() {
 
 // Clear search function
 function clearSearch() {
-    const searchInput = document.getElementById('bank-search');
-    const clearButton = document.getElementById('clear-search');
+    const searchInput = document.getElementById('search');
+    const clearButton = document.getElementById('clearSearch');
     
     if (searchInput) {
         searchInput.value = '';
-        clearButton.classList.add('hidden');
+        if (clearButton) {
+            clearButton.classList.add('hidden');
+        }
         filterBanks('');
         searchInput.focus();
     }
 }
 
-// Legacy search functionality (kept for compatibility)
-function filterBanks() {
-    const searchTerm = document.getElementById('searchInput') ? 
-        document.getElementById('searchInput').value.toLowerCase().trim() : 
-        document.getElementById('bank-search').value.toLowerCase().trim();
+// Filter banks function with AJAX support
+function filterBanks(searchTerm = '') {
+    if (!searchTerm) {
+        searchTerm = document.getElementById('search') ? 
+            document.getElementById('search').value.toLowerCase().trim() : '';
+    } else {
+        searchTerm = searchTerm.toLowerCase().trim();
+    }
+    
+    // Get current status filter from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentStatus = urlParams.get('status') || '';
+    
+    // Build URL with search and status parameters
+    const params = new URLSearchParams();
+    if (searchTerm) {
+        params.set('search', searchTerm);
+    }
+    if (currentStatus) {
+        params.set('status', currentStatus);
+    }
+    
+    // Update URL without page reload
+    const newUrl = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+    window.history.replaceState({}, '', newUrl);
+    
+    // For now, use client-side filtering for immediate feedback
     const bankCards = document.querySelectorAll('.bank-card[data-bank-id]');
     const banksGrid = document.getElementById('banks-grid');
     let visibleCount = 0;
     
     bankCards.forEach(card => {
         const bankName = card.querySelector('h3').textContent.toLowerCase();
-        const shouldShow = bankName.includes(searchTerm);
+        const bankInstitution = card.querySelector('.text-gray-600').textContent.toLowerCase();
+        const shouldShow = bankName.includes(searchTerm) || bankInstitution.includes(searchTerm);
         
         if (shouldShow) {
             card.style.display = 'flex';
@@ -670,24 +714,7 @@ function filterBanks() {
 // Initialize summary on page load
 document.addEventListener('DOMContentLoaded', function() {
     updateSummary();
-    initializeSearchToggle();
-    
-    // Search event listeners
-    const searchInput = document.getElementById('bank-search');
-    const clearButton = document.getElementById('clear-search');
-    
-    if (searchInput) {
-        searchInput.addEventListener('input', filterBanks);
-        searchInput.addEventListener('keyup', function(e) {
-            if (e.key === 'Escape') {
-                clearSearch();
-            }
-        });
-    }
-    
-    if (clearButton) {
-        clearButton.addEventListener('click', clearSearch);
-    }
+    initializeSearch();
     
     // Event listeners for modal
     document.getElementById('cancelDelete').addEventListener('click', hideModal);
