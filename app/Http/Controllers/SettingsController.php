@@ -37,7 +37,7 @@ class SettingsController extends Controller
             case 'system':
                 return $this->updateSystemSettings($request);
             default:
-                return redirect()->route('settings')->with('error', 'Seção de configuração inválida.');
+                return redirect()->route('settings.index')->with('error', 'Seção de configuração inválida.');
         }
     }
 
@@ -54,7 +54,7 @@ class SettingsController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('settings')
+            return redirect()->route('settings.index')
                 ->withErrors($validator)
                 ->withInput();
         }
@@ -68,7 +68,7 @@ class SettingsController extends Controller
 
         $this->saveSettings('general', $settings);
 
-        return redirect()->route('settings')->with('success', 'Configurações gerais atualizadas com sucesso!');
+        return redirect()->route('settings.index')->with('success', 'Configurações gerais atualizadas com sucesso!');
     }
 
     /**
@@ -84,7 +84,7 @@ class SettingsController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('settings')
+            return redirect()->route('settings.index')
                 ->withErrors($validator)
                 ->withInput();
         }
@@ -98,7 +98,7 @@ class SettingsController extends Controller
 
         $this->saveSettings('appearance', $settings);
 
-        return redirect()->route('settings')->with('success', 'Configurações de aparência atualizadas com sucesso!');
+        return redirect()->route('settings.index')->with('success', 'Configurações de aparência atualizadas com sucesso!');
     }
 
     /**
@@ -108,7 +108,7 @@ class SettingsController extends Controller
     {
         // Only admins can update security settings
         if (!auth()->user()->isAdmin()) {
-            return redirect()->route('settings')->with('error', 'Acesso negado.');
+            return redirect()->route('settings.index')->with('error', 'Acesso negado.');
         }
 
         $validator = Validator::make($request->all(), [
@@ -123,7 +123,7 @@ class SettingsController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('settings')
+            return redirect()->route('settings.index')
                 ->withErrors($validator)
                 ->withInput();
         }
@@ -141,7 +141,7 @@ class SettingsController extends Controller
 
         $this->saveSettings('security', $settings);
 
-        return redirect()->route('settings')->with('success', 'Configurações de segurança atualizadas com sucesso!');
+        return redirect()->route('settings.index')->with('success', 'Configurações de segurança atualizadas com sucesso!');
     }
 
     /**
@@ -161,7 +161,7 @@ class SettingsController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('settings')
+            return redirect()->route('settings.index')
                 ->withErrors($validator)
                 ->withInput();
         }
@@ -179,7 +179,7 @@ class SettingsController extends Controller
 
         $this->saveSettings('notifications', $settings);
 
-        return redirect()->route('settings')->with('success', 'Configurações de notificações atualizadas com sucesso!');
+        return redirect()->route('settings.index')->with('success', 'Configurações de notificações atualizadas com sucesso!');
     }
 
     /**
@@ -189,7 +189,7 @@ class SettingsController extends Controller
     {
         // Only admins can update system settings
         if (!auth()->user()->isAdmin()) {
-            return redirect()->route('settings')->with('error', 'Acesso negado.');
+            return redirect()->route('settings.index')->with('error', 'Acesso negado.');
         }
 
         $validator = Validator::make($request->all(), [
@@ -203,7 +203,7 @@ class SettingsController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('settings')
+            return redirect()->route('settings.index')
                 ->withErrors($validator)
                 ->withInput();
         }
@@ -220,7 +220,7 @@ class SettingsController extends Controller
 
         $this->saveSettings('system', $settings);
 
-        return redirect()->route('settings')->with('success', 'Configurações do sistema atualizadas com sucesso!');
+        return redirect()->route('settings.index')->with('success', 'Configurações do sistema atualizadas com sucesso!');
     }
 
     /**
@@ -307,6 +307,6 @@ class SettingsController extends Controller
     {
         Cache::forget('app_settings');
         
-        return redirect()->route('settings')->with('success', 'Cache de configurações limpo com sucesso!');
+        return redirect()->route('settings.index')->with('success', 'Cache de configurações limpo com sucesso!');
     }
 }

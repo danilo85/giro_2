@@ -4,6 +4,13 @@
 
 @section('content')
 <div class="max-w-4xl mx-auto space-y-6">
+    <!-- Breadcrumb -->
+    <x-breadcrumb :items="[
+        ['label' => 'Home', 'url' => route('dashboard')],
+        ['label' => 'Orçamentos', 'url' => route('orcamentos.index')],
+        ['label' => 'Criar Orçamento']
+    ]" />
+    
     <!-- Header -->
     <div class="flex items-center justify-between">
         <div>
@@ -11,11 +18,11 @@
             <p class="text-gray-600 dark:text-gray-400 mt-1">Crie um novo orçamento para seus clientes</p>
         </div>
         <a href="{{ route('orcamentos.index') }}" 
-           class="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg transition-colors">
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+           class="inline-flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" 
+           title="Voltar">
+            <svg class="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
             </svg>
-            Voltar
         </a>
     </div>
 
@@ -115,18 +122,57 @@
                     <label for="descricao" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Descrição/Conteúdo *
                     </label>
-                    <textarea id="descricao" 
-                              name="descricao" 
-                              rows="8" 
-                              required
-                              placeholder="Descreva detalhadamente o projeto, escopo, entregas, etc."
-                              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white @error('descricao') border-red-500 @enderror">{{ old('descricao') }}</textarea>
+                    
+                    <!-- Editor de Texto Rico -->
+                    <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden @error('descricao') border-red-500 @enderror">
+                        <!-- Barra de Ferramentas -->
+                        <div class="bg-gray-50 dark:bg-gray-700 border-b border-gray-300 dark:border-gray-600 p-2 flex flex-wrap gap-1">
+                            <button type="button" onclick="formatText('bold')" class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" title="Negrito">
+                                <i class="fas fa-bold"></i>
+                            </button>
+                            <button type="button" onclick="formatText('italic')" class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" title="Itálico">
+                                <i class="fas fa-italic"></i>
+                            </button>
+                            <button type="button" onclick="formatText('underline')" class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" title="Sublinhado">
+                                <i class="fas fa-underline"></i>
+                            </button>
+                            <button type="button" onclick="formatText('strikeThrough')" class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" title="Riscado">
+                                <i class="fas fa-strikethrough"></i>
+                            </button>
+                            <div class="w-px bg-gray-300 dark:bg-gray-600 mx-1"></div>
+                            <button type="button" onclick="formatText('insertUnorderedList')" class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" title="Lista com marcadores">
+                                <i class="fas fa-list-ul"></i>
+                            </button>
+                            <button type="button" onclick="formatText('insertOrderedList')" class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" title="Lista numerada">
+                                <i class="fas fa-list-ol"></i>
+                            </button>
+                            <div class="w-px bg-gray-300 dark:bg-gray-600 mx-1"></div>
+                            <button type="button" onclick="showLinkModal()" class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" title="Inserir link">
+                                <i class="fas fa-link"></i>
+                            </button>
+                            <button type="button" onclick="insertLineBreak()" class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" title="Quebra de linha">
+                                <i class="fas fa-level-down-alt"></i>
+                            </button>
+                            <div class="w-px bg-gray-300 dark:bg-gray-600 mx-1"></div>
+                            <button type="button" onclick="undoEdit()" class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" title="Desfazer">
+                                <i class="fas fa-undo"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Área Editável -->
+                        <div id="descricao-editor" 
+                             contenteditable="true" 
+                             class="min-h-[200px] p-3 focus:outline-none focus:ring-0 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                             placeholder="Descreva detalhadamente o projeto, escopo, entregas, etc."
+                             style="white-space: pre-wrap;">{{ old('descricao') }}</div>
+                    </div>
+                    
+                    <!-- Campo oculto para armazenar o conteúdo -->
+                    <input type="hidden" id="descricao" name="descricao" value="{{ old('descricao') }}" required>
+                    
                     @error('descricao')
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                        Você pode usar variáveis como {{'cliente_nome'}}, {{'valor_total'}}, {{'prazo_dias'}}, etc.
-                    </p>
                 </div>
             </div>
 
@@ -206,17 +252,32 @@
                         <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Status *
                         </label>
-                        <select id="status" 
-                                name="status" 
-                                required
-                                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white @error('status') border-red-500 @enderror">
-                            <option value="rascunho" {{ old('status', 'rascunho') == 'rascunho' ? 'selected' : '' }}>Rascunho</option>
-                            <option value="analisando" {{ old('status') == 'analisando' ? 'selected' : '' }}>Analisando</option>
-                            <option value="rejeitado" {{ old('status') == 'rejeitado' ? 'selected' : '' }}>Rejeitado</option>
-                            <option value="aprovado" {{ old('status') == 'aprovado' ? 'selected' : '' }}>Aprovado</option>
-                            <option value="finalizado" {{ old('status') == 'finalizado' ? 'selected' : '' }}>Finalizado</option>
-                            <option value="pago" {{ old('status') == 'pago' ? 'selected' : '' }}>Pago</option>
-                        </select>
+                        <div class="relative">
+                            <select id="status" 
+                                    name="status" 
+                                    required
+                                    onchange="updateStatusColors(this)"
+                                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white text-sm appearance-none pr-8
+                                    @if(old('status', 'rascunho') === 'aprovado') border-green-500 bg-green-50 dark:bg-green-900/20
+                                    @elseif(old('status', 'rascunho') === 'analisando') border-yellow-500 bg-yellow-50 dark:bg-yellow-900/20
+                                    @elseif(old('status', 'rascunho') === 'rejeitado') border-red-500 bg-red-50 dark:bg-red-900/20
+                                    @elseif(old('status', 'rascunho') === 'pago') border-purple-500 bg-purple-50 dark:bg-purple-900/20
+                                    @elseif(old('status', 'rascunho') === 'finalizado') border-blue-500 bg-blue-50 dark:bg-blue-900/20
+                                    @else border-gray-500 bg-gray-50 dark:bg-gray-900/20
+                                    @endif @error('status') border-red-500 @enderror">
+                                <option value="rascunho" {{ old('status', 'rascunho') == 'rascunho' ? 'selected' : '' }}>⚪ Rascunho</option>
+                                <option value="analisando" {{ old('status') == 'analisando' ? 'selected' : '' }}>🟡 Analisando</option>
+                                <option value="rejeitado" {{ old('status') == 'rejeitado' ? 'selected' : '' }}>🔴 Rejeitado</option>
+                                <option value="aprovado" {{ old('status') == 'aprovado' ? 'selected' : '' }}>🟢 Aprovado</option>
+                                <option value="finalizado" {{ old('status') == 'finalizado' ? 'selected' : '' }}>🔵 Finalizado</option>
+                                <option value="pago" {{ old('status') == 'pago' ? 'selected' : '' }}>🟣 Pago</option>
+                            </select>
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </div>
+                        </div>
                         @error('status')
                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                         @enderror
@@ -322,6 +383,63 @@
 <script src="{{ asset('js/cliente-autocomplete.js') }}"></script>
 <script src="{{ asset('js/autor-autocomplete.js') }}"></script>
 <script>
+// Editor de Texto Rico - Funções
+function formatText(command, value = null) {
+    document.execCommand(command, false, value);
+    syncEditorContent();
+}
+
+function syncEditorContent() {
+    const editor = document.getElementById('descricao-editor');
+    const hiddenInput = document.getElementById('descricao');
+    hiddenInput.value = editor.innerHTML;
+}
+
+function showLinkModal() {
+    const url = prompt('Digite a URL do link:');
+    if (url) {
+        formatText('createLink', url);
+    }
+}
+
+function insertLineBreak() {
+    formatText('insertHTML', '<br>');
+}
+
+function undoEdit() {
+    formatText('undo');
+}
+
+// Sincronizar conteúdo do editor com o campo oculto
+document.addEventListener('DOMContentLoaded', function() {
+    const editor = document.getElementById('descricao-editor');
+    const hiddenInput = document.getElementById('descricao');
+    
+    // Sincronizar quando o conteúdo do editor mudar
+    editor.addEventListener('input', syncEditorContent);
+    editor.addEventListener('paste', function() {
+        setTimeout(syncEditorContent, 10);
+    });
+    
+    // Placeholder behavior
+    editor.addEventListener('focus', function() {
+        if (this.innerHTML === '') {
+            this.innerHTML = '';
+        }
+    });
+    
+    editor.addEventListener('blur', function() {
+        if (this.innerHTML.trim() === '' || this.innerHTML === '<br>') {
+            this.innerHTML = '';
+        }
+        syncEditorContent();
+    });
+    
+    // Sincronizar conteúdo inicial
+    if (hiddenInput.value) {
+        editor.innerHTML = hiddenInput.value;
+    }
+});
 // Auto-fill from template
 document.getElementById('modelo_proposta_id').addEventListener('change', function() {
     const selectedOption = this.options[this.selectedIndex];
@@ -380,6 +498,42 @@ function applyCurrencyMask(element) {
     });
 }
 
+// Função para atualizar cores do select de status
+function updateStatusColors(select) {
+    // Remove todas as classes de cor
+    select.classList.remove(
+        'border-green-500', 'bg-green-50', 'dark:bg-green-900/20',
+        'border-yellow-500', 'bg-yellow-50', 'dark:bg-yellow-900/20',
+        'border-red-500', 'bg-red-50', 'dark:bg-red-900/20',
+        'border-purple-500', 'bg-purple-50', 'dark:bg-purple-900/20',
+        'border-blue-500', 'bg-blue-50', 'dark:bg-blue-900/20',
+        'border-gray-500', 'bg-gray-50', 'dark:bg-gray-900/20'
+    );
+    
+    // Adiciona classes baseadas no valor selecionado
+    const value = select.value;
+    switch(value) {
+        case 'aprovado':
+            select.classList.add('border-green-500', 'bg-green-50', 'dark:bg-green-900/20');
+            break;
+        case 'analisando':
+            select.classList.add('border-yellow-500', 'bg-yellow-50', 'dark:bg-yellow-900/20');
+            break;
+        case 'rejeitado':
+            select.classList.add('border-red-500', 'bg-red-50', 'dark:bg-red-900/20');
+            break;
+        case 'pago':
+            select.classList.add('border-purple-500', 'bg-purple-50', 'dark:bg-purple-900/20');
+            break;
+        case 'finalizado':
+            select.classList.add('border-blue-500', 'bg-blue-50', 'dark:bg-blue-900/20');
+            break;
+        default: // rascunho
+            select.classList.add('border-gray-500', 'bg-gray-50', 'dark:bg-gray-900/20');
+            break;
+    }
+}
+
 // Aplicar máscara de moeda no campo valor_total
 const valorTotalInput = document.getElementById('valor_total');
 if (valorTotalInput) {
@@ -401,6 +555,9 @@ document.querySelector('form').addEventListener('submit', function(e) {
         const valorDecimal = valorInput.value.replace(/\./g, '').replace(',', '.');
         valorInput.value = valorDecimal;
     }
+    
+    // Sincronizar conteúdo do editor antes do envio
+    syncEditorContent();
 });
 </script>
 @endpush

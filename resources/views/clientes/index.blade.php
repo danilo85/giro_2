@@ -12,17 +12,12 @@
 
     <!-- Header -->
     <div class="mb-8">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div class="flex items-center justify-between mb-8">
             <div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Clientes</h1>
-                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Gerencie seus clientes e acompanhe seus orçamentos</p>
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Clientes</h1>
+                <p class="text-gray-600 dark:text-gray-400 mt-1">Gerencie seus clientes e acompanhe seus orçamentos</p>
             </div>
-            <!-- Search Toggle Icon -->
-            <button id="search-toggle" class="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-all duration-200" title="Pesquisar clientes">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                </svg>
-            </button>
+    
         </div>
     </div>
 
@@ -136,7 +131,7 @@
                                     </div>
                                 @endif
                                 <div class="min-w-0 flex-1">
-                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white truncate">{{ $cliente->nome }}</h3>
+                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white break-words">{{ $cliente->nome }}</h3>
                                     @if($cliente->empresa)
                                         <p class="text-sm text-gray-500 dark:text-gray-400 truncate">{{ $cliente->empresa }}</p>
                                     @endif
@@ -241,7 +236,7 @@
                                 </svg>
                             </a>
                             <a href="{{ route('clientes.edit', $cliente) }}" 
-                               class="p-2 rounded-lg text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-300 transition-all duration-200 hover:bg-gray-100 dark:hover:bg-gray-700" 
+                               class="p-2 text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-300 transition-all duration-200" 
                                title="Editar Cliente">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>

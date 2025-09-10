@@ -20,6 +20,7 @@ use App\Http\Controllers\AutorController;
 use App\Http\Controllers\PagamentoController;
 use App\Http\Controllers\ModeloPropostaController;
 use App\Http\Controllers\OrcamentoFileController;
+use App\Http\Controllers\ExtratoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -68,8 +69,13 @@ Route::get('/clientes/autocomplete', [ClienteController::class, 'autocomplete'])
 
 // Protected Routes
 Route::middleware(['auth'])->group(function () {
-    // Dashboard
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    // Main Dashboard (redirects to financial dashboard)
+    Route::get('/dashboard', function () {
+        return redirect()->route('financial.dashboard');
+    })->name('dashboard');
+    
+    // Budget Dashboard
+    Route::get('/orcamentos/dashboard', [DashboardController::class, 'index'])->name('orcamentos.dashboard');
 
     // User Management (Admin only)
     Route::middleware(['admin'])->group(function () {
@@ -77,10 +83,10 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
     });
 
-    // Profile
+    // Profile routes
     Route::get('/profile', function () {
         return view('profile');
-    })->name('profile');
+    })->name('profile.show');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
     Route::post('/profile/avatar', [ProfileController::class, 'updateAvatar'])->name('profile.avatar');
@@ -93,7 +99,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/profile/social-media/{platform}', [ProfileController::class, 'deleteSocialMedia'])->name('profile.social-media.delete');
 
     // Settings
-    Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
+    Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
     Route::post('/settings/clear-cache', [SettingsController::class, 'clearCache'])->name('settings.clear-cache');
 
@@ -199,9 +205,13 @@ Route::middleware(['auth'])->group(function () {
     // Budget Management Module (Módulo de Orçamentos)
     Route::resource('orcamentos', OrcamentoController::class);
     Route::patch('/orcamentos/{orcamento}/quitar', [OrcamentoController::class, 'quitar'])->name('orcamentos.quitar');
+    Route::patch('/orcamentos/{orcamento}/update-status', [OrcamentoController::class, 'atualizarStatus'])->name('orcamentos.update-status');
 
     // Clientes
     Route::resource('clientes', ClienteController::class);
+    Route::post('/clientes/{cliente}/gerar-token-extrato', [ClienteController::class, 'gerarTokenExtrato'])->name('clientes.gerar-token-extrato');
+    Route::get('/clientes/{cliente}/check-extract-status', [ClienteController::class, 'checkExtractStatus'])->name('clientes.check-extract-status');
+    Route::post('/clientes/{cliente}/desativar-token-extrato', [ClienteController::class, 'desativarTokenExtrato'])->name('clientes.desativar-token-extrato');
 
     // Autores
     Route::resource('autores', AutorController::class)->parameters(['autores' => 'autor']);
@@ -254,13 +264,18 @@ Route::middleware(['auth'])->group(function () {
         });
     });
 
-    // API Routes for Budget Module
-    Route::prefix('api/budget')->name('api.budget.')->group(function () {
-        // Orçamentos API
+});
+
+// API Routes for Budget Module (outside auth middleware for AJAX calls)
+Route::prefix('api/budget')->name('api.budget.')->group(function () {
+    // Orçamentos API - Status update accessible for AJAX
+    Route::patch('/orcamentos/{orcamento}/status', [OrcamentoController::class, 'atualizarStatus'])->name('orcamentos.status');
+    
+    // Protected API routes requiring authentication
+    Route::middleware('auth')->group(function () {
         Route::patch('/orcamentos/{orcamento}/quitar', [OrcamentoController::class, 'quitar'])->name('orcamentos.quitar');
         Route::patch('/orcamentos/{orcamento}/aprovar', [OrcamentoController::class, 'aprovar'])->name('orcamentos.aprovar');
         Route::patch('/orcamentos/{orcamento}/rejeitar', [OrcamentoController::class, 'rejeitar'])->name('orcamentos.rejeitar');
-        Route::patch('/orcamentos/{orcamento}/status', [OrcamentoController::class, 'atualizarStatus'])->name('orcamentos.status');
         
         // Clientes API
         Route::get('/clientes/autocomplete', [ClienteController::class, 'autocomplete'])->name('clientes.autocomplete');
@@ -290,6 +305,9 @@ Route::prefix('public')->name('public.')->group(function () {
     
     // Rotas públicas para recibos
     Route::get('/recibo/{token}', [PagamentoController::class, 'showReciboPublico'])->name('recibos.public');
+    
+    // Rotas públicas para extrato do cliente
+    Route::get('/extrato/{cliente_id}/{token}', [ExtratoController::class, 'show'])->name('extrato.public');
 });
 
 // File upload routes moved to RouteServiceProvider (without any middleware)

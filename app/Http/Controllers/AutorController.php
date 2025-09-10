@@ -36,8 +36,9 @@ class AutorController extends Controller
         });
         $autoresComWhatsapp = Autor::forUser(Auth::id())->whereNotNull('whatsapp')->where('whatsapp', '!=', '')->count();
 
-        // Buscar autores com orçamentos
-        $autores = $query->with(['orcamentos' => function($query) {
+        // Buscar autores com orçamentos e contagem
+        $autores = $query->withCount('orcamentos')
+            ->with(['orcamentos' => function($query) {
                 $query->select('autor_id', 'valor_total');
             }])
             ->paginate(15)
@@ -101,12 +102,71 @@ class AutorController extends Controller
     public function show(Autor $autor)
     {
         $this->authorize('view', $autor);
-
+        
+        // Carrega os orçamentos do autor com relacionamentos necessários
         $autor->load(['orcamentos' => function($query) {
-            $query->orderBy('created_at', 'desc');
+            $query->with(['cliente', 'autores', 'pagamentos'])
+                  ->orderBy('created_at', 'desc');
         }]);
-
-        return view('autores.show', compact('autor'));
+        
+        // Cálculos para cards de resumo
+        $orcamentos = $autor->orcamentos;
+        
+        // Valores totais gerados
+        $valorTotalGerado = $orcamentos->sum('valor_total');
+        $valorTotalPago = $orcamentos->sum(function($orcamento) {
+            return $orcamento->pagamentos->sum('valor');
+        });
+        
+        // Contagem de trabalhos por status
+        $trabalhosFeitos = $orcamentos->where('status', 'aprovado')->count();
+        $trabalhosEmAndamento = $orcamentos->whereIn('status', ['pendente', 'em_analise'])->count();
+        $totalTrabalhos = $orcamentos->count();
+        
+        // Principais parceiros (outros autores que mais trabalharam junto)
+        $parceiros = collect();
+        foreach ($orcamentos as $orcamento) {
+            foreach ($orcamento->autores as $outroAutor) {
+                if ($outroAutor->id !== $autor->id) {
+                    $parceiros->push($outroAutor);
+                }
+            }
+        }
+        
+        $principaisParceiros = $parceiros->groupBy('id')
+            ->map(function($grupo) {
+                $autor = $grupo->first();
+                $autor->colaboracoes = $grupo->count();
+                return $autor;
+            })
+            ->sortByDesc('colaboracoes')
+            ->take(5)
+            ->values();
+        
+        // Estatísticas por mês (últimos 6 meses)
+        $estatisticasMensais = $orcamentos->filter(function($orcamento) {
+            return $orcamento->created_at->gte(now()->subMonths(6));
+        })->groupBy(function($orcamento) {
+            return $orcamento->created_at->format('Y-m');
+        })->map(function($grupo) {
+            return [
+                'total' => $grupo->count(),
+                'valor' => $grupo->sum('valor_total'),
+                'aprovados' => $grupo->where('status', 'aprovado')->count()
+            ];
+        });
+        
+        $resumo = [
+            'valor_total_gerado' => $valorTotalGerado,
+            'valor_total_pago' => $valorTotalPago,
+            'trabalhos_feitos' => $trabalhosFeitos,
+            'trabalhos_em_andamento' => $trabalhosEmAndamento,
+            'total_trabalhos' => $totalTrabalhos,
+            'principais_parceiros' => $principaisParceiros,
+            'estatisticas_mensais' => $estatisticasMensais
+        ];
+        
+        return view('autores.show', compact('autor', 'resumo'));
     }
 
     /**

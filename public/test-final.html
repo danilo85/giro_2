@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Final - Menu Hambúrguer</title>
+    <script src="http://localhost:5174/@vite/client" type="module"></script>
+    <script type="module" src="http://localhost:5174/resources/js/app.js"></script>
+    <link rel="stylesheet" href="http://localhost:5174/resources/css/app.css">
+    <style>
+        .test-indicator {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            z-index: 99999;
+        }
+    </style>
+</head>
+<body class="h-full bg-gray-50" x-data="{}" x-init="$store.sidebar.init()">
+    <div id="app" class="min-h-full">
+        <!-- Mobile Header -->
+        <div class="lg:hidden bg-white shadow-sm border-b border-gray-200 fixed top-0 left-0 right-0 z-[10001] h-16">
+            <div class="flex items-center justify-between h-full px-4">
+                <button @click="$store.sidebar.toggle(); console.log('Menu clicado!', $store.sidebar.open)" 
+                        class="p-2 rounded-md text-gray-600 hover:bg-gray-100"
+                        style="border: 2px solid red; background: rgba(255, 0, 0, 0.1);">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+                <h1 class="text-lg font-semibold text-gray-900">Teste Final</h1>
+                <div class="w-10"></div>
+            </div>
+        </div>
+
+        <!-- Indicador de status -->
+        <div class="test-indicator">
+            Status: <span x-text="$store.sidebar.open ? 'ABERTO' : 'FECHADO'"></span>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="fixed inset-y-0 left-0 z-[9999] flex">
+            <div x-show="$store.sidebar.open" 
+                 class="fixed inset-0 bg-gray-600 bg-opacity-75 lg:hidden"
+                 @click="$store.sidebar.close()"></div>
+
+            <div class="relative flex flex-col w-64 bg-white border-r border-gray-200 transition-all duration-300 ease-in-out"
+                 :class="{
+                     'translate-x-0': $store.sidebar.open || !$store.sidebar.isMobile,
+                     '-translate-x-full': !$store.sidebar.open && $store.sidebar.isMobile
+                 }">
+                
+                <div class="flex items-center h-16 px-4 border-b border-gray-200">
+                    <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-lg">G</span>
+                    </div>
+                    <span class="ml-3 text-xl font-bold text-gray-900">Giro</span>
+                </div>
+
+                <nav class="flex-1 px-2 py-4 space-y-1">
+                    <a href="#" class="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50">
+                        <span class="ml-3">Dashboard</span>
+                    </a>
+                    <a href="#" class="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50">
+                        <span class="ml-3">Financeiro</span>
+                    </a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Conteúdo principal -->
+        <div class="pt-16">
+            <div class="p-6">
+                <h1 class="text-3xl font-bold mb-6">Teste Final do Menu Hambúrguer</h1>
+                
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h2 class="text-xl font-semibold mb-4">Status do Menu:</h2>
+                    <div class="space-y-2">
+                        <p>Aberto: <span x-text="$store.sidebar.open" class="font-mono bg-gray-100 px-2 py-1 rounded"></span></p>
+                        <p>Mobile: <span x-text="$store.sidebar.isMobile" class="font-mono bg-gray-100 px-2 py-1 rounded"></span></p>
+                    </div>
+                    
+                    <button @click="$store.sidebar.toggle()" 
+                            class="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                        Toggle Manual
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('alpine:initialized', () => {
+            console.log('Alpine inicializado');
+            if (Alpine.store('sidebar')) {
+                Alpine.store('sidebar').init();
+                console.log('Store inicializado');
+            }
+        });
+    </script>
+</body>
+</html>

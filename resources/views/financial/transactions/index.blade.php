@@ -37,10 +37,12 @@
     <!-- Header -->
     <div class="mb-8">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Lançamentos</h1>
-                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Gerencie suas receitas e despesas</p>
-            </div>
+
+
+        <div class="">
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Lançamentos</h1>
+            <p class="text-gray-600 dark:text-gray-400 mt-1">Gerencie suas receitas e despesas</p>
+        </div>
             <div class="mt-4 sm:mt-0">
                 <button onclick="openFilterModal()" class="inline-flex items-center justify-center w-10 h-10 text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 rounded-md transition-colors relative" title="Filtros">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -82,10 +84,10 @@
             </div>
         </div>
 
-        <div class="bg-gradient-to-br from-gray-300 to-gray-400 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 p-6 text-white">
+        <div id="balance-card" class="bg-gradient-to-br from-green-500 to-green-600 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 p-6 text-white">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm font-medium text-gray-100">Saldo</p>
+                    <p class="text-sm font-medium text-white">Saldo</p>
                     <p id="balance" class="text-2xl font-bold text-white">R$ 0,00</p>
                 </div>
                 <div class="p-3 bg-white bg-opacity-20 rounded-lg backdrop-blur-sm">
@@ -324,17 +326,26 @@
 
 <!-- Transaction Card Template -->
 <template id="transaction-card-template">
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-all duration-200 hover:border-gray-300 dark:hover:border-gray-600 flex flex-col min-h-[200px]">
-        <div class="flex items-start justify-between mb-4">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-all duration-200 hover:border-gray-300 dark:hover:border-gray-600 flex flex-col min-h-[200px] relative">
+        <!-- Selo de PAGO -->
+        <div class="paid-stamp hidden absolute top-3 right-3 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold transform -rotate-12 shadow-lg border-2 border-green-600 z-10">
+            <i class="fas fa-check mr-1"></i>
+            PAGO
+        </div>
+        <div class="flex items-start justify-between mb-2">
             <div class="flex items-center">
                 <div class="transaction-avatar w-12 h-12 rounded-full flex items-center justify-center mr-4 text-white font-semibold">
                     <span class="transaction-avatar-content text-lg"></span>
                 </div>
                 <div class="flex-1">
                     <h3 class="transaction-description font-semibold text-gray-900 dark:text-white text-lg mb-1"></h3>
-                    <span class="transaction-category-badge inline-flex items-center px-2 py-1 text-xs font-medium rounded-full"></span>
                 </div>
             </div>
+        </div>
+        
+        <!-- Linha de badges abaixo do título -->
+        <div class="flex items-center gap-2 mb-4 ml-16">
+            <span class="transaction-category-badge inline-flex items-center px-2 py-1 text-xs font-medium rounded-full"></span>
             <span class="transaction-status-badge px-3 py-1 text-xs font-medium rounded-full"></span>
         </div>
         
@@ -1106,21 +1117,32 @@ function updateSummary(summary) {
     const totalExpensesEl = document.getElementById('total-expenses');
     const balanceEl = document.getElementById('balance');
     const pendingCountEl = document.getElementById('pending-count');
+    const balanceCardEl = document.getElementById('balance-card');
     
     if (totalIncomeEl) totalIncomeEl.textContent = formatCurrency(summary.total_income || 0);
     if (totalExpensesEl) totalExpensesEl.textContent = formatCurrency(summary.total_expenses || 0);
     if (balanceEl) balanceEl.textContent = formatCurrency(summary.balance || 0);
     if (pendingCountEl) pendingCountEl.textContent = summary.pending_count || 0;
     
-    // Atualizar cor do saldo
-    if (balanceEl) {
+    // Atualizar cor do saldo e do card
+    if (balanceEl && balanceCardEl) {
         const balance = summary.balance || 0;
+        
+        // Remover classes de cor existentes do card
+        balanceCardEl.classList.remove('bg-gradient-to-br', 'from-green-500', 'to-green-600', 'from-red-500', 'to-red-600', 'from-gray-500', 'to-gray-600');
+        
         if (balance > 0) {
-            balanceEl.className = 'text-2xl font-semibold text-green-600 dark:text-green-400';
+            // Saldo positivo - verde
+            balanceEl.className = 'text-2xl font-bold text-white';
+            balanceCardEl.classList.add('bg-gradient-to-br', 'from-green-500', 'to-green-600');
         } else if (balance < 0) {
-            balanceEl.className = 'text-2xl font-semibold text-red-600 dark:text-red-400';
+            // Saldo negativo - vermelho
+            balanceEl.className = 'text-2xl font-bold text-white';
+            balanceCardEl.classList.add('bg-gradient-to-br', 'from-red-500', 'to-red-600');
         } else {
-            balanceEl.className = 'text-2xl font-semibold text-gray-900 dark:text-white';
+            // Saldo zero - cinza
+            balanceEl.className = 'text-2xl font-bold text-white';
+            balanceCardEl.classList.add('bg-gradient-to-br', 'from-gray-500', 'to-gray-600');
         }
     }
 }
@@ -1236,12 +1258,21 @@ function renderTransactions(transactions) {
         
         // Status
         const statusBadge = card.querySelector('.transaction-status-badge');
+        const paidStamp = card.querySelector('.paid-stamp');
         if (statusBadge) {
             statusBadge.textContent = transaction.status === 'pago' ? 'Pago' : 'Pendente';
             if (transaction.status === 'pago') {
                 statusBadge.classList.add('bg-green-100', 'text-green-800', 'dark:bg-green-900', 'dark:text-green-200');
+                // Mostrar selo de PAGO
+                if (paidStamp) {
+                    paidStamp.classList.remove('hidden');
+                }
             } else {
                 statusBadge.classList.add('bg-yellow-100', 'text-yellow-800', 'dark:bg-yellow-900', 'dark:text-yellow-200');
+                // Ocultar selo de PAGO
+                if (paidStamp) {
+                    paidStamp.classList.add('hidden');
+                }
             }
         }
         
@@ -1363,10 +1394,21 @@ function toggleTransactionStatus(button) {
             // Atualizar status badge
             statusBadge.textContent = newStatus === 'pago' ? 'Pago' : 'Pendente';
             
+            // Atualizar selo de PAGO
+            const paidStamp = card.querySelector('.paid-stamp');
+            
             if (newStatus === 'pago') {
                 statusBadge.className = 'px-3 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
+                // Mostrar selo de PAGO
+                if (paidStamp) {
+                    paidStamp.classList.remove('hidden');
+                }
             } else {
                 statusBadge.className = 'px-3 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
+                // Ocultar selo de PAGO
+                if (paidStamp) {
+                    paidStamp.classList.add('hidden');
+                }
             }
             
             // Atualizar botão

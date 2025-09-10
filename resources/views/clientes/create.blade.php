@@ -232,6 +232,54 @@
 </div>
 
 <script>
+    // Phone mask functions
+    function formatPhone(value) {
+        // Remove todos os caracteres não numéricos
+        const numbers = value.replace(/\D/g, '');
+        
+        // Limita a 11 dígitos (DDD + 9 dígitos para celular)
+        const limitedNumbers = numbers.substring(0, 11);
+        
+        // Aplica a formatação baseada no número de dígitos
+        if (limitedNumbers.length <= 2) {
+            return limitedNumbers;
+        } else if (limitedNumbers.length <= 6) {
+            return `(${limitedNumbers.substring(0, 2)}) ${limitedNumbers.substring(2)}`;
+        } else if (limitedNumbers.length <= 10) {
+            // Telefone fixo: (XX) XXXX-XXXX
+            return `(${limitedNumbers.substring(0, 2)}) ${limitedNumbers.substring(2, 6)}-${limitedNumbers.substring(6)}`;
+        } else {
+            // Celular: (XX) XXXXX-XXXX
+            return `(${limitedNumbers.substring(0, 2)}) ${limitedNumbers.substring(2, 7)}-${limitedNumbers.substring(7)}`;
+        }
+    }
+
+    function applyPhoneMask(input) {
+        const cursorPosition = input.selectionStart;
+        const oldValue = input.value;
+        const oldLength = oldValue.length;
+        
+        // Aplica a formatação
+        const newValue = formatPhone(input.value);
+        input.value = newValue;
+        
+        // Ajusta a posição do cursor
+        const newLength = newValue.length;
+        const lengthDiff = newLength - oldLength;
+        
+        // Calcula nova posição do cursor
+        let newCursorPosition = cursorPosition + lengthDiff;
+        
+        // Garante que o cursor não fique em uma posição inválida
+        if (newCursorPosition < 0) newCursorPosition = 0;
+        if (newCursorPosition > newLength) newCursorPosition = newLength;
+        
+        // Define a nova posição do cursor
+        setTimeout(() => {
+            input.setSelectionRange(newCursorPosition, newCursorPosition);
+        }, 0);
+    }
+
     // Preview do avatar
     document.getElementById('avatar').addEventListener('change', function(e) {
         const file = e.target.files[0];
@@ -265,7 +313,37 @@
     document.getElementById('nome').addEventListener('input', updatePreview);
     document.getElementById('pessoa_contato').addEventListener('input', updatePreview);
     document.getElementById('email').addEventListener('input', updatePreview);
-    document.getElementById('telefone').addEventListener('input', updatePreview);
-    document.getElementById('whatsapp').addEventListener('input', updatePreview);
+    
+    // Configurar máscaras de telefone
+    const telefoneInput = document.getElementById('telefone');
+    const whatsappInput = document.getElementById('whatsapp');
+    
+    if (telefoneInput) {
+        telefoneInput.addEventListener('input', function(e) {
+            applyPhoneMask(this);
+            updatePreview();
+        });
+        
+        telefoneInput.addEventListener('paste', function(e) {
+            setTimeout(() => {
+                applyPhoneMask(this);
+                updatePreview();
+            }, 0);
+        });
+    }
+    
+    if (whatsappInput) {
+        whatsappInput.addEventListener('input', function(e) {
+            applyPhoneMask(this);
+            updatePreview();
+        });
+        
+        whatsappInput.addEventListener('paste', function(e) {
+            setTimeout(() => {
+                applyPhoneMask(this);
+                updatePreview();
+            }, 0);
+        });
+    }
 </script>
 @endsection

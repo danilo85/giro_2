@@ -4,92 +4,49 @@
 
 @section('content')
 <div class="max-w-6xl mx-auto space-y-6">
+    <!-- Mensagens de Sucesso e Erro -->
+    @if(session('success'))
+        <div class="mb-6 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg" role="alert">
+            <div class="flex items-center">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                </svg>
+                {{ session('success') }}
+            </div>
+        </div>
+    @endif
+
+    @if($errors->any())
+        <div class="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg" role="alert">
+            <div class="flex items-center">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                </svg>
+                <div>
+                    @foreach($errors->all() as $error)
+                        <div>{{ $error }}</div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    @endif
+
+    <!-- Breadcrumb -->
+    <x-breadcrumb :items="[
+        ['label' => 'Home', 'url' => route('dashboard')],
+        ['label' => 'Orçamentos', 'url' => route('orcamentos.index')],
+        ['label' => $orcamento->titulo]
+    ]" />
+
     <!-- Header -->
     <div class="flex items-center justify-between">
         <div>
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $orcamento->titulo }}</h1>
             <p class="text-gray-600 dark:text-gray-400 mt-1">Orçamento #{{ $orcamento->id }}</p>
         </div>
-        <div class="flex items-center space-x-3">
-            <a href="{{ route('public.orcamentos.public', $orcamento->token_publico) }}" 
-               target="_blank"
-               class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-1M14 6h6m0 0v6m0-6L10 16"></path>
-                </svg>
-                Ver Público
-            </a>
-            <a href="{{ route('orcamentos.edit', $orcamento) }}" 
-               class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                </svg>
-                Editar
-            </a>
-            <a href="{{ route('orcamentos.index') }}" 
-               class="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg transition-colors">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                </svg>
-                Voltar
-            </a>
-        </div>
     </div>
 
-    <!-- Status and Info -->
-    <div class="flex items-center justify-between bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
-        <div class="flex items-center space-x-6">
-            <div class="flex items-center space-x-2">
-                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Status:</span>
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
-                    @if($orcamento->status === 'rascunho') bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300
-                    @elseif($orcamento->status === 'enviado') bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300
-                    @elseif($orcamento->status === 'aprovado') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300
-                    @elseif($orcamento->status === 'rejeitado') bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300
-                    @elseif($orcamento->status === 'quitado') bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300
-                    @endif">
-                    {{ ucfirst($orcamento->status) }}
-                </span>
-            </div>
-            <div class="flex items-center space-x-2">
-                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Valor:</span>
-                <span class="text-lg font-bold text-gray-900 dark:text-white">R$ {{ number_format($orcamento->valor_total, 2, ',', '.') }}</span>
-            </div>
-            @if($orcamento->data_validade)
-                <div class="flex items-center space-x-2">
-                    <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Válido até:</span>
-                    <span class="text-sm text-gray-900 dark:text-white">{{ $orcamento->data_validade->format('d/m/Y') }}</span>
-                </div>
-            @endif
-        </div>
-        
-        <!-- Quick Actions -->
-        <div class="flex items-center space-x-2">
-            @if($orcamento->status !== 'quitado')
-                <button onclick="updateStatus('{{ $orcamento->id }}', 'aprovado')" 
-                        class="inline-flex items-center px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg transition-colors">
-                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                    Aprovar
-                </button>
-                <button onclick="updateStatus('{{ $orcamento->id }}', 'quitado')" 
-                        class="inline-flex items-center px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white text-sm rounded-lg transition-colors">
-                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
-                    </svg>
-                    Quitar
-                </button>
-            @endif
-            <a href="{{ route('pagamentos.create', ['orcamento_id' => $orcamento->id]) }}" 
-               class="inline-flex items-center px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-colors">
-                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                </svg>
-                Pagamento
-            </a>
-        </div>
-    </div>
+
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Main Content -->
@@ -214,14 +171,76 @@
 
         <!-- Sidebar -->
         <div class="space-y-6">
-            <!-- Resumo Financeiro -->
+            <!-- Ações -->
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Resumo Financeiro</h3>
-                <div class="space-y-4">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Ações</h3>
+                <div class="space-y-3">
+                    <a href="{{ route('public.orcamentos.public', $orcamento->token_publico) }}" 
+                       target="_blank"
+                       class="w-full inline-flex items-center justify-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-1M14 6h6m0 0v6m0-6L10 16"></path>
+                        </svg>
+                        Ver Público
+                    </a>
+                    <a href="{{ route('orcamentos.edit', $orcamento) }}" 
+                       class="w-full inline-flex items-center justify-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                        </svg>
+                        Editar
+                    </a>
+                    <a href="{{ route('orcamentos.index') }}" 
+                       class="w-full inline-flex items-center justify-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg transition-colors">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                        </svg>
+                        Voltar
+                    </a>
+                </div>
+            </div>
+
+            <!-- Status e Resumo Financeiro -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Status e Resumo Financeiro</h3>
+                
+                <!-- Status e Informações Principais -->
+                <div class="space-y-4 mb-6">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-600 dark:text-gray-400">Status:</span>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
+                            @if($orcamento->status === 'rascunho') bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300
+                            @elseif($orcamento->status === 'enviado') bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300
+                            @elseif($orcamento->status === 'aprovado') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300
+                            @elseif($orcamento->status === 'rejeitado') bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300
+                            @elseif($orcamento->status === 'quitado') bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300
+                            @endif">
+                            {{ ucfirst($orcamento->status) }}
+                        </span>
+                    </div>
                     <div class="flex justify-between items-center">
                         <span class="text-sm text-gray-600 dark:text-gray-400">Valor Total:</span>
-                        <span class="font-semibold text-gray-900 dark:text-white">R$ {{ number_format($orcamento->valor_total, 2, ',', '.') }}</span>
+                        <span class="text-lg font-bold text-gray-900 dark:text-white">R$ {{ number_format($orcamento->valor_total, 2, ',', '.') }}</span>
                     </div>
+                    @if($orcamento->data_validade)
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600 dark:text-gray-400">Válido até:</span>
+                            <span class="text-sm font-medium text-gray-900 dark:text-white">{{ $orcamento->data_validade->format('d/m/Y') }}</span>
+                        </div>
+                    @endif
+                    @if($orcamento->prazo_dias)
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600 dark:text-gray-400">Prazo:</span>
+                            <span class="text-sm font-medium text-gray-900 dark:text-white">{{ $orcamento->prazo_dias }} dias</span>
+                        </div>
+                    @endif
+                </div>
+
+                <!-- Divisor -->
+                <div class="border-t border-gray-200 dark:border-gray-600 my-4"></div>
+
+                <!-- Resumo Financeiro -->
+                <div class="space-y-4 mb-6">
                     <div class="flex justify-between items-center">
                         <span class="text-sm text-gray-600 dark:text-gray-400">Total Pago:</span>
                         <span class="font-semibold text-green-600">R$ {{ number_format($orcamento->pagamentos->sum('valor'), 2, ',', '.') }}</span>
@@ -243,6 +262,44 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Quick Actions -->
+                <div class="space-y-3">
+                    <!-- Status Selector -->
+                    <div class="relative">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Status do Orçamento</label>
+                        <form id="status-form" method="POST" action="{{ route('orcamentos.update-status', $orcamento) }}" class="relative">
+                            @csrf
+                            @method('PATCH')
+                            <select name="status" onchange="document.getElementById('status-form').submit()" 
+                                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm appearance-none pr-8
+                                    @if($orcamento->status === 'aprovado') border-green-500 bg-green-50 dark:bg-green-900/20
+                                    @elseif($orcamento->status === 'analisando') border-yellow-500 bg-yellow-50 dark:bg-yellow-900/20
+                                    @elseif($orcamento->status === 'rejeitado') border-red-500 bg-red-50 dark:bg-red-900/20
+                                    @elseif($orcamento->status === 'quitado') border-purple-500 bg-purple-50 dark:bg-purple-900/20
+                                    @endif">
+                                <option value="analisando" {{ $orcamento->status === 'analisando' ? 'selected' : '' }}>🟡 Analisando</option>
+                                <option value="aprovado" {{ $orcamento->status === 'aprovado' ? 'selected' : '' }}>🟢 Aprovado</option>
+                                <option value="rejeitado" {{ $orcamento->status === 'rejeitado' ? 'selected' : '' }}>🔴 Rejeitado</option>
+                                <option value="quitado" {{ $orcamento->status === 'quitado' ? 'selected' : '' }}>🟣 Quitado</option>
+                            </select>
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- Novo Pagamento Button -->
+                    <a href="{{ route('pagamentos.create', ['orcamento_id' => $orcamento->id]) }}" 
+                       class="w-full inline-flex items-center justify-center px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-colors">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        Novo Pagamento
+                    </a>
+                </div>
             </div>
 
             <!-- Informações Gerais -->
@@ -257,18 +314,6 @@
                         <span class="text-sm text-gray-600 dark:text-gray-400">Última atualização:</span>
                         <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $orcamento->updated_at->format('d/m/Y H:i') }}</p>
                     </div>
-                    @if($orcamento->prazo_dias)
-                        <div>
-                            <span class="text-sm text-gray-600 dark:text-gray-400">Prazo:</span>
-                            <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $orcamento->prazo_dias }} dias</p>
-                        </div>
-                    @endif
-                    @if($orcamento->data_validade)
-                        <div>
-                            <span class="text-sm text-gray-600 dark:text-gray-400">Válido até:</span>
-                            <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $orcamento->data_validade->format('d/m/Y') }}</p>
-                        </div>
-                    @endif
                     @if($orcamento->modelo_proposta_id)
                         <div>
                             <span class="text-sm text-gray-600 dark:text-gray-400">Modelo usado:</span>
@@ -371,30 +416,7 @@ function copyContent() {
     });
 }
 
-function updateStatus(orcamentoId, status) {
-    if (confirm(`Tem certeza que deseja alterar o status para "${status}"?`)) {
-        fetch(`/api/orcamentos/${orcamentoId}/status`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            },
-            body: JSON.stringify({ status: status })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            } else {
-                alert('Erro ao atualizar status: ' + (data.message || 'Erro desconhecido'));
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Erro ao atualizar status');
-        });
-    }
-}
+// Removed AJAX implementation - now using traditional form submission for better reliability
 </script>
 @endpush
 @endsection

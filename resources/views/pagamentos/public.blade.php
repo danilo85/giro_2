@@ -44,13 +44,13 @@
         .logo {
             width: 80px;
             height: 80px;
-            background-color: #ddd;
+            /* background-color: #ddd; */
             border-radius: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 12px;
-            color: #666;
+            /* color: #666; */
         }
         
         .info-section {
@@ -120,6 +120,86 @@
             background-color: #0056b3;
         }
         
+        /* Media Queries para Mobile */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .recibo-container {
+                max-width: 100%;
+                padding: 20px;
+                margin: 0;
+                border-radius: 4px;
+            }
+            
+            .header {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            .titulo {
+                font-size: 32px;
+                margin-bottom: 10px;
+            }
+            
+            .logo {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .info-row {
+                flex-direction: column;
+                align-items: flex-start;
+                margin-bottom: 10px;
+            }
+            
+            .info-label {
+                min-width: auto;
+                margin-bottom: 5px;
+            }
+            
+            .valor-extenso {
+                padding: 10px;
+                margin: 15px 0;
+            }
+            
+            .assinatura-section {
+                margin-top: 40px;
+            }
+            
+            .assinatura-linha {
+                width: 250px;
+                margin: 30px auto 10px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .recibo-container {
+                padding: 15px;
+            }
+            
+            .titulo {
+                font-size: 28px;
+                letter-spacing: 1px;
+            }
+            
+            .logo {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .assinatura-linha {
+                width: 200px;
+            }
+            
+            .btn {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+        }
+        
         @media print {
             body {
                 background: white;
@@ -143,7 +223,7 @@
             <h1 class="titulo">RECIBO</h1>
             <div class="logo">
                 @if(optional($pagamento->orcamento->cliente->user)->getLogoByType('icone'))
-                    <img src="{{ asset($pagamento->orcamento->cliente->user->getLogoByType('icone')) }}" alt="Logo" style="max-height: 50px; max-width: 150px;">
+                    <img src="{{ asset('storage/' . $pagamento->orcamento->cliente->user->getLogoByType('icone')->caminho) }}" alt="Logo" style="max-height: 50px; max-width: 150px;">
                 @elseif(optional($pagamento->orcamento->cliente->user)->name)
                     <div style="width: 50px; height: 50px; background-color: #007bff; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px;">
                         {{ strtoupper(substr($pagamento->orcamento->cliente->user->name, 0, 1)) }}
@@ -191,7 +271,7 @@
         
         <div class="assinatura-section">
             @if(optional($pagamento->orcamento->cliente->user)->assinatura_digital)
-                <img src="{{ asset($pagamento->orcamento->cliente->user->assinatura_digital) }}" alt="Assinatura Digital" style="max-height: 80px; max-width: 200px; margin-bottom: 5px;">
+                <img src="{{ asset('storage/' . $pagamento->orcamento->cliente->user->assinatura_digital) }}" alt="Assinatura Digital" style="max-height: 80px; max-width: 200px; margin-bottom: 5px;">
                 <div class="assinatura-nome">{{ $pagamento->orcamento->cliente->user->name }}</div>
             @else
                 <div class="assinatura-linha"></div>

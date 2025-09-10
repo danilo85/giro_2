@@ -27,10 +27,11 @@ class ProfileController extends Controller
             'telefone_whatsapp' => ['nullable', 'string', 'max:20'],
             'email_extra' => ['nullable', 'email', 'max:255'],
             'biografia' => ['nullable', 'string', 'max:5000'],
+            'profissao' => ['nullable', 'string', 'max:100'],
             'avatar' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ]);
         
-        $data = $request->only(['name', 'email', 'cpf_cnpj', 'telefone_whatsapp', 'email_extra', 'biografia']);
+        $data = $request->only(['name', 'email', 'cpf_cnpj', 'telefone_whatsapp', 'email_extra', 'biografia', 'profissao']);
         
         // Handle avatar upload
         if ($request->hasFile('avatar')) {

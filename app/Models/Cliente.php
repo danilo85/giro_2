@@ -20,12 +20,15 @@ class Cliente extends Model
         'email',
         'telefone',
         'whatsapp',
-        'avatar'
+        'avatar',
+        'extrato_token',
+        'extrato_token_generated_at'
     ];
 
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'extrato_token_generated_at' => 'datetime',
     ];
 
     /**
@@ -61,5 +64,45 @@ class Cliente extends Model
             return asset('storage/' . $this->avatar);
         }
         return null;
+    }
+
+    /**
+     * Gerar token único para extrato público
+     */
+    public function generateExtratoToken()
+    {
+        $this->extrato_token = bin2hex(random_bytes(32));
+        $this->extrato_token_generated_at = now();
+        $this->save();
+        
+        return $this->extrato_token;
+    }
+
+    /**
+     * Regenerar token do extrato
+     */
+    public function regenerateExtratoToken()
+    {
+        return $this->generateExtratoToken();
+    }
+
+    /**
+     * Verificar se o token é válido
+     */
+    public function isValidExtratoToken($token)
+    {
+        return $this->extrato_token === $token && !empty($this->extrato_token);
+    }
+
+    /**
+     * Obter ou gerar token do extrato
+     */
+    public function getOrGenerateExtratoToken()
+    {
+        if (empty($this->extrato_token)) {
+            return $this->generateExtratoToken();
+        }
+        
+        return $this->extrato_token;
     }
 }

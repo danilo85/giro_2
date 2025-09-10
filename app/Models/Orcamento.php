@@ -241,13 +241,18 @@ class Orcamento extends Model
         $this->status = $novoStatus;
         $this->save();
 
-        // Registrar no histórico
-        HistoricoOrcamento::create([
-            'orcamento_id' => $this->id,
-            'acao' => 'status_atualizado',
-            'descricao' => $descricao ?? "Status alterado de {$statusAnterior} para {$novoStatus}",
-            'user_id' => Auth::id()
-        ]);
+        // Registrar no histórico (temporariamente desabilitado para debug)
+        try {
+            HistoricoOrcamento::create([
+                'orcamento_id' => $this->id,
+                'acao' => 'status_atualizado',
+                'descricao' => $descricao ?? "Status alterado de {$statusAnterior} para {$novoStatus}",
+                'user_id' => Auth::check() ? Auth::id() : null
+            ]);
+        } catch (\Exception $e) {
+            // Log do erro mas não falha a operação
+            \Log::error('Erro ao registrar histórico: ' . $e->getMessage());
+        }
 
         return $this;
     }

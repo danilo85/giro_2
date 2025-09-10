@@ -4,36 +4,65 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\ActivityLog;
-use Carbon\Carbon;
+use App\Models\Orcamento;
+use App\Models\HistoricoOrcamento;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
-    /**
-     * Display the dashboard.
-     */
     public function index()
     {
-        // Get statistics
-        $totalUsers = User::count();
-        $activeUsers = User::where('is_active', true)->count();
-        $adminUsers = User::where('is_admin', true)->count();
+        $userId = Auth::id();
         
-        // Get today's activities count
-        $todayActivities = ActivityLog::whereDate('created_at', Carbon::today())->count();
+        // Estatísticas de orçamentos
+        $totalOrcamentos = Orcamento::forUser($userId)->count();
+        $orcamentosAprovados = Orcamento::forUser($userId)->byStatus('aprovado')->count();
+        $orcamentosPendentes = Orcamento::forUser($userId)->whereIn('status', ['rascunho', 'analisando'])->count();
+        $valorTotal = Orcamento::forUser($userId)->sum('valor_total');
         
-        // Get recent activities (last 10)
-        $recentActivities = ActivityLog::with('user')
-            ->orderBy('created_at', 'desc')
-            ->limit(10)
+        // Taxa de conversão
+        $taxaConversao = $totalOrcamentos > 0 ? round(($orcamentosAprovados / $totalOrcamentos) * 100, 1) : 0;
+        
+        // Orçamentos recentes
+        $orcamentosRecentes = Orcamento::with(['cliente', 'autores'])
+            ->forUser($userId)
+            ->latest()
+            ->take(5)
             ->get();
         
+        // Atividades recentes
+        $atividades_recentes = HistoricoOrcamento::with(['orcamento', 'user'])
+            ->whereHas('orcamento.cliente', function($q) use ($userId) {
+                $q->where('user_id', $userId);
+            })
+            ->latest()
+            ->take(10)
+            ->get();
+        
+        // Dados para gráfico de orçamentos por status
+        $statusData = Orcamento::forUser($userId)
+            ->select('status', DB::raw('count(*) as count'), DB::raw('sum(valor_total) as valor'))
+            ->groupBy('status')
+            ->get();
+            
+        $stats_por_status = [];
+        foreach($statusData as $item) {
+            $stats_por_status[$item->status] = [
+                'count' => $item->count,
+                'valor' => $item->valor ?? 0
+            ];
+        }
+        
         return view('dashboard', compact(
-            'totalUsers',
-            'activeUsers', 
-            'adminUsers',
-            'todayActivities',
-            'recentActivities'
+            'totalOrcamentos',
+            'orcamentosAprovados', 
+            'orcamentosPendentes',
+            'valorTotal',
+            'taxaConversao',
+            'orcamentosRecentes',
+            'atividades_recentes',
+            'stats_por_status'
         ));
     }
 }

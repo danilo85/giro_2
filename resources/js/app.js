@@ -2,62 +2,63 @@ import './bootstrap';
 import '../css/app.css';
 import Alpine from 'alpinejs';
 
-// Initialize Alpine.js store before Alpine starts
-document.addEventListener('alpine:init', () => {
-    Alpine.store('sidebar', {
-        open: false,
-        collapsed: false,
-        isMobile: false,
-
-        init() {
-            this.isMobile = window.innerWidth < 768;
-            this.updateState();
-            this.setupResizeListener();
-        },
-
-        updateState() {
-            if (this.isMobile) {
-                this.collapsed = true;
-                this.open = false;
-            } else {
-                this.collapsed = localStorage.getItem('sidebarCollapsed') === 'true';
-                this.open = true;
-            }
-        },
-
-        setupResizeListener() {
-            let resizeTimeout;
-            window.addEventListener('resize', () => {
-                clearTimeout(resizeTimeout);
-                resizeTimeout = setTimeout(() => {
-                    const wasMobile = this.isMobile;
-                    this.isMobile = window.innerWidth < 768;
-                    if (wasMobile !== this.isMobile) {
-                        this.updateState();
-                    }
-                }, 150);
-            });
-        },
-
-        toggle() {
-            if (this.isMobile) {
-                this.open = !this.open;
-            } else {
-                this.collapsed = !this.collapsed;
-                localStorage.setItem('sidebarCollapsed', this.collapsed);
-            }
-        },
-
-        close() {
-            if (this.isMobile) {
-                this.open = false;
-            }
-        }
-    });
-});
-
 // Initialize Alpine.js
 window.Alpine = Alpine;
+
+// Initialize Alpine.js store before Alpine starts
+Alpine.store('sidebar', {
+    open: false,
+    collapsed: false,
+    isMobile: false,
+
+    init() {
+        this.isMobile = window.innerWidth < 768;
+        this.updateState();
+        this.setupResizeListener();
+    },
+
+    updateState() {
+        if (this.isMobile) {
+            this.open = false; // Menu mobile inicia fechado/escondido
+            this.collapsed = false; // Não usa colapso em mobile
+        } else {
+            this.collapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+            this.open = true;
+        }
+    },
+
+    setupResizeListener() {
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                const wasMobile = this.isMobile;
+                this.isMobile = window.innerWidth < 768;
+                if (wasMobile !== this.isMobile) {
+                    this.updateState();
+                }
+            }, 150);
+        });
+    },
+
+    toggle() {
+        console.log('Sidebar toggle chamado!');
+        if (this.isMobile) {
+            // Em mobile, apenas alterna entre escondido/visível
+            this.open = !this.open;
+        } else {
+            this.collapsed = !this.collapsed;
+            localStorage.setItem('sidebarCollapsed', this.collapsed);
+        }
+    },
+
+    close() {
+        if (this.isMobile) {
+            this.open = false;
+        }
+    }
+});
+
 Alpine.start();
 
 // Theme management

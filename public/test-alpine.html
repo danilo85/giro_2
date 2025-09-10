@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Alpine.js</title>
+    <script src="http://localhost:5174/@vite/client" type="module"></script>
+    <script type="module" src="http://localhost:5174/resources/js/app.js"></script>
+    <link rel="stylesheet" href="http://localhost:5174/resources/css/app.css">
+</head>
+<body class="p-8" x-data="{}" x-init="$store.sidebar.init()">
+    <h1 class="text-2xl font-bold mb-4">Teste do Menu Hambúrguer</h1>
+    
+    <div class="mb-4">
+        <p>Estado do sidebar:</p>
+        <ul class="list-disc ml-6">
+            <li>Open: <span x-text="$store.sidebar.open"></span></li>
+            <li>Collapsed: <span x-text="$store.sidebar.collapsed"></span></li>
+            <li>IsMobile: <span x-text="$store.sidebar.isMobile"></span></li>
+        </ul>
+    </div>
+    
+    <button @click="$store.sidebar.toggle()" 
+            class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+        Toggle Sidebar
+    </button>
+    
+    <div class="mt-4">
+        <p>Clique no botão acima para testar o toggle do sidebar.</p>
+        <p>Verifique o console do navegador para erros.</p>
+    </div>
+    
+    <script>
+        console.log('Teste Alpine.js carregado');
+        
+        // Verificar se Alpine está disponível
+        document.addEventListener('alpine:init', () => {
+            console.log('Alpine.js inicializado');
+            console.log('Alpine object:', window.Alpine);
+            console.log('Store sidebar:', Alpine.store('sidebar'));
+            
+            // Tentar registrar o store manualmente se não existir
+            if (!Alpine.store('sidebar')) {
+                console.log('Store sidebar não encontrado, registrando manualmente...');
+                Alpine.store('sidebar', {
+                    open: false,
+                    collapsed: false,
+                    isMobile: false,
+                    init() {
+                        this.isMobile = window.innerWidth < 768;
+                        this.updateState();
+                    },
+                    updateState() {
+                        if (this.isMobile) {
+                            this.collapsed = true;
+                            this.open = false;
+                        } else {
+                            this.collapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+                            this.open = true;
+                        }
+                    },
+                    toggle() {
+                        console.log('Toggle chamado!');
+                        if (this.isMobile) {
+                            this.open = !this.open;
+                        } else {
+                            this.collapsed = !this.collapsed;
+                            localStorage.setItem('sidebarCollapsed', this.collapsed);
+                        }
+                    },
+                    close() {
+                        if (this.isMobile) {
+                            this.open = false;
+                        }
+                    }
+                });
+            }
+        });
+        
+        // Verificar após Alpine estar pronto
+        document.addEventListener('alpine:initialized', () => {
+            console.log('Alpine.js totalmente inicializado');
+            console.log('Store sidebar após inicialização:', Alpine.store('sidebar'));
+            
+            // Inicializar o store
+            if (Alpine.store('sidebar')) {
+                Alpine.store('sidebar').init();
+                console.log('Store inicializado:', Alpine.store('sidebar'));
+            }
+        });
+    </script>
+</body>
+</html>

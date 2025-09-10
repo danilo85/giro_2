@@ -12,9 +12,35 @@ class BankController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $banks = Bank::forUser(Auth::id())->active()->get();
+        $query = Bank::forUser(Auth::id());
+        
+        // Filtro por status
+        if ($request->has('status')) {
+            if ($request->status === 'ativa') {
+                $query->where('ativo', true);
+            } elseif ($request->status === 'inativa') {
+                $query->where('ativo', false);
+            }
+            // Se for 'todos' ou qualquer outro valor, não aplica filtro
+        } else {
+            // Por padrão, mostrar apenas bancos ativos
+            $query->where('ativo', true);
+        }
+        
+        // Filtro por busca
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('nome', 'like', "%{$search}%")
+                  ->orWhere('banco', 'like', "%{$search}%")
+                  ->orWhere('agencia', 'like', "%{$search}%")
+                  ->orWhere('conta', 'like', "%{$search}%");
+            });
+        }
+        
+        $banks = $query->get();
         return view('financial.banks.index', compact('banks'));
     }
 

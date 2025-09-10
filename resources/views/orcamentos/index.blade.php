@@ -6,66 +6,19 @@
 <div class="max-w-7xl mx-auto">
     <!-- Breadcrumb -->
     <x-breadcrumb :items="[
-        ['label' => 'Home', 'url' => route('dashboard'), 'icon' => 'fas fa-home'],
+        ['label' => 'Home', 'url' => route('dashboard')],
         ['label' => 'Orçamentos', 'url' => '#'],
         ['label' => 'Listagem']
     ]" />
     
     <!-- Header -->
     <div class="mb-8">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+        <div class="flex items-center justify-between mb-8">
             <div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Orçamentos</h1>
-                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Gerencie todos os orçamentos do sistema</p>
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Orçamentos</h1>
+                <p class="text-gray-600 dark:text-gray-400 mt-1">Gerencie todos os orçamentos do sistema</p>
             </div>
-            <!-- Busca expansível -->
-            <div class="mt-4 sm:mt-0 flex items-center space-x-3">
-                <button id="searchToggle" type="button" 
-                        class="inline-flex items-center px-3 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                </button>
-                <a href="{{ route('modelos-propostas.index') }}"
-                   class="inline-flex items-center p-2 bg-gray-500 hover:bg-gray-600 text-white rounded-md transition-colors"
-                   title="Modelos">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                    </svg>
-                </a>
- 
-            </div>
-        </div>
-        
-        <!-- Container de busca expansível -->
-        <div id="searchContainer" class="{{ request()->filled('search') ? '' : 'hidden' }} mt-4">
-            <form method="GET" action="{{ route('orcamentos.index') }}" class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
-                <div class="flex items-center gap-3">
-                    <div class="flex-1 relative">
-                        <input type="text" 
-                               id="search" 
-                               name="search" 
-                               value="{{ request('search') }}"
-                               placeholder="Buscar por cliente, título ou autor..."
-                               class="w-full pl-10 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
-                        <svg class="absolute left-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                        @if(request()->filled('search'))
-                            <button type="button" id="clearSearch" class="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </button>
-                        @endif
-                    </div>
-                    <button type="button" id="closeSearch" class="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
-            </form>
+    
         </div>
     </div>
 
@@ -128,8 +81,35 @@
         </div>
     </div>
 
-    <!-- Filtros rápidos por status -->
+
+    <!-- Filtros -->
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 mb-6">
+        <!-- Filtro de busca completo -->
+        <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+            <div class="flex items-center gap-3">
+                <div class="flex-1 relative">
+                    <input type="text" 
+                           id="search" 
+                           name="search" 
+                           value="{{ request('search') }}"
+                           placeholder="Buscar por cliente, título ou autor..."
+                           class="w-full pl-10 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
+                    <svg class="absolute left-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    @if(request()->filled('search'))
+                        <button type="button" id="clearSearch" class="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    @endif
+                </div>
+
+            </div>
+        </div>
+        
+        <!-- Filtros rápidos por status -->
         <div class="p-4">
             <div class="flex flex-wrap gap-2">
                 <a href="{{ route('orcamentos.index') }}" 
@@ -176,7 +156,57 @@
             <!-- Grid de Cards -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
                 @foreach($orcamentos as $orcamento)
-                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all duration-200 flex flex-col h-full">
+                    @php
+                        $cardColors = [
+                            'rascunho' => [
+                                'bg' => 'bg-gray-50 dark:bg-gray-800',
+                                'border' => 'border-gray-200 dark:border-gray-600',
+                                'hover' => 'hover:bg-gray-50 dark:hover:bg-gray-700',
+                                'section' => 'bg-gray-100 dark:bg-gray-700',
+                                'text' => 'text-gray-600 dark:text-gray-300'
+                            ],
+                            'analisando' => [
+                                'bg' => 'bg-yellow-50 dark:bg-yellow-900/20',
+                                'border' => 'border-yellow-200 dark:border-yellow-600',
+                                'hover' => 'hover:bg-yellow-50 dark:hover:bg-yellow-200/30',
+                                'section' => 'bg-yellow-100 dark:bg-yellow-800/40',
+                                'text' => 'text-yellow-700 dark:text-yellow-300'
+                            ],
+                            'aprovado' => [
+                                'bg' => 'bg-green-50 dark:bg-green-900/20',
+                                'border' => 'border-green-200 dark:border-green-600',
+                                'hover' => 'hover:bg-green-50 dark:hover:bg-green-800/30',
+                                'section' => 'bg-green-100 dark:bg-green-800/40',
+                                'text' => 'text-green-700 dark:text-green-300'
+                            ],
+                            'rejeitado' => [
+                                'bg' => 'bg-red-50 dark:bg-red-900/20',
+                                'border' => 'border-red-200 dark:border-red-600',
+                                'hover' => 'hover:bg-red-50 dark:hover:bg-red-800/30',
+                                'section' => 'bg-red-100 dark:bg-red-800/40',
+                                'text' => 'text-red-700 dark:text-red-300'
+                            ],
+                            'finalizado' => [
+                                'bg' => 'bg-blue-50 dark:bg-blue-900/20',
+                                'border' => 'border-blue-200 dark:border-blue-600',
+                                'hover' => 'hover:bg-blue-50 dark:hover:bg-blue-800/30',
+                                'section' => 'bg-blue-100 dark:bg-blue-800/40',
+                                'text' => 'text-blue-700 dark:text-blue-300'
+                            ],
+                            'pago' => [
+                                'bg' => 'bg-purple-50 dark:bg-purple-900/20',
+                                'border' => 'border-purple-200 dark:border-purple-600',
+                                'hover' => 'hover:bg-purple-50 dark:hover:bg-purple-800/30',
+                                'section' => 'bg-purple-100 dark:bg-purple-800/40',
+                                'text' => 'text-purple-700 dark:text-purple-300'
+                            ]
+                        ];
+                        $currentColors = $cardColors[$orcamento->status] ?? $cardColors['rascunho'];
+                    @endphp
+                    <div class="{{ $currentColors['bg'] }} rounded-lg shadow-sm border {{ $currentColors['border'] }} {{ $currentColors['hover'] }} transition-all duration-200 flex flex-col h-full relative hover:shadow-md">
+                        
+
+                        
                         <!-- Header do Card -->
                         <div class="p-6 pb-4">
                             <div class="flex items-center justify-between mb-4">
@@ -207,7 +237,7 @@
                                     #{{ $orcamento->id }}
                                 </span>
                                 
-                                <!-- Status Badge -->
+                                <!-- Status Badge with Dropdown -->
                                 @php
                                     $statusColors = [
                                         'rascunho' => 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300',
@@ -217,45 +247,64 @@
                                         'finalizado' => 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
                                         'pago' => 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
                                     ];
+                                    $allStatuses = [
+                                        'rascunho' => 'Rascunho',
+                                        'analisando' => 'Analisando',
+                                        'aprovado' => 'Aprovado',
+                                        'rejeitado' => 'Rejeitado',
+                                        'finalizado' => 'Finalizado',
+                                        'pago' => 'Pago'
+                                    ];
                                 @endphp
-                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium {{ $statusColors[$orcamento->status] ?? 'bg-gray-100 text-gray-800' }}">
-                                    {{ ucfirst($orcamento->status) }}
-                                </span>
+                                <div class="relative inline-block status-dropdown" data-orcamento-id="{{ $orcamento->id }}">
+                                    <!-- Current Status Badge -->
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium cursor-pointer transition-all duration-200 hover:shadow-md {{ $statusColors[$orcamento->status] ?? 'bg-gray-100 text-gray-800' }}">
+                                        {{ ucfirst($orcamento->status) }}
+                                        <svg class="w-3 h-3 ml-1 transition-transform duration-200" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                        </svg>
+                                    </span>
+                                    
+                                    <!-- Dropdown Menu -->
+                                    <div class="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 w-32 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-600 opacity-0 invisible transition-all duration-200 z-50 dropdown-menu">
+                                        @foreach($allStatuses as $statusKey => $statusLabel)
+                                            @if($statusKey !== $orcamento->status)
+                                                @php
+                                                    $textColors = [
+                                                        'rascunho' => 'text-gray-800 dark:text-gray-300',
+                                                        'analisando' => 'text-yellow-800 dark:text-yellow-200',
+                                                        'aprovado' => 'text-green-800 dark:text-green-200',
+                                                        'rejeitado' => 'text-red-800 dark:text-red-200',
+                                                        'finalizado' => 'text-blue-800 dark:text-blue-200',
+                                                        'pago' => 'text-purple-800 dark:text-purple-200'
+                                                    ];
+                                                @endphp
+                                                <button type="button" 
+                                                        class="w-full text-left px-3 py-2 text-xs font-medium rounded-lg transition-all duration-150 hover:bg-gray-50 dark:hover:bg-gray-700 status-option {{ $textColors[$statusKey] }}" 
+                                                        data-status="{{ $statusKey }}"
+                                                        data-orcamento-id="{{ $orcamento->id }}">
+                                                    {{ $statusLabel }}
+                                                </button>
+                                            @endif
+                                        @endforeach
+                                    </div>
+                                </div>
+                                
+
                             </div>
                         </div>
 
                         <!-- Detalhes do Orçamento -->
                         <div class="px-6 pb-6">
                             <div class="space-y-3">
-                                <!-- Informações do Cliente -->
-                                <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
-                                    <div class="space-y-2">
-                                        <div class="flex items-center text-sm">
-                                            <svg class="w-4 h-4 text-gray-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
-                                            </svg>
-                                            <span class="text-gray-900 dark:text-white truncate">{{ $orcamento->cliente->nome }}</span>
-                                        </div>
-                                        <div class="flex items-center text-sm">
-                                            <svg class="w-4 h-4 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                                            </svg>
-                                            <span class="text-gray-900 dark:text-white truncate">{{ $orcamento->cliente->email }}</span>
-                                        </div>
-                                    </div>
-                                </div>
                                 
                                 <!-- Valor e Data -->
-                                <div class="text-center bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                                <div class="text-center {{ $currentColors['section'] }} rounded-lg p-4 border {{ $currentColors['border'] }}">
                                     <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Valor Total</p>
                                     <p class="text-2xl font-bold text-green-600 dark:text-green-400">
                                         R$ {{ number_format($orcamento->valor_total, 2, ',', '.') }}
                                     </p>
-                                    @if($orcamento->pagamentos->count() > 0)
-                                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                            Pago: R$ {{ number_format($orcamento->pagamentos->sum('valor'), 2, ',', '.') }}
-                                        </p>
-                                    @endif
+
                                 </div>
                                 
                                 <!-- Data de Criação -->
@@ -271,7 +320,7 @@
                         <div class="flex-grow"></div>
 
                         <!-- Autores e Actions Footer -->
-                        <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 mt-auto">
+                        <div class="px-6 py-4 border-t {{ $currentColors['border'] }} mt-auto">
                             <div class="flex items-center justify-between mb-3">
                                 <div class="flex -space-x-2">
                                     @foreach($orcamento->autores->take(3) as $autor)
@@ -293,7 +342,22 @@
                                         </div>
                                     @endif
                                 </div>
-                                <span class="text-xs text-gray-500 dark:text-gray-400">{{ $orcamento->autores->count() }} autor{{ $orcamento->autores->count() !== 1 ? 'es' : '' }}</span>
+                                <!-- Avatar do Cliente -->
+                                <div class="flex items-center space-x-2">
+                                    @if($orcamento->cliente->avatar)
+                                        <img src="{{ Storage::url($orcamento->cliente->avatar) }}" 
+                                             alt="{{ $orcamento->cliente->nome }}" 
+                                             title="{{ $orcamento->cliente->nome }}"
+                                             class="w-8 h-8 rounded-full object-cover border-2 border-white dark:border-gray-800">
+                                    @else
+                                        <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center border-2 border-white dark:border-gray-800" 
+                                             title="{{ $orcamento->cliente->nome }}">
+                                            <span class="text-white font-semibold text-xs">
+                                                {{ strtoupper(substr($orcamento->cliente->nome, 0, 1)) }}
+                                            </span>
+                                        </div>
+                                    @endif
+                                </div>
                             </div>
                             
                             <div class="flex items-center justify-between">
@@ -525,7 +589,311 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 500);
         });
     }
+    
+    // Status Dropdown Functionality
+    const statusDropdowns = document.querySelectorAll('.status-dropdown');
+    
+    statusDropdowns.forEach(dropdown => {
+        const badge = dropdown.querySelector('span');
+        const menu = dropdown.querySelector('.dropdown-menu');
+        const arrow = dropdown.querySelector('svg');
+        let hoverTimeout;
+        
+        // Store original badge state for error recovery
+        dropdown.dataset.originalClasses = badge.className;
+        dropdown.dataset.originalText = badge.innerHTML;
+        
+        // Show dropdown on hover
+        dropdown.addEventListener('mouseenter', function() {
+            clearTimeout(hoverTimeout);
+            menu.classList.remove('opacity-0', 'invisible');
+            menu.classList.add('opacity-100', 'visible');
+            arrow.style.transform = 'rotate(180deg)';
+        });
+        
+        // Hide dropdown when leaving
+        dropdown.addEventListener('mouseleave', function() {
+            hoverTimeout = setTimeout(() => {
+                menu.classList.remove('opacity-100', 'visible');
+                menu.classList.add('opacity-0', 'invisible');
+                arrow.style.transform = 'rotate(0deg)';
+            }, 150);
+        });
+        
+        // Handle status option clicks
+        const statusOptions = dropdown.querySelectorAll('.status-option');
+        statusOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                const newStatus = this.dataset.status;
+                const orcamentoId = this.dataset.orcamentoId;
+                
+                // Show loading state
+                badge.innerHTML = '<div class="flex items-center"><div class="animate-spin rounded-full h-3 w-3 border-b-2 border-current mr-1"></div>Atualizando...</div>';
+                
+                // Update status via AJAX
+                updateOrcamentoStatus(orcamentoId, newStatus, dropdown);
+            });
+        });
+    });
 });
+
+// Function to update orcamento status
+function updateOrcamentoStatus(orcamentoId, newStatus, dropdownElement) {
+    fetch(`/orcamentos/${orcamentoId}/status`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({ status: newStatus })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            // Update badge dynamically without reload
+            updateBadgeDisplay(dropdownElement, newStatus);
+            
+            // Update card colors dynamically
+            updateCardColors(dropdownElement, newStatus);
+            
+            // Hide dropdown
+            const menu = dropdownElement.querySelector('.dropdown-menu');
+            const arrow = dropdownElement.querySelector('svg');
+            menu.classList.remove('opacity-100', 'visible');
+            menu.classList.add('opacity-0', 'invisible');
+            arrow.style.transform = 'rotate(0deg)';
+            
+            // Show success feedback
+            showStatusUpdateFeedback(dropdownElement, 'success');
+        } else {
+            throw new Error(data.message || 'Erro ao atualizar status');
+        }
+    })
+    .catch(error => {
+        console.error('Erro:', error);
+        
+        // Restore original badge state
+        restoreOriginalBadge(dropdownElement);
+        
+        // Show error feedback
+        showStatusUpdateFeedback(dropdownElement, 'error', error.message);
+    });
+}
+
+// Function to update badge display
+function updateBadgeDisplay(dropdownElement, newStatus) {
+    const badge = dropdownElement.querySelector('span');
+    const statusColors = {
+        'rascunho': 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200',
+        'analisando': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
+        'aprovado': 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+        'rejeitado': 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
+        'finalizado': 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+        'pago': 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
+    };
+    const statusLabels = {
+        'rascunho': 'Rascunho',
+        'analisando': 'Analisando',
+        'aprovado': 'Aprovado',
+        'rejeitado': 'Rejeitado',
+        'finalizado': 'Finalizado',
+        'pago': 'Pago'
+    };
+    
+    // Remove all status classes
+    Object.values(statusColors).forEach(colorClass => {
+        colorClass.split(' ').forEach(cls => badge.classList.remove(cls));
+    });
+    
+    // Add new status classes
+    const newColorClasses = statusColors[newStatus] || 'bg-gray-100 text-gray-800';
+    newColorClasses.split(' ').forEach(cls => badge.classList.add(cls));
+    
+    // Update badge text
+    badge.innerHTML = `${statusLabels[newStatus] || newStatus} <svg class="w-3 h-3 ml-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>`;
+}
+
+// Function to restore original badge state
+function restoreOriginalBadge(dropdownElement) {
+    const badge = dropdownElement.querySelector('span');
+    const originalStatus = dropdownElement.dataset.originalStatus;
+    const originalText = dropdownElement.dataset.originalText;
+    const originalClasses = dropdownElement.dataset.originalClasses;
+    
+    if (originalClasses && originalText) {
+        badge.className = originalClasses;
+        badge.innerHTML = originalText;
+    }
+}
+
+// Function to update card colors dynamically
+function updateCardColors(dropdownElement, newStatus) {
+    // Find the card container (parent div with card classes)
+    const card = dropdownElement.closest('div[class*="bg-"]');
+    if (!card) return;
+    
+    // Define color mappings (same as PHP)
+    const cardColors = {
+        'rascunho': {
+            'bg': 'bg-gray-50 dark:bg-gray-800',
+            'border': 'border-gray-200 dark:border-gray-600',
+            'hover': 'hover:bg-gray-50 dark:hover:bg-gray-700',
+            'section': 'bg-gray-100 dark:bg-gray-700',
+            'text': 'text-gray-600 dark:text-gray-300'
+        },
+        'analisando': {
+            'bg': 'bg-yellow-50 dark:bg-yellow-900/20',
+            'border': 'border-yellow-200 dark:border-yellow-600',
+            'hover': 'hover:bg-yellow-50 dark:hover:bg-yellow-200/30',
+            'section': 'bg-yellow-100 dark:bg-yellow-800/40',
+            'text': 'text-yellow-700 dark:text-yellow-300'
+        },
+        'aprovado': {
+            'bg': 'bg-green-50 dark:bg-green-900/20',
+            'border': 'border-green-200 dark:border-green-600',
+            'hover': 'hover:bg-green-50 dark:hover:bg-green-800/30',
+            'section': 'bg-green-100 dark:bg-green-800/40',
+            'text': 'text-green-700 dark:text-green-300'
+        },
+        'rejeitado': {
+            'bg': 'bg-red-50 dark:bg-red-900/20',
+            'border': 'border-red-200 dark:border-red-600',
+            'hover': 'hover:bg-red-50 dark:hover:bg-red-800/30',
+            'section': 'bg-red-100 dark:bg-red-800/40',
+            'text': 'text-red-700 dark:text-red-300'
+        },
+        'finalizado': {
+            'bg': 'bg-blue-50 dark:bg-blue-900/20',
+            'border': 'border-blue-200 dark:border-blue-600',
+            'hover': 'hover:bg-blue-50 dark:hover:bg-blue-800/30',
+            'section': 'bg-blue-100 dark:bg-blue-800/40',
+            'text': 'text-blue-700 dark:text-blue-300'
+        },
+        'pago': {
+            'bg': 'bg-purple-50 dark:bg-purple-900/20',
+            'border': 'border-purple-200 dark:border-purple-600',
+            'hover': 'hover:bg-purple-50 dark:hover:bg-purple-800/30',
+            'section': 'bg-purple-100 dark:bg-purple-800/40',
+            'text': 'text-purple-700 dark:text-purple-300'
+        }
+    };
+    
+    const newColors = cardColors[newStatus] || cardColors['rascunho'];
+    const allColors = Object.values(cardColors);
+    
+    // Remove all old color classes from card
+    allColors.forEach(colorSet => {
+        Object.values(colorSet).forEach(classString => {
+            classString.split(' ').forEach(cls => {
+                if (cls.trim()) card.classList.remove(cls.trim());
+            });
+        });
+    });
+    
+    // Add new color classes to card
+    newColors.bg.split(' ').forEach(cls => {
+        if (cls.trim()) card.classList.add(cls.trim());
+    });
+    newColors.border.split(' ').forEach(cls => {
+        if (cls.trim()) card.classList.add(cls.trim());
+    });
+    newColors.hover.split(' ').forEach(cls => {
+        if (cls.trim()) card.classList.add(cls.trim());
+    });
+    
+    // Update section colors (client info and value sections)
+    const sections = card.querySelectorAll('div[class*="bg-"][class*="rounded-lg"][class*="p-4"]');
+    sections.forEach(section => {
+        // Remove old section colors
+        allColors.forEach(colorSet => {
+            colorSet.section.split(' ').forEach(cls => {
+                if (cls.trim()) section.classList.remove(cls.trim());
+            });
+            colorSet.border.split(' ').forEach(cls => {
+                if (cls.trim()) section.classList.remove(cls.trim());
+            });
+        });
+        
+        // Add new section colors
+        newColors.section.split(' ').forEach(cls => {
+            if (cls.trim()) section.classList.add(cls.trim());
+        });
+        newColors.border.split(' ').forEach(cls => {
+            if (cls.trim()) section.classList.add(cls.trim());
+        });
+    });
+    
+    // Update footer border
+    const footer = card.querySelector('.border-t');
+    if (footer) {
+        // Remove old border colors
+        allColors.forEach(colorSet => {
+            colorSet.border.split(' ').forEach(cls => {
+                if (cls.trim()) footer.classList.remove(cls.trim());
+            });
+        });
+        
+        // Add new border color
+        newColors.border.split(' ').forEach(cls => {
+            if (cls.trim()) footer.classList.add(cls.trim());
+        });
+    }
+}
+
+// Function to show status update feedback
+function showStatusUpdateFeedback(dropdownElement, type, message = '') {
+    const badge = dropdownElement.querySelector('span');
+    const originalContent = badge.innerHTML;
+    
+    if (type === 'success') {
+        const tempContent = badge.innerHTML;
+        badge.innerHTML = '<div class="flex items-center"><svg class="w-3 h-3 mr-1 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Atualizado!</div>';
+        setTimeout(() => {
+            badge.innerHTML = tempContent;
+        }, 2000);
+    } else if (type === 'error') {
+        alert('Erro ao atualizar o status: ' + message);
+    }
+}
+
+// Auto search functionality with debounce
+let searchTimeout;
+const searchInput = document.getElementById('search');
+const clearButton = document.getElementById('clearSearch');
+
+if (searchInput) {
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        
+        searchTimeout = setTimeout(() => {
+            const searchValue = this.value.trim();
+            const currentUrl = new URL(window.location);
+            
+            if (searchValue) {
+                currentUrl.searchParams.set('search', searchValue);
+            } else {
+                currentUrl.searchParams.delete('search');
+            }
+            
+            // Preserve other parameters like status
+            window.location.href = currentUrl.toString();
+        }, 500); // 500ms debounce
+    });
+}
+
+if (clearButton) {
+    clearButton.addEventListener('click', function() {
+        const currentUrl = new URL(window.location);
+        currentUrl.searchParams.delete('search');
+        window.location.href = currentUrl.toString();
+    });
+}
 </script>
 @endpush
 @endsection

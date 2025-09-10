@@ -91,7 +91,7 @@
                 <div class="flex items-start space-x-6">
                     {{-- Logo/Avatar do usuário --}}
                     @if(optional($orcamento->cliente->user)->avatar && file_exists(storage_path('app/public/' . $orcamento->cliente->user->avatar)))
-                        <img src="{{ $orcamento->cliente->user->avatar_url }}" alt="Logo da Empresa" class="h-16 w-16 rounded-lg object-cover border border-gray-200">
+                        <img src="{{ optional($orcamento->cliente->user)->avatar_url }}" alt="Logo da Empresa" class="h-16 w-16 rounded-lg object-cover border border-gray-200">
                     @else
                         <div class="bg-gray-800 text-white h-16 w-16 flex items-center justify-center rounded-lg font-bold text-lg">
                             <span class="text-white">{{ strtoupper(substr(optional($orcamento->cliente->user)->name ?? 'U', 0, 1)) }}</span>

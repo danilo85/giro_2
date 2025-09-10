@@ -276,78 +276,471 @@
         </div>
     </div>
     
-    <!-- Orçamentos do Cliente -->
+    <!-- Timeline de Orçamentos do Cliente -->
     @if($cliente->orcamentos->count() > 0)
     <div class="mt-8">
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
             <div class="p-6">
                 <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Orçamentos</h2>
-                    <a href="{{ route('orcamentos.create', ['cliente_id' => $cliente->id]) }}" 
-                       class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors">
-                        Novo Orçamento
-                    </a>
+                    <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Timeline de Orçamentos</h2>
+                    <div class="flex items-center space-x-3">
+                        <!-- Botão Gerar Link -->
+                        <button id="generateLinkBtn" 
+                                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors flex items-center space-x-2"
+                                onclick="generateExtractLink({{ $cliente->id }})">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
+                            </svg>
+                            <span>Gerar Link</span>
+                        </button>
+                        
+                        <!-- Botão Desativar Link -->
+                        <button id="deactivateLinkBtn" 
+                                class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors flex items-center space-x-2 hidden"
+                                onclick="deactivateExtractLink({{ $cliente->id }})">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L18.364 5.636M5.636 18.364l12.728-12.728"></path>
+                            </svg>
+                            <span>Desativar Link</span>
+                        </button>
+                        
+                        <!-- Botão Ver Extrato -->
+                        <button id="viewExtractBtn" 
+                                class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors flex items-center space-x-2 hidden"
+                                onclick="viewExtract()">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                            <span>Ver Extrato</span>
+                        </button>
+                        
+                        <a href="{{ route('orcamentos.create', ['cliente_id' => $cliente->id]) }}" 
+                           class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg transition-colors">
+                            Novo Orçamento
+                        </a>
+                    </div>
                 </div>
                 
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                        <thead class="bg-gray-50 dark:bg-gray-700">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Título</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Valor</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Data</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                            @foreach($cliente->orcamentos->sortByDesc('created_at') as $orcamento)
-                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900 dark:text-white">{{ $orcamento->titulo }}</div>
-                                    <div class="text-sm text-gray-500 dark:text-gray-400">#{{ $orcamento->id }}</div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                                    R$ {{ number_format($orcamento->valor_total, 2, ',', '.') }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    @php
-                                        $statusColors = [
-                                            'rascunho' => 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300',
-                                            'enviado' => 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
-                                            'aprovado' => 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
-                                            'rejeitado' => 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
-                                            'cancelado' => 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300',
-                                            'quitado' => 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300'
-                                        ];
-                                    @endphp
-                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full {{ $statusColors[$orcamento->status] ?? 'bg-gray-100 text-gray-800' }}">
-                                        {{ ucfirst($orcamento->status) }}
+                <!-- Timeline Container -->
+                <div class="relative">
+                    <!-- Timeline Line -->
+                    <div class="absolute left-8 top-0 bottom-0 w-0.5 bg-gray-200 dark:bg-gray-600"></div>
+                    
+                    <!-- Timeline Items -->
+                    <div class="space-y-6">
+                        @foreach($cliente->orcamentos->sortByDesc('created_at') as $index => $orcamento)
+                        <div class="relative flex items-start group">
+                            <!-- Timeline Dot -->
+                            <div class="relative z-10 flex items-center justify-center w-16 h-16 bg-white dark:bg-gray-800 border-4 border-blue-500 rounded-full shadow-lg group-hover:border-blue-600 transition-colors">
+                                <svg class="w-6 h-6 text-blue-500 group-hover:text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                            </div>
+                            
+                            <!-- Timeline Content -->
+                            <div class="ml-6 flex-1 min-w-0">
+                                <!-- Date Badge -->
+                                <div class="mb-2">
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                        </svg>
+                                        {{ $orcamento->created_at->format('d/m/Y') }}
                                     </span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                    {{ $orcamento->created_at->format('d/m/Y') }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                    <div class="flex items-center space-x-2">
-                                        <a href="{{ route('orcamentos.show', $orcamento) }}" 
-                                           class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300">
-                                            Ver
-                                        </a>
-                                        <a href="{{ route('orcamentos.edit', $orcamento) }}" 
-                                           class="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300">
-                                            Editar
-                                        </a>
+                                </div>
+                                
+                                <!-- Timeline Card -->
+                                <a href="{{ route('orcamentos.show', $orcamento) }}" class="block">
+                                    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 hover:border-gray-300 dark:hover:border-gray-500 transition-all duration-200 hover:shadow-md">
+                                        <!-- Header -->
+                                        <div class="flex items-start justify-between mb-3">
+                                            <div class="flex-1 min-w-0">
+                                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white truncate">
+                                                    {{ $orcamento->titulo }}
+                                                </h3>
+                                                <p class="text-sm text-gray-500 dark:text-gray-400">
+                                                    Orçamento #{{ $orcamento->id }}
+                                                </p>
+                                            </div>
+                                            
+                                            <!-- Status Badge -->
+                                            @php
+                                                $statusColors = [
+                                                    'rascunho' => 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300',
+                                                    'enviado' => 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
+                                                    'aprovado' => 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
+                                                    'rejeitado' => 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
+                                                    'cancelado' => 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300',
+                                                    'quitado' => 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300'
+                                                ];
+                                            @endphp
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full {{ $statusColors[$orcamento->status] ?? 'bg-gray-100 text-gray-800' }}">
+                                                {{ ucfirst($orcamento->status) }}
+                                            </span>
+                                        </div>
+                                        
+                                        <!-- Content -->
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <!-- Valor -->
+                                            <div class="flex items-center">
+                                                <svg class="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                                                </svg>
+                                                <span class="text-lg font-bold text-green-600 dark:text-green-400">
+                                                    R$ {{ number_format($orcamento->valor_total, 2, ',', '.') }}
+                                                </span>
+                                            </div>
+                                            
+                                            <!-- Autor/Responsável -->
+                                            <div class="flex items-center">
+                                                <svg class="w-4 h-4 text-gray-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                                </svg>
+                                                <span class="text-sm text-gray-600 dark:text-gray-400">
+                                                    @if($orcamento->user)
+                                                        {{ $orcamento->user->name }}
+                                                    @else
+                                                        Sistema
+                                                    @endif
+                                                </span>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Actions -->
+                                        <div class="mt-4 pt-3 border-t border-gray-200 dark:border-gray-600">
+                                            <div class="flex items-center justify-between">
+                                                <div class="flex items-center space-x-4">
+                                                    <span class="text-xs text-gray-500 dark:text-gray-400">
+                                                        Criado em {{ $orcamento->created_at->format('d/m/Y H:i') }}
+                                                    </span>
+                                                </div>
+                                                <div class="flex items-center space-x-2">
+                                                    <span class="text-xs text-blue-600 dark:text-blue-400 font-medium">
+                                                        Clique para ver detalhes
+                                                    </span>
+                                                    <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                                    </svg>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                                </a>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     @endif
 </div>
+
+<!-- Modal para Link do Extrato -->
+<div id="extractModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800">
+        <div class="mt-3 text-center">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900">
+                <svg class="h-6 w-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
+                </svg>
+            </div>
+            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white mt-4">Link do Extrato</h3>
+            <div class="mt-4">
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                    Link público para compartilhar o extrato de pagamentos do cliente:
+                </p>
+                <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg border">
+                    <input type="text" id="extractLink" readonly 
+                           class="w-full bg-transparent text-sm text-gray-700 dark:text-gray-300 border-none focus:outline-none" 
+                           value="Gerando link...">
+                </div>
+            </div>
+            <div class="flex items-center justify-center space-x-3 mt-6">
+                <button id="copyLinkBtn" 
+                        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors flex items-center space-x-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                    </svg>
+                    <span>Copiar Link</span>
+                </button>
+                <button onclick="closeExtractModal()" 
+                        class="px-4 py-2 bg-gray-300 hover:bg-gray-400 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-lg transition-colors">
+                    Fechar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Confirmação para Desativar -->
+<div id="confirmModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800">
+        <div class="mt-3 text-center">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900">
+                <svg class="h-6 w-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                </svg>
+            </div>
+            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white mt-4">Confirmar Desativação</h3>
+            <div class="mt-4">
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                    Tem certeza que deseja desativar o link do extrato? O link atual ficará inválido.
+                </p>
+            </div>
+            <div class="flex items-center justify-center space-x-3 mt-6">
+                <button id="confirmDeactivateBtn" 
+                        class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition-colors">
+                    Sim, Desativar
+                </button>
+                <button onclick="closeConfirmModal()" 
+                        class="px-4 py-2 bg-gray-300 hover:bg-gray-400 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-lg transition-colors">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentExtractUrl = '';
+let currentClienteId = {{ $cliente->id }};
+
+// Verificar se já existe um link ativo ao carregar a página
+document.addEventListener('DOMContentLoaded', function() {
+    checkExtractStatus();
+});
+
+function checkExtractStatus() {
+    fetch(`/clientes/${currentClienteId}/check-extract-status`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'Accept': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+            throw new Error('Resposta não é JSON válido');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.hasActiveLink) {
+            currentExtractUrl = data.url;
+            showActiveButtons();
+        } else {
+            showGenerateButton();
+        }
+    })
+    .catch(error => {
+        console.error('Erro ao verificar status:', error);
+        
+        // Se for erro de autenticação, redirecionar para login
+        if (error.message.includes('401') || error.message.includes('Não autenticado')) {
+            alert('Sua sessão expirou. Você será redirecionado para a página de login.');
+            window.location.href = '/login';
+            return;
+        }
+        
+        showGenerateButton();
+    });
+}
+
+function generateExtractLink(clienteId) {
+    // Mostrar modal
+    document.getElementById('extractModal').classList.remove('hidden');
+    document.getElementById('extractLink').value = 'Gerando link...';
+    
+    // Gerar/buscar token do extrato
+    fetch(`/clientes/${clienteId}/gerar-token-extrato`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'Accept': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+            throw new Error('Resposta não é JSON válido');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            currentExtractUrl = data.url;
+            document.getElementById('extractLink').value = currentExtractUrl;
+            showActiveButtons();
+            showSuccessMessage('Link gerado com sucesso!');
+        } else {
+            document.getElementById('extractLink').value = 'Erro ao gerar link';
+            showErrorMessage('Erro ao gerar link do extrato');
+        }
+    })
+    .catch(error => {
+        console.error('Erro:', error);
+        
+        // Se for erro de autenticação, redirecionar para login
+        if (error.message.includes('401') || error.message.includes('Não autenticado')) {
+            alert('Sua sessão expirou. Você será redirecionado para a página de login.');
+            window.location.href = '/login';
+            return;
+        }
+        
+        document.getElementById('extractLink').value = 'Erro ao gerar link';
+        showErrorMessage('Erro de conexão ao gerar link');
+    });
+}
+
+function deactivateExtractLink(clienteId) {
+    // Mostrar modal de confirmação
+    document.getElementById('confirmModal').classList.remove('hidden');
+    
+    // Configurar ação de confirmação
+    document.getElementById('confirmDeactivateBtn').onclick = function() {
+        fetch(`/clientes/${clienteId}/desativar-token-extrato`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                throw new Error('Resposta não é JSON válido');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                currentExtractUrl = '';
+                showGenerateButton();
+                closeConfirmModal();
+                showSuccessMessage('Link desativado com sucesso!');
+            } else {
+                showErrorMessage('Erro ao desativar link');
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            
+            // Se for erro de autenticação, redirecionar para login
+            if (error.message.includes('401') || error.message.includes('Não autenticado')) {
+                alert('Sua sessão expirou. Você será redirecionado para a página de login.');
+                window.location.href = '/login';
+                return;
+            }
+            
+            showErrorMessage('Erro de conexão ao desativar link');
+        });
+    };
+}
+
+function viewExtract() {
+    if (currentExtractUrl) {
+        window.open(currentExtractUrl, '_blank');
+    } else {
+        showErrorMessage('Nenhum link ativo encontrado');
+    }
+}
+
+function showGenerateButton() {
+    document.getElementById('generateLinkBtn').classList.remove('hidden');
+    document.getElementById('deactivateLinkBtn').classList.add('hidden');
+    document.getElementById('viewExtractBtn').classList.add('hidden');
+}
+
+function showActiveButtons() {
+    document.getElementById('generateLinkBtn').classList.add('hidden');
+    document.getElementById('deactivateLinkBtn').classList.remove('hidden');
+    document.getElementById('viewExtractBtn').classList.remove('hidden');
+}
+
+function closeExtractModal() {
+    document.getElementById('extractModal').classList.add('hidden');
+}
+
+function closeConfirmModal() {
+    document.getElementById('confirmModal').classList.add('hidden');
+}
+
+function showSuccessMessage(message) {
+    // Criar toast de sucesso
+    const toast = document.createElement('div');
+    toast.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
+}
+
+function showErrorMessage(message) {
+    // Criar toast de erro
+    const toast = document.createElement('div');
+    toast.className = 'fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
+}
+
+// Copiar link para clipboard
+document.getElementById('copyLinkBtn').addEventListener('click', function() {
+    const linkInput = document.getElementById('extractLink');
+    linkInput.select();
+    linkInput.setSelectionRange(0, 99999);
+    
+    navigator.clipboard.writeText(linkInput.value).then(function() {
+        const btn = document.getElementById('copyLinkBtn');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span>Copiado!</span>';
+        btn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+        btn.classList.add('bg-green-600', 'hover:bg-green-700');
+        
+        setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.classList.remove('bg-green-600', 'hover:bg-green-700');
+            btn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+        }, 2000);
+    }).catch(function(err) {
+        console.error('Erro ao copiar: ', err);
+        showErrorMessage('Erro ao copiar link');
+    });
+});
+
+// Fechar modais ao clicar fora
+document.getElementById('extractModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeExtractModal();
+    }
+});
+
+document.getElementById('confirmModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeConfirmModal();
+    }
+});
+</script>
+
 @endsection

@@ -41,6 +41,7 @@ class User extends Authenticatable
         'telefone_whatsapp',
         'email_extra',
         'biografia',
+        'profissao',
     ];
 
     /**

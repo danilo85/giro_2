@@ -18,6 +18,11 @@ class DatabaseSeeder extends Seeder
             CreditCardSeeder::class,
             CategorySeeder::class,
             FinancialTransactionSeeder::class,
+            AutorSeeder::class,
+            ClienteSeeder::class,
+            ModeloPropostaSeeder::class,
+            OrcamentoSeeder::class,
+            PagamentoSeeder::class,
         ]);
     }
 }

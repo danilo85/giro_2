@@ -189,4 +189,78 @@ class ClienteController extends Controller
 
         return response()->json($clientes);
     }
+
+    /**
+     * Gerar token para extrato público do cliente
+     */
+    public function gerarTokenExtrato(Cliente $cliente)
+    {
+        // Verificar se o cliente pertence ao usuário
+        if ($cliente->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        // Gerar ou obter token existente
+        $token = $cliente->getOrGenerateExtratoToken();
+        
+        // Gerar URL do extrato público
+        $url = route('public.extrato.public', [
+            'cliente_id' => $cliente->id,
+            'token' => $token
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'url' => $url,
+            'token' => $token
+        ]);
+    }
+
+    /**
+     * Verificar status do extrato do cliente
+     */
+    public function checkExtractStatus(Cliente $cliente)
+    {
+        // Verificar se o cliente pertence ao usuário
+        if ($cliente->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $hasActiveLink = !empty($cliente->extrato_token);
+        $url = null;
+
+        if ($hasActiveLink) {
+            $url = route('public.extrato.public', [
+                'cliente_id' => $cliente->id,
+                'token' => $cliente->extrato_token
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'hasActiveLink' => $hasActiveLink,
+            'url' => $url
+        ]);
+    }
+
+    /**
+     * Desativar token do extrato do cliente
+     */
+    public function desativarTokenExtrato(Cliente $cliente)
+    {
+        // Verificar se o cliente pertence ao usuário
+        if ($cliente->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        // Remover o token
+        $cliente->update([
+            'extrato_token' => null
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Token do extrato desativado com sucesso'
+        ]);
+    }
 }

@@ -42,8 +42,7 @@ class OrcamentoController extends Controller
                   ->orWhere('descricao', 'like', "%{$search}%")
                   ->orWhereHas('cliente', function($clienteQuery) use ($search) {
                       $clienteQuery->where('nome', 'like', "%{$search}%")
-                                   ->orWhere('email', 'like', "%{$search}%")
-                                   ->orWhere('empresa', 'like', "%{$search}%");
+                                   ->orWhere('email', 'like', "%{$search}%");
                   })
                   ->orWhereHas('autores', function($autorQuery) use ($search) {
                       $autorQuery->where('nome', 'like', "%{$search}%")
@@ -510,13 +509,16 @@ class OrcamentoController extends Controller
     }
 
     /**
-     * Atualizar status do orçamento (API)
+     * Atualizar status do orçamento (API e Web)
      */
     public function atualizarStatus(Request $request, Orcamento $orcamento)
     {
-        // Verificar se o orçamento pertence ao usuário
-        if ($orcamento->cliente->user_id !== Auth::id()) {
-            return response()->json(['error' => 'Não autorizado'], 403);
+        // Verificar se o usuário está autenticado e se o orçamento pertence ao usuário
+        if (Auth::check() && $orcamento->cliente->user_id !== Auth::id()) {
+            if ($request->expectsJson()) {
+                return response()->json(['error' => 'Não autorizado'], 403);
+            }
+            abort(403);
         }
 
         $request->validate([
@@ -527,16 +529,27 @@ class OrcamentoController extends Controller
         try {
             $orcamento->atualizarStatus($request->status, $request->descricao);
             
-            return response()->json([
-                'success' => true,
-                'message' => 'Status atualizado com sucesso!',
-                'orcamento' => $orcamento->fresh()
-            ]);
+            // Se é uma requisição AJAX, retorna JSON
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Status atualizado com sucesso!',
+                    'orcamento' => $orcamento->fresh()
+                ]);
+            }
+            
+            // Se é uma requisição web tradicional, redireciona
+            return redirect()->back()->with('success', 'Status atualizado com sucesso!');
+            
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Erro ao atualizar status: ' . $e->getMessage()
-            ], 500);
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Erro ao atualizar status: ' . $e->getMessage()
+                ], 500);
+            }
+            
+            return redirect()->back()->withErrors(['error' => 'Erro ao atualizar status: ' . $e->getMessage()]);
         }
     }
 

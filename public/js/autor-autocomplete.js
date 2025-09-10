@@ -90,7 +90,7 @@ class AutorAutocomplete {
         }
         
         try {
-            const response = await fetch(`/autores/autocomplete?q=${encodeURIComponent(query)}`, {
+            const response = await fetch(`/api/budget/autores/autocomplete?q=${encodeURIComponent(query)}`, {
                 credentials: 'same-origin',
                 headers: {
                     'Accept': 'application/json',

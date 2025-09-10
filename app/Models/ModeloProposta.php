@@ -22,7 +22,6 @@ class ModeloProposta extends Model
         'observacoes',
         'valor_padrao',
         'prazo_padrao',
-        'autores_padrao',
         'ativo'
     ];
 
@@ -30,7 +29,6 @@ class ModeloProposta extends Model
         'ativo' => 'boolean',
         'valor_padrao' => 'decimal:2',
         'prazo_padrao' => 'integer',
-        'autores_padrao' => 'array',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];

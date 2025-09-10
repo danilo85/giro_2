@@ -240,6 +240,23 @@
                         </div>
                     </div>
                     
+                    <!-- Profissão -->
+                    <div class="mt-6">
+                        <label for="profissao" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Profissão
+                        </label>
+                        <input type="text" 
+                               id="profissao" 
+                               name="profissao" 
+                               value="{{ old('profissao', auth()->user()->profissao) }}"
+                               class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                               placeholder="Ex: Desenvolvedor, Designer, Contador..."
+                               maxlength="100">
+                        @error('profissao')
+                            <p class="text-sm text-red-600 dark:text-red-400 mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    
                     <!-- Biografia -->
                     <div class="mt-6">
                         <label for="biografia" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
