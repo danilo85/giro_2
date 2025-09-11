@@ -5,33 +5,31 @@ require_once 'vendor/autoload.php';
 $app = require_once 'bootstrap/app.php';
 $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
 
-$user = App\Models\User::first();
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
-if (!$user) {
-    $user = App\Models\User::create([
-        'name' => 'Teste',
-        'email' => 'teste@teste.com',
-        'password' => bcrypt('123456')
-    ]);
-    echo "User created: {$user->email}\n";
-} else {
-    echo "User found: {$user->email}\n";
+try {
+    // Verificar se já existe um usuário admin
+    $existingUser = User::where('email', 'admin@test.com')->first();
+    
+    if ($existingUser) {
+        echo "Usuário admin já existe: {$existingUser->email}\n";
+    } else {
+        // Criar usuário de teste
+        $user = User::create([
+            'name' => 'Admin',
+            'email' => 'admin@test.com',
+            'password' => Hash::make('123456'),
+            'email_verified_at' => now()
+        ]);
+        
+        echo "Usuário criado com sucesso!\n";
+        echo "Email: {$user->email}\n";
+        echo "Senha: 123456\n";
+    }
+    
+    echo "Total de usuários no banco: " . User::count() . "\n";
+    
+} catch (Exception $e) {
+    echo "Erro ao criar usuário: " . $e->getMessage() . "\n";
 }
-
-// Criar um modelo de proposta para teste
-$modelo = App\Models\ModeloProposta::where('user_id', $user->id)->first();
-
-if (!$modelo) {
-    $modelo = App\Models\ModeloProposta::create([
-        'user_id' => $user->id,
-        'nome' => 'Modelo de Teste',
-        'conteudo' => 'Este é um modelo de proposta de teste.',
-        'ativo' => true
-    ]);
-    echo "Modelo created: {$modelo->nome}\n";
-} else {
-    echo "Modelo found: {$modelo->nome}\n";
-}
-
-echo "User ID: {$user->id}\n";
-echo "Modelo ID: {$modelo->id}\n";

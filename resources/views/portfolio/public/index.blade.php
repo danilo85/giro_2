@@ -67,9 +67,9 @@
                             <p class="text-gray-600 mb-4 line-clamp-3">{{ $work->description }}</p>
                             
                             <!-- Technologies -->
-                            @if($work->technologies)
+                            @if($work->technologies && is_array($work->technologies))
                                 <div class="flex flex-wrap gap-2 mb-4">
-                                    @foreach(explode(',', $work->technologies) as $tech)
+                                    @foreach($work->technologies as $tech)
                                         <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-md">
                                             {{ trim($tech) }}
                                         </span>

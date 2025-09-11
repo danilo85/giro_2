@@ -179,16 +179,16 @@
                             <p class="text-gray-600 mb-4 line-clamp-3">{{ $work->description }}</p>
                             
                             <!-- Technologies -->
-                            @if($work->technologies)
-                                <div class="flex flex-wrap gap-2 mb-4">
-                                    @foreach(array_slice(explode(',', $work->technologies), 0, 3) as $tech)
-                                        <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-md">
+                            @if($work->technologies && is_array($work->technologies))
+                                <div class="flex flex-wrap gap-1 mb-2">
+                                    @foreach(array_slice($work->technologies, 0, 3) as $tech)
+                                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100">
                                             {{ trim($tech) }}
                                         </span>
                                     @endforeach
-                                    @if(count(explode(',', $work->technologies)) > 3)
-                                        <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-md">
-                                            +{{ count(explode(',', $work->technologies)) - 3 }}
+                                    @if(count($work->technologies) > 3)
+                                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+                                            +{{ count($work->technologies) - 3 }}
                                         </span>
                                     @endif
                                 </div>

@@ -78,7 +78,7 @@ class PortfolioController extends Controller
             })->with(['cliente', 'autores'])->findOrFail($request->orcamento_id);
         }
 
-        return view('portfolio.create', compact('categories', 'clients', 'authors', 'orcamento'));
+        return view('portfolio.works.create', compact('categories', 'clients', 'authors', 'orcamento'));
     }
 
     /**
@@ -177,7 +177,7 @@ class PortfolioController extends Controller
 
             DB::commit();
 
-            return redirect()->route('portfolio.show', $work->slug)
+            return redirect()->route('portfolio.public.work', $work->slug)
                 ->with('success', 'Trabalho de portfólio criado com sucesso!');
 
         } catch (\Exception $e) {
@@ -213,7 +213,7 @@ class PortfolioController extends Controller
         // Trabalhos relacionados
         $relatedWorks = $work->getRelatedWorks(3);
 
-        return view('portfolio.show', compact('work', 'relatedWorks'));
+        return view('portfolio.public.work', compact('work', 'relatedWorks'));
     }
 
     /**
@@ -237,7 +237,7 @@ class PortfolioController extends Controller
             $q->where('user_id', Auth::id());
         })->with('cliente')->orderBy('created_at', 'desc')->get();
 
-        return view('portfolio.edit', compact('work', 'categories', 'clients', 'authors', 'orcamentos'));
+        return view('portfolio.works.edit', compact('work', 'categories', 'clients', 'authors', 'orcamentos'));
     }
 
     /**
@@ -321,7 +321,7 @@ class PortfolioController extends Controller
 
             DB::commit();
 
-            return redirect()->route('portfolio.show', $work->slug)
+            return redirect()->route('portfolio.public.work', $work->slug)
                 ->with('success', 'Trabalho atualizado com sucesso!');
 
         } catch (\Exception $e) {

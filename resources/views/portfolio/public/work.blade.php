@@ -166,11 +166,11 @@
                         <h3 class="text-lg font-bold text-gray-900 mb-4">Detalhes do Projeto</h3>
                         
                         <!-- Technologies -->
-                        @if($work->technologies)
+                        @if($work->technologies && is_array($work->technologies))
                             <div class="mb-6">
                                 <h4 class="font-medium text-gray-700 mb-2">Tecnologias</h4>
                                 <div class="flex flex-wrap gap-2">
-                                    @foreach(explode(',', $work->technologies) as $tech)
+                                    @foreach($work->technologies as $tech)
                                         <span class="px-3 py-1 bg-white text-gray-700 text-sm rounded-md border">
                                             {{ trim($tech) }}
                                         </span>

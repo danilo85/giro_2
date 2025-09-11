@@ -149,7 +149,7 @@ class PortfolioWork extends Model
      */
     public function getUrlAttribute()
     {
-        return route('portfolio.show', $this->slug);
+        return route('portfolio.public.work', $this->slug);
     }
 
     /**

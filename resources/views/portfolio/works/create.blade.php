@@ -36,8 +36,7 @@
 
     <!-- Content -->
     <div class="max-w-4xl mx-auto py-6 sm:px-6 lg:px-8">
-        <form action="{{ route('portfolio.works.store') }}" method="POST" enctype="multipart/form-data" 
-              x-data="workForm()" class="space-y-6">
+        <form action="{{ route('portfolio.works.store') }}" method="POST" enctype="multipart/form-data" x-data="workForm()" onsubmit="return submitForm(event)" class="space-y-6">
             @csrf
             
             <!-- Progress Steps -->
@@ -189,7 +188,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label for="project_url" class="block text-sm font-medium text-gray-700 dark:text-gray-300">URL do Projeto</label>
-                        <input type="url" name="project_url" id="project_url" value="{{ old('project_url') }}"
+                        <input type="url" name="project_url" id="project_url" value="{{ old('project_url', '') }}"
                                class="mt-1 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 @error('project_url') border-red-300 @enderror">
                         @error('project_url')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -372,6 +371,32 @@ function workForm() {
         form: {
             title: '',
             slug: ''
+        },
+        
+        submitForm(event) {
+            // Processar technologies como array
+            const technologiesInput = document.getElementById('technologies');
+            const technologiesValue = technologiesInput.value.trim();
+            
+            if (technologiesValue) {
+                // Converter string separada por vírgulas em array
+                const technologiesArray = technologiesValue.split(',').map(tech => tech.trim()).filter(tech => tech.length > 0);
+                
+                // Remover o input original
+                technologiesInput.remove();
+                
+                // Criar inputs hidden para cada tecnologia
+                const form = event.target;
+                technologiesArray.forEach((tech, index) => {
+                    const hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.name = `technologies[${index}]`;
+                    hiddenInput.value = tech;
+                    form.appendChild(hiddenInput);
+                });
+            }
+            
+            return true; // Permitir envio do formulário
         },
         
         setStep(step) {

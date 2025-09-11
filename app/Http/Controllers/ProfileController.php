@@ -213,7 +213,7 @@ class ProfileController extends Controller
             'url' => $request->url(),
             'request_data' => $request->all(),
             'files' => $request->allFiles(),
-            'has_file' => $request->hasFile('signature')
+            'has_file' => $request->hasFile('assinatura')
         ]);
         
         $user = Auth::user();

@@ -139,5 +139,23 @@ return [
     */
 
     'temp_path' => 'temp',
+    
+    // Configurações específicas para logos
+    'logos' => [
+        'validation_rules' => 'required|image|mimes:jpeg,jpg,png,svg|max:2048',
+        'max_size' => 2048, // 2MB em KB
+        'allowed_extensions' => ['jpg', 'jpeg', 'png', 'svg'],
+        'allowed_mimes' => ['image/jpeg', 'image/jpg', 'image/png', 'image/svg+xml'],
+        'storage_path' => 'logos',
+    ],
+    
+    // Configurações específicas para assinaturas
+    'assinaturas' => [
+        'validation_rules' => 'required|image|mimes:jpeg,jpg,png,svg|max:2048',
+        'max_size' => 2048, // 2MB em KB
+        'allowed_extensions' => ['jpg', 'jpeg', 'png', 'svg'],
+        'allowed_mimes' => ['image/jpeg', 'image/jpg', 'image/png', 'image/svg+xml'],
+        'storage_path' => 'assinaturas',
+    ],
 
 ];
