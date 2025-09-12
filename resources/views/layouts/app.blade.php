@@ -85,7 +85,7 @@
         }
         
         /* Mobile layout fixes */
-        @media (max-width: 768px) {
+        @media (max-width: 1023px) {
             .flex-1 {
                 margin-left: 0 !important;
                 width: 100% !important;
@@ -136,8 +136,17 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
                 </button>
-                <h1 class="text-lg font-semibold text-gray-900 dark:text-white">{{ config('app.name', 'Laravel') }}</h1>
-                <div class="w-10"></div> <!-- Spacer for centering -->
+                <div class="flex-1"></div> <!-- Spacer -->
+                <button id="theme-toggle-mobile" 
+                        onclick="toggleTheme()"
+                        class="p-2 rounded-md text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                    <svg id="theme-toggle-dark-icon-mobile" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                    </svg>
+                    <svg id="theme-toggle-light-icon-mobile" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 2L13.09 8.26L20 9L14 14.74L15.18 21.02L10 17.77L4.82 21.02L6 14.74L0 9L6.91 8.26L10 2Z"></path>
+                    </svg>
+                </button>
             </div>
         </div>
 
@@ -149,11 +158,11 @@
              x-transition:leave="transition-opacity ease-linear duration-300"
              x-transition:leave-start="opacity-100"
              x-transition:leave-end="opacity-0"
-             class="fixed inset-0 bg-gray-600 bg-opacity-75 z-20 lg:hidden"
+             class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[10001] lg:hidden"
              @click="$store.sidebar.close()"></div>
 
         <!-- Sidebar -->
-        <div class="fixed inset-y-0 left-0 z-30 transition-all duration-300 ease-in-out"
+        <div class="fixed inset-y-0 left-0 z-[10002] transition-all duration-300 ease-in-out"
              :class="{
                  'w-64': !$store.sidebar.collapsed,
                  'w-16': $store.sidebar.collapsed,
@@ -162,6 +171,16 @@
              }"
              x-show="$store.sidebar.open || !$store.sidebar.isMobile">
             <div class="flex flex-col h-full bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700">
+                <!-- Close Button (Mobile only) -->
+                <div class="flex justify-end p-4 border-b border-gray-200 dark:border-gray-700" x-show="$store.sidebar.isMobile">
+                    <button @click="$store.sidebar.close()" 
+                            class="p-2 rounded-md text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                
                 <!-- Navigation -->
                  <nav class="flex-1 px-2 py-4 space-y-1 overflow-y-auto">
                      <!-- Collapse Button (Desktop only) -->
@@ -651,7 +670,7 @@
 
 
          <!-- Theme Toggle Button -->
-         <div class="fixed top-4 right-4 z-50">
+         <div class="fixed top-4 right-4 z-50 hidden lg:block">
              <button id="theme-toggle" 
                      onclick="toggleTheme()"
                      class="p-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200">
@@ -698,16 +717,55 @@
         
         // Update theme toggle icon
         function updateThemeIcon() {
+            // Desktop icons
             const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
             const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
             
+            // Mobile icons
+            const themeToggleDarkIconMobile = document.getElementById('theme-toggle-dark-icon-mobile');
+            const themeToggleLightIconMobile = document.getElementById('theme-toggle-light-icon-mobile');
+            
             if (document.documentElement.classList.contains('dark')) {
-                themeToggleLightIcon.classList.remove('hidden');
-                themeToggleDarkIcon.classList.add('hidden');
+                // Show light icons (to switch to light mode)
+                if (themeToggleLightIcon) {
+                    themeToggleLightIcon.classList.remove('hidden');
+                }
+                if (themeToggleDarkIcon) {
+                    themeToggleDarkIcon.classList.add('hidden');
+                }
+                if (themeToggleLightIconMobile) {
+                    themeToggleLightIconMobile.classList.remove('hidden');
+                }
+                if (themeToggleDarkIconMobile) {
+                    themeToggleDarkIconMobile.classList.add('hidden');
+                }
             } else {
-                themeToggleDarkIcon.classList.remove('hidden');
-                themeToggleLightIcon.classList.add('hidden');
+                // Show dark icons (to switch to dark mode)
+                if (themeToggleDarkIcon) {
+                    themeToggleDarkIcon.classList.remove('hidden');
+                }
+                if (themeToggleLightIcon) {
+                    themeToggleLightIcon.classList.add('hidden');
+                }
+                if (themeToggleDarkIconMobile) {
+                    themeToggleDarkIconMobile.classList.remove('hidden');
+                }
+                if (themeToggleLightIconMobile) {
+                    themeToggleLightIconMobile.classList.add('hidden');
+                }
             }
+        }
+        
+        // Toggle theme function
+        function toggleTheme() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+            updateThemeIcon();
         }
         
         // Initialize icon when page loads

@@ -12,7 +12,7 @@ Alpine.store('sidebar', {
     isMobile: false,
 
     init() {
-        this.isMobile = window.innerWidth < 768;
+        this.isMobile = window.innerWidth < 1024;
         this.updateState();
         this.setupResizeListener();
     },
@@ -33,7 +33,7 @@ Alpine.store('sidebar', {
             clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(() => {
                 const wasMobile = this.isMobile;
-                this.isMobile = window.innerWidth < 768;
+                this.isMobile = window.innerWidth < 1024;
                 if (wasMobile !== this.isMobile) {
                     this.updateState();
                 }
@@ -90,14 +90,30 @@ function initTheme() {
 window.updateThemeIcon = function() {
     const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
     const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    const themeToggleDarkIconMobile = document.getElementById('theme-toggle-dark-icon-mobile');
+    const themeToggleLightIconMobile = document.getElementById('theme-toggle-light-icon-mobile');
     
+    const isDark = document.documentElement.classList.contains('dark');
+    
+    // Update desktop theme toggle icons
     if (themeToggleDarkIcon && themeToggleLightIcon) {
-        if (document.documentElement.classList.contains('dark')) {
+        if (isDark) {
             themeToggleLightIcon.classList.remove('hidden');
             themeToggleDarkIcon.classList.add('hidden');
         } else {
             themeToggleDarkIcon.classList.remove('hidden');
             themeToggleLightIcon.classList.add('hidden');
+        }
+    }
+    
+    // Update mobile theme toggle icons
+    if (themeToggleDarkIconMobile && themeToggleLightIconMobile) {
+        if (isDark) {
+            themeToggleLightIconMobile.classList.remove('hidden');
+            themeToggleDarkIconMobile.classList.add('hidden');
+        } else {
+            themeToggleDarkIconMobile.classList.remove('hidden');
+            themeToggleLightIconMobile.classList.add('hidden');
         }
     }
 };
