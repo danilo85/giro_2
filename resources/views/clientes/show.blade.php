@@ -444,31 +444,29 @@
                 <!-- Timeline Container -->
                 <div class="relative">
                     <!-- Timeline Line -->
-                    <div class="absolute left-8 top-0 bottom-0 w-0.5 bg-gray-200 dark:bg-gray-600"></div>
+                    <div class="absolute left-36 top-0 bottom-0 w-0.5 bg-gray-300"></div>
                     
                     <!-- Timeline Items -->
                     <div class="space-y-6">
                         @foreach($cliente->orcamentos->sortByDesc('created_at') as $index => $orcamento)
-                        <div class="relative flex items-start group">
-                            <!-- Timeline Dot -->
-                            <div class="relative z-10 flex items-center justify-center w-16 h-16 bg-white dark:bg-gray-800 border-4 border-blue-500 rounded-full shadow-lg group-hover:border-blue-600 transition-colors">
-                                <svg class="w-6 h-6 text-blue-500 group-hover:text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                </svg>
+                        <div class="relative flex items-start">
+                            <!-- Data/Hora Column -->
+                            <div class="w-32 flex-shrink-0 text-right pr-6">
+                                <div class="text-sm font-medium text-gray-900 dark:text-white">
+                                    {{ $orcamento->created_at->format('d/m/Y') }}
+                                </div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">
+                                    {{ $orcamento->created_at->format('H:i') }}
+                                </div>
+                            </div>
+                            
+                            <!-- Timeline Marker -->
+                            <div class="relative z-10 flex items-center justify-center">
+                                <div class="w-3 h-3 bg-gray-800 rounded-full border-2 border-white shadow-sm"></div>
                             </div>
                             
                             <!-- Timeline Content -->
-                            <div class="ml-6 flex-1 min-w-0">
-                                <!-- Date Badge -->
-                                <div class="mb-2">
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                        </svg>
-                                        {{ $orcamento->created_at->format('d/m/Y') }}
-                                    </span>
-                                </div>
-                                
+                            <div class="flex-1 ml-6">
                                 <!-- Timeline Card -->
                                 <a href="{{ route('orcamentos.show', $orcamento) }}" class="block">
                                     <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 hover:border-gray-300 dark:hover:border-gray-500 transition-all duration-200 hover:shadow-md">

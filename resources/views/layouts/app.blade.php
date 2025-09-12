@@ -37,7 +37,7 @@
             width: 100%;
             height: 100%;
             background-color: rgba(255, 255, 255,1);
-            z-index: 9999;
+            z-index: 99999;
             display: flex;
             justify-content: center;
             align-items: center;
