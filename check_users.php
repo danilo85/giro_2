@@ -1,20 +1,23 @@
 <?php
+
+require_once 'vendor/autoload.php';
+
+// Configurar Laravel
+$app = require_once 'bootstrap/app.php';
+$kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
+$kernel->bootstrap();
+
+use App\Models\User;
+
 try {
-    $pdo = new PDO('mysql:host=127.0.0.1;port=3306;dbname=laravel', 'root', '');
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
-    $stmt = $pdo->query('SELECT id, name, email, created_at FROM users');
-    $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-    if(empty($users)) {
-        echo "Nenhum usuário encontrado no banco de dados.\n";
+    $user = User::first();
+    if ($user) {
+        echo "User ID: {$user->id}\n";
+        echo "Name: {$user->name}\n";
+        echo "Email: {$user->email}\n";
     } else {
-        echo "Usuários encontrados:\n";
-        foreach($users as $user) {
-            echo "ID: {$user['id']} | Nome: {$user['name']} | Email: {$user['email']} | Criado em: {$user['created_at']}\n";
-        }
+        echo "No users found\n";
     }
-} catch(PDOException $e) {
-    echo "Erro na conexão: " . $e->getMessage() . "\n";
+} catch (Exception $e) {
+    echo "Erro: " . $e->getMessage() . "\n";
 }
-?>

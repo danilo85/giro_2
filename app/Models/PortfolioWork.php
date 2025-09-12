@@ -170,6 +170,29 @@ class PortfolioWork extends Model
     }
 
     /**
+     * Accessor para URL da primeira imagem
+     */
+    public function getFirstImageUrlAttribute()
+    {
+        $firstImage = $this->images->first();
+        if ($firstImage) {
+            return asset('storage/' . $firstImage->path);
+        }
+        
+        return $this->featured_image_url;
+    }
+
+    /**
+     * Accessor para todas as URLs das imagens
+     */
+    public function getImageUrlsAttribute()
+    {
+        return $this->images->map(function($image) {
+            return asset('storage/' . $image->path);
+        });
+    }
+
+    /**
      * Accessor para data formatada de conclusão
      */
     public function getFormattedCompletionDateAttribute()

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Orcamento;
 use App\Models\OrcamentoFile;
 use App\Utils\MimeTypeDetector;
+use App\Helpers\FileUploadHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -85,7 +86,7 @@ class OrcamentoFileController extends Controller
         
         // Armazenar o arquivo
         try {
-            $path = $file->storeAs('orcamentos', $fileName, 'public');
+            $path = FileUploadHelper::storeAsFile($file, 'orcamentos', $fileName);
             \Log::info('Arquivo armazenado com sucesso', ['path' => $path]);
         } catch (\Exception $e) {
             \Log::error('ERRO ao armazenar arquivo', [

@@ -63,7 +63,7 @@ try {
     $imageData = [
         'portfolio_work_id' => $portfolioWork->id,
         'filename' => 'test_image.jpg',
-        'path' => 'portfolio/test_image.jpg',
+        'path' => 'portfolio/works/test_image.jpg',
         'original_name' => 'test_image_original.jpg',
         'mime_type' => 'image/jpeg',
         'size' => 1024000,

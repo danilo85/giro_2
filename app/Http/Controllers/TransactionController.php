@@ -893,24 +893,11 @@ class TransactionController extends Controller
         try {
             $installments = collect();
             
-            // Verificar se usa o sistema novo (installment_id)
+            // Verificar se a transação é parcelada (usa installment_id)
             if ($transaction->installment_id) {
                 $installments = Transaction::forUser(Auth::id())
                     ->where('installment_id', $transaction->installment_id)
                     ->orderBy('installment_number')
-                    ->get();
-            }
-            // Verificar se usa o sistema antigo (parcela_numero/parcela_total)
-            elseif ($transaction->parcela_numero && $transaction->parcela_total) {
-                // Buscar todas as parcelas do mesmo grupo usando descricao, valor e parcela_total
-                $baseDescription = preg_replace('/\s*\(\d+\/\d+\)\s*$/', '', $transaction->descricao);
-                
-                $installments = Transaction::forUser(Auth::id())
-                    ->where('valor', $transaction->valor)
-                    ->where('parcela_total', $transaction->parcela_total)
-                    ->where('descricao', 'like', $baseDescription . '%')
-                    ->whereNotNull('parcela_numero')
-                    ->orderBy('parcela_numero')
                     ->get();
             }
             else {
@@ -921,16 +908,25 @@ class TransactionController extends Controller
                 ], 422);
             }
             
+            // Verificar se encontrou parcelas
+            if ($installments->isEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Nenhuma parcela encontrada',
+                    'message' => 'Não foram encontradas parcelas para esta transação.'
+                ], 422);
+            }
+            
             // Formatar dados para o frontend
             $formattedInstallments = $installments->map(function ($installment) {
                 return [
                     'id' => $installment->id,
                     'descricao' => $installment->descricao,
                     'valor' => $installment->valor,
-                    'data' => $installment->data,
+                    'data_vencimento' => $installment->data,
                     'status' => $installment->status,
-                    'installment_number' => $installment->installment_number ?? $installment->parcela_numero,
-                    'installment_count' => $installment->installment_count ?? $installment->parcela_total
+                    'installment_number' => $installment->installment_number,
+                    'installment_count' => $installment->installment_count
                 ];
             });
             
@@ -983,8 +979,8 @@ class TransactionController extends Controller
                     
                     $deletedTransactions[] = [
                         'id' => $transaction->id,
-                        'installment_number' => $transaction->installment_number ?? $transaction->parcela_numero,
-                        'installment_count' => $transaction->installment_count ?? $transaction->parcela_total
+                        'installment_number' => $transaction->installment_number,
+                        'installment_count' => $transaction->installment_count
                     ];
                     
                     $transaction->delete();

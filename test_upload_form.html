@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Upload Múltiplas Imagens</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input[type="file"] { width: 100%; padding: 10px; border: 1px solid #ddd; }
+        button { background: #007cba; color: white; padding: 10px 20px; border: none; cursor: pointer; }
+        button:hover { background: #005a87; }
+        .preview { margin-top: 20px; }
+        .preview img { max-width: 100px; max-height: 100px; margin: 5px; border: 1px solid #ddd; }
+        .debug { background: #f5f5f5; padding: 15px; margin: 20px 0; border-left: 4px solid #007cba; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Teste de Upload de Múltiplas Imagens</h1>
+        
+        <form id="uploadForm" action="http://localhost:8000/portfolio/works" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="title" value="Teste Upload">
+            <input type="hidden" name="portfolio_category_id" value="1">
+            <input type="hidden" name="status" value="draft">
+            
+            <div class="form-group">
+                <label for="images">Selecione múltiplas imagens:</label>
+                <input type="file" id="images" name="images[]" multiple accept="image/*">
+            </div>
+            
+            <div class="form-group">
+                <button type="submit">Enviar Imagens</button>
+                <button type="button" onclick="debugFiles()">Debug Arquivos</button>
+            </div>
+        </form>
+        
+        <div id="preview" class="preview"></div>
+        
+        <div id="debug" class="debug">
+            <h3>Debug Info:</h3>
+            <div id="debugInfo">Selecione arquivos para ver informações...</div>
+        </div>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('images');
+        const preview = document.getElementById('preview');
+        const debugInfo = document.getElementById('debugInfo');
+        
+        fileInput.addEventListener('change', function(e) {
+            preview.innerHTML = '';
+            debugFiles();
+            
+            // Mostrar preview das imagens
+            Array.from(e.target.files).forEach((file, index) => {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.title = file.name;
+                        preview.appendChild(img);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+        
+        function debugFiles() {
+            const files = fileInput.files;
+            let info = `<strong>Arquivos selecionados:</strong> ${files.length}<br><br>`;
+            
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                info += `<strong>Arquivo ${i + 1}:</strong><br>`;
+                info += `Nome: ${file.name}<br>`;
+                info += `Tipo: ${file.type}<br>`;
+                info += `Tamanho: ${(file.size / 1024).toFixed(2)} KB<br>`;
+                info += `Última modificação: ${new Date(file.lastModified).toLocaleString()}<br><br>`;
+            }
+            
+            debugInfo.innerHTML = info;
+        }
+        
+        // Interceptar envio do formulário para debug
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            
+            console.log('=== DEBUG FORM SUBMIT ===');
+            console.log('Arquivos no input:', fileInput.files.length);
+            
+            // Verificar FormData
+            console.log('FormData entries:');
+            for (let [key, value] of formData.entries()) {
+                if (value instanceof File) {
+                    console.log(`${key}: ${value.name} (${value.size} bytes)`);
+                } else {
+                    console.log(`${key}: ${value}`);
+                }
+            }
+            
+            // Verificar especificamente o campo images[]
+            const images = formData.getAll('images[]');
+            console.log('Images array:', images.length, 'arquivos');
+            images.forEach((file, index) => {
+                console.log(`Image ${index}:`, file.name, file.size + ' bytes');
+            });
+            
+            alert(`Formulário interceptado para debug.\nArquivos: ${fileInput.files.length}\nVerifique o console para detalhes.`);
+            
+            // Descomente a linha abaixo para enviar realmente
+            // this.submit();
+        });
+    </script>
+</body>
+</html>

@@ -6,6 +6,8 @@ use App\Models\Autor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
+use App\Helpers\FileUploadHelper;
 
 class AutorController extends Controller
 {
@@ -86,7 +88,7 @@ class AutorController extends Controller
 
         // Upload do avatar
         if ($request->hasFile('avatar')) {
-            $avatarPath = $request->file('avatar')->store('avatars/autores', 'public');
+            $avatarPath = FileUploadHelper::storeFile($request->file('avatar'), 'avatars/autores');
             $data['avatar'] = $avatarPath;
         }
 
@@ -204,7 +206,7 @@ class AutorController extends Controller
                 Storage::disk('public')->delete($autor->avatar);
             }
             
-            $avatarPath = $request->file('avatar')->store('avatars/autores', 'public');
+            $avatarPath = FileUploadHelper::storeFile($request->file('avatar'), 'avatars/autores');
             $data['avatar'] = $avatarPath;
         }
 

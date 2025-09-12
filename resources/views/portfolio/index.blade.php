@@ -107,7 +107,7 @@
                             </div>
                         </a>
                         
-                        <a href="{{ route('portfolio.public.index') }}" class="group block" target="_blank">
+                        <a href="{{ route('public.portfolio.index') }}" class="group block" target="_blank">
                             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow duration-200">
                                 <div class="flex items-center justify-between mb-4">
                                     <div class="flex-shrink-0">

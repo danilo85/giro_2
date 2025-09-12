@@ -247,10 +247,11 @@
                             </a>
                         </div>
                         <div class="flex space-x-3">
-                            <form method="POST" action="{{ route('autores.destroy', $autor) }}" class="inline" onsubmit="return confirm('Tem certeza que deseja excluir este autor?')">
+                            <form method="POST" action="{{ route('autores.destroy', $autor) }}" class="inline" id="delete-form-{{ $autor->id }}">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" 
+                                <button type="button" 
+                                        onclick="openDeleteModal({{ $autor->id }}, '{{ $autor->nome }}')"
                                         class="p-2 rounded-lg text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 transition-all duration-200 hover:bg-red-50 dark:hover:bg-red-900/20" 
                                         title="Excluir Autor">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -325,6 +326,38 @@
         </svg>
     </a>
 </div>
+
+<!-- Modal de Exclusão -->
+<div id="deleteModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 hidden">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800">
+        <div class="mt-3 text-center">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900">
+                <svg class="h-6 w-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                </svg>
+            </div>
+            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white mt-4">Confirmar Exclusão</h3>
+            <div class="mt-2 px-7 py-3">
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                    Tem certeza que deseja excluir este autor?
+                    <br>
+                    <span id="deleteAutorName" class="font-semibold text-gray-700 dark:text-gray-300"></span>
+                    <br>
+                    Esta ação não pode ser desfeita.
+                </p>
+            </div>
+            <div class="flex justify-center space-x-4 px-4 py-3">
+                <button id="cancelDelete" type="button" class="px-4 py-2 bg-gray-300 text-gray-800 text-base font-medium rounded-md shadow-sm hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                    Cancelar
+                </button>
+                <button id="confirmDelete" type="button" class="px-4 py-2 bg-red-600 text-white text-base font-medium rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500">
+                    Excluir
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('scripts')
@@ -535,7 +568,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             </a>
                         </div>
                         <div class="flex space-x-3">
-                            <button onclick="if(confirm('Tem certeza que deseja excluir este autor?')) { fetch('/autores/${autor.id}', { method: 'DELETE', headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content } }).then(() => location.reload()); }" class="p-2 rounded-lg text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 transition-all duration-200 hover:bg-red-50 dark:hover:bg-red-900/20" title="Excluir Autor">
+                            <button onclick="openDeleteModal(${autor.id}, '${autor.nome}')" class="p-2 rounded-lg text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 transition-all duration-200 hover:bg-red-50 dark:hover:bg-red-900/20" title="Excluir Autor">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                 </svg>
@@ -582,6 +615,52 @@ document.addEventListener('DOMContentLoaded', function() {
             clearFilter();
             searchInput.focus();
         });
+    }
+});
+
+// Funções para gerenciar o modal de exclusão
+let autorToDelete = null;
+
+function openDeleteModal(autorId, autorNome) {
+    autorToDelete = autorId;
+    document.getElementById('deleteAutorName').textContent = autorNome;
+    document.getElementById('deleteModal').classList.remove('hidden');
+}
+
+function closeDeleteModal() {
+    autorToDelete = null;
+    document.getElementById('deleteModal').classList.add('hidden');
+}
+
+function confirmDelete() {
+    if (autorToDelete) {
+        const form = document.getElementById(`delete-form-${autorToDelete}`);
+        if (form) {
+            form.submit();
+        } else {
+            console.error('Formulário de exclusão não encontrado');
+            closeDeleteModal();
+        }
+    } else {
+        closeDeleteModal();
+    }
+}
+
+// Event listeners para o modal
+document.getElementById('cancelDelete').addEventListener('click', closeDeleteModal);
+document.getElementById('confirmDelete').addEventListener('click', confirmDelete);
+
+// Fechar modal ao clicar fora dele
+document.getElementById('deleteModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeDeleteModal();
+    }
+});
+
+// Fechar modal com ESC
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && !document.getElementById('deleteModal').classList.contains('hidden')) {
+        closeDeleteModal();
     }
 });
 </script>

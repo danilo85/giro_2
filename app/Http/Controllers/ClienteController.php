@@ -6,6 +6,8 @@ use App\Models\Cliente;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
+use App\Helpers\FileUploadHelper;
 
 class ClienteController extends Controller
 {
@@ -70,7 +72,7 @@ class ClienteController extends Controller
 
         // Upload do avatar
         if ($request->hasFile('avatar')) {
-            $avatarPath = $request->file('avatar')->store('avatars/clientes', 'public');
+            $avatarPath = FileUploadHelper::storeFile($request->file('avatar'), 'avatars/clientes');
             $data['avatar'] = $avatarPath;
         }
 
@@ -138,7 +140,7 @@ class ClienteController extends Controller
                 Storage::disk('public')->delete($cliente->avatar);
             }
             
-            $avatarPath = $request->file('avatar')->store('avatars/clientes', 'public');
+            $avatarPath = FileUploadHelper::storeFile($request->file('avatar'), 'avatars/clientes');
             $data['avatar'] = $avatarPath;
         }
 

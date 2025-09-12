@@ -10,6 +10,7 @@ use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Session;
 use App\Models\UserLogo;
 use Illuminate\Support\Facades\DB;
+use App\Helpers\FileUploadHelper;
 
 class ProfileController extends Controller
 {
@@ -40,7 +41,7 @@ class ProfileController extends Controller
                 Storage::disk('public')->delete($user->avatar);
             }
             
-            $avatarPath = $request->file('avatar')->store('avatars', 'public');
+            $avatarPath = FileUploadHelper::storeFile($request->file('avatar'), 'avatars');
             $data['avatar'] = $avatarPath;
         }
         
@@ -82,7 +83,7 @@ class ProfileController extends Controller
             Storage::disk('public')->delete($user->avatar);
         }
         
-        $avatarPath = $request->file('avatar')->store('avatars', 'public');
+        $avatarPath = FileUploadHelper::storeFile($request->file('avatar'), 'avatars');
         
         $user->update([
             'avatar' => $avatarPath
@@ -185,7 +186,7 @@ class ProfileController extends Controller
                 }
                 
                 // Store the logo file
-                $logoPath = $file->store('logos', 'public');
+                $logoPath = FileUploadHelper::storeFile($file, 'logos');
                 
                 UserLogo::create([
                     'user_id' => $user->id,
@@ -252,7 +253,7 @@ class ProfileController extends Controller
         }
         
         // Store the signature file
-        $signaturePath = $request->file('assinatura')->store('assinaturas', 'public');
+        $signaturePath = FileUploadHelper::storeFile($request->file('assinatura'), 'assinaturas');
         
         \Log::info('Upload Signature - Sucesso', [
             'user_id' => $user->id,

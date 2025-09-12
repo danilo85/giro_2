@@ -25,6 +25,7 @@ use App\Http\Controllers\HistoricoController;
 use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\PortfolioCategoryController;
 use App\Http\Controllers\PortfolioApiController;
+use App\Utils\MimeTypeDetector;
 
 /*
 |--------------------------------------------------------------------------
@@ -105,7 +106,7 @@ Route::post('/debug-form', function (\Illuminate\Http\Request $request) {
             \Illuminate\Support\Facades\Log::info("Image $index:", [
                 'original_name' => $file->getClientOriginalName(),
                 'size' => $file->getSize(),
-                'mime_type' => $file->getMimeType(),
+                'mime_type' => MimeTypeDetector::detect($file),
                 'is_valid' => $file->isValid(),
                 'error' => $file->getError()
             ]);
@@ -339,6 +340,12 @@ Route::post('/debug-form', function (\Illuminate\Http\Request $request) {
                 'session_id' => session()->getId()
             ]);
         });
+        
+        Route::get('/csrf-token', function () {
+            return response()->json([
+                'token' => csrf_token()
+            ]);
+        });
     });
 
 });
@@ -425,10 +432,7 @@ Route::prefix('public')->name('public.')->group(function () {
 
 // File upload routes moved to RouteServiceProvider (without any middleware)
 
-// Debug routes (only in development)
-if (app()->environment('local')) {
-    require __DIR__.'/debug.php';
-}
+// Debug routes (only in development) - REMOVIDO
 
 // Incluir rotas de teste
 require __DIR__ . '/test.php';

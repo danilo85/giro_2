@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Upload Múltiplas Imagens - Debug</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; }
+        button { background: #007cba; color: white; padding: 10px 20px; border: none; cursor: pointer; margin: 5px; }
+        button:hover { background: #005a87; }
+        .debug { background: #f5f5f5; padding: 15px; margin: 20px 0; border-left: 4px solid #007cba; }
+        .preview { margin-top: 20px; }
+        .preview img { max-width: 100px; max-height: 100px; margin: 5px; border: 1px solid #ddd; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Teste Upload Múltiplas Imagens - Debug</h1>
+        
+        <form id="testForm" method="POST" action="http://localhost:8000/portfolio/works/1" enctype="multipart/form-data">
+            <input type="hidden" name="_token" id="csrfToken">
+            <input type="hidden" name="_method" value="PUT">
+            
+            <div class="form-group">
+                <label for="title">Título:</label>
+                <input type="text" name="title" id="title" value="Teste Upload Debug" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="portfolio_category_id">Categoria:</label>
+                <select name="portfolio_category_id" id="portfolio_category_id" required>
+                    <option value="1">Categoria Teste</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Descrição:</label>
+                <textarea name="description" id="description">Teste de upload de múltiplas imagens</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="images">Selecione múltiplas imagens:</label>
+                <input type="file" id="images" name="images[]" multiple accept="image/*" onchange="previewImages(this)">
+            </div>
+            
+            <div id="preview" class="preview"></div>
+            
+            <div class="form-group">
+                <button type="button" onclick="debugForm()">Debug Formulário</button>
+                <button type="submit">Enviar</button>
+            </div>
+        </form>
+        
+        <div id="debug" class="debug">
+            <h3>Debug Info:</h3>
+            <div id="debugInfo"></div>
+        </div>
+        
+        <div id="result"></div>
+    </div>
+
+    <script>
+        // Obter CSRF token
+        fetch('/csrf-token')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('csrfToken').value = data.csrf_token;
+            })
+            .catch(() => {
+                // Fallback - usar um token fixo para teste
+                document.getElementById('csrfToken').value = 'test-token';
+            });
+
+        function previewImages(input) {
+            const preview = document.getElementById('preview');
+            preview.innerHTML = '';
+            
+            if (input.files) {
+                Array.from(input.files).forEach((file, index) => {
+                    if (file.type.startsWith('image/')) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const img = document.createElement('img');
+                            img.src = e.target.result;
+                            img.title = file.name;
+                            preview.appendChild(img);
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+            
+            updateDebugInfo();
+        }
+
+        function debugForm() {
+            const fileInput = document.getElementById('images');
+            const debugInfo = document.getElementById('debugInfo');
+            
+            let info = `<strong>Arquivos selecionados:</strong> ${fileInput.files.length}<br>`;
+            
+            for (let i = 0; i < fileInput.files.length; i++) {
+                const file = fileInput.files[i];
+                info += `Arquivo ${i + 1}: ${file.name} (${file.size} bytes, ${file.type})<br>`;
+            }
+            
+            // Testar FormData
+            const formData = new FormData();
+            formData.append('_token', document.getElementById('csrfToken').value);
+            formData.append('_method', 'PUT');
+            formData.append('title', document.getElementById('title').value);
+            formData.append('portfolio_category_id', document.getElementById('portfolio_category_id').value);
+            formData.append('description', document.getElementById('description').value);
+            
+            // Adicionar imagens
+            for (let i = 0; i < fileInput.files.length; i++) {
+                formData.append('images[]', fileInput.files[i]);
+            }
+            
+            info += `<br><strong>FormData entries:</strong><br>`;
+            for (let pair of formData.entries()) {
+                if (pair[1] instanceof File) {
+                    info += `${pair[0]}: ${pair[1].name} (${pair[1].size} bytes)<br>`;
+                } else {
+                    info += `${pair[0]}: ${pair[1]}<br>`;
+                }
+            }
+            
+            debugInfo.innerHTML = info;
+        }
+
+        function updateDebugInfo() {
+            const fileInput = document.getElementById('images');
+            const debugInfo = document.getElementById('debugInfo');
+            
+            let info = `<strong>Arquivos no input:</strong> ${fileInput.files.length}<br>`;
+            
+            for (let i = 0; i < fileInput.files.length; i++) {
+                const file = fileInput.files[i];
+                info += `${i + 1}. ${file.name} (${file.size} bytes)<br>`;
+            }
+            
+            debugInfo.innerHTML = info;
+        }
+
+        // Interceptar envio do formulário para debug
+        document.getElementById('testForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const fileInput = document.getElementById('images');
+            const resultDiv = document.getElementById('result');
+            
+            console.log('=== DEBUG ENVIO FORMULÁRIO ===');
+            console.log('Arquivos selecionados:', fileInput.files.length);
+            
+            const formData = new FormData(this);
+            
+            // Log de todos os dados do formulário
+            console.log('FormData entries:');
+            for (let pair of formData.entries()) {
+                if (pair[1] instanceof File) {
+                    console.log(`${pair[0]}:`, pair[1].name, `(${pair[1].size} bytes)`);
+                } else {
+                    console.log(`${pair[0]}:`, pair[1]);
+                }
+            }
+            
+            resultDiv.innerHTML = '<p>Enviando...</p>';
+            
+            // Enviar para o servidor
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => {
+                console.log('Response status:', response.status);
+                return response.text();
+            })
+            .then(data => {
+                console.log('Response data:', data);
+                resultDiv.innerHTML = `<div class="success">Resposta recebida! Verifique o console para detalhes.</div>`;
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                resultDiv.innerHTML = `<div class="error">Erro: ${error.message}</div>`;
+            });
+        });
+    </script>
+</body>
+</html>

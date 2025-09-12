@@ -119,7 +119,7 @@
         @if($categories->count() > 0)
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="categories-grid">
                 @foreach($categories as $category)
-                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all duration-200 group" 
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all duration-200 group flex flex-col h-full" 
                          data-category-id="{{ $category->id }}" 
                          draggable="true">
                         <!-- Header do Card -->
@@ -182,45 +182,46 @@
                             </div>
                         </div>
                         
+                        <!-- Flex grow para empurrar os botões para o rodapé -->
+                        <div class="flex-grow"></div>
+                        
                         <!-- Footer com Ações -->
-                        <div class="px-6 py-3 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600 rounded-b-lg">
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center space-x-2">
-                                    <!-- Toggle Status -->
-                                    <button @click="toggleStatus({{ $category->id }})" 
-                                            class="p-2 rounded-md {{ $category->is_active ? 'text-green-600 hover:bg-green-100 dark:hover:bg-green-800' : 'text-red-600 hover:bg-red-100 dark:hover:bg-red-800' }} transition-colors"
-                                            title="{{ $category->is_active ? 'Desativar' : 'Ativar' }}">
-                                        @if($category->is_active)
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                            </svg>
-                                        @else
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                            </svg>
-                                        @endif
-                                    </button>
-                                    
-                                    <!-- Edit -->
-                                    <button onclick="openEditModal({{ $category->toJson() }})" 
-                                            class="p-2 text-blue-600 hover:bg-blue-100 dark:hover:bg-blue-800 rounded-md transition-colors"
-                                            title="Editar">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                        <div class="flex items-center justify-between px-6 py-4 border-t border-gray-200 dark:border-gray-700 mt-auto">
+                            <div class="flex space-x-3">
+                                <!-- Toggle Status -->
+                                <button @click="toggleStatus({{ $category->id }})" 
+                                        class="p-2 rounded-lg {{ $category->is_active ? 'text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300 transition-all duration-200 hover:bg-green-50 dark:hover:bg-green-900/20' : 'text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 transition-all duration-200 hover:bg-red-50 dark:hover:bg-red-900/20' }}"
+                                        title="{{ $category->is_active ? 'Desativar' : 'Ativar' }}">
+                                    @if($category->is_active)
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                         </svg>
-                                    </button>
-                                </div>
+                                    @else
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                    @endif
+                                </button>
                                 
+                                <!-- Edit -->
+                                <button onclick="openEditModal({{ $category->toJson() }})" 
+                                        class="p-2 rounded-lg text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-all duration-200 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                                        title="Editar">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            
+                            <div class="flex space-x-3">
                                 <!-- Delete -->
-                                <div>
-                                    <button onclick="openDeleteModal({{ $category->id }}, '{{ $category->name }}', {{ $category->works_count ?? 0 }})" 
-                                            class="p-2 text-red-600 hover:bg-red-100 dark:hover:bg-red-800 rounded-md transition-colors"
-                                            title="Excluir Categoria">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                        </svg>
-                                    </button>
-                                </div>
+                                <button onclick="openDeleteModal({{ $category->id }}, '{{ $category->name }}', {{ $category->works_count ?? 0 }})" 
+                                        class="p-2 rounded-lg text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 transition-all duration-200 hover:bg-red-50 dark:hover:bg-red-900/20"
+                                        title="Excluir Categoria">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                    </svg>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -490,13 +491,13 @@
                     </div>
                 </div>
                 
-                <div class="mt-6 flex justify-end space-x-3">
+                <div class="mt-6 flex justify-center space-x-3">
                     <button type="button" onclick="closeModal()" 
-                            class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">
+                            class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold px-6 py-2 rounded">
                         Cancelar
                     </button>
                     <button type="button" onclick="confirmDelete()" id="delete-btn"
-                            class="bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white font-bold py-2 px-4 rounded">
+                            class="bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white font-bold px-6 py-2 rounded">
                         <span id="delete-text">Excluir Categoria</span>
                         <span id="delete-loading" class="hidden">Excluindo...</span>
                     </button>

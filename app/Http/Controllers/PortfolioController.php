@@ -23,7 +23,7 @@ class PortfolioController extends Controller
     public function index(Request $request)
     {
         $query = PortfolioWork::with(['category', 'client', 'featuredImage', 'images'])
-            ->whereHas('client', function($q) {
+            ->whereHas('client', function ($q) {
                 $q->where('user_id', Auth::id());
             });
 
@@ -42,10 +42,10 @@ class PortfolioController extends Controller
 
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%")
-                  ->orWhere('client', 'like', "%{$search}%");
+                    ->orWhere('description', 'like', "%{$search}%")
+                    ->orWhere('client', 'like', "%{$search}%");
             });
         }
 
@@ -63,11 +63,11 @@ class PortfolioController extends Controller
         $categories = PortfolioCategory::active()->where('user_id', Auth::id())->ordered()->get();
         $clients = Cliente::forUser(Auth::id())->orderBy('nome')->get();
         $authors = Autor::forUser(Auth::id())->orderBy('nome')->get();
-        
+
         // Se vier de um orçamento específico
         $orcamento = null;
         if ($request->filled('orcamento_id')) {
-            $orcamento = Orcamento::whereHas('cliente', function($q) {
+            $orcamento = Orcamento::whereHas('cliente', function ($q) {
                 $q->where('user_id', Auth::id());
             })->with(['cliente', 'autores'])->findOrFail($request->orcamento_id);
         }
@@ -114,13 +114,13 @@ class PortfolioController extends Controller
             // Criar o trabalho
             $workData = $request->except(['featured_image', 'images', 'authors', 'author_roles']);
             $workData['user_id'] = Auth::id();
-            
+
             \Log::info('Dados do trabalho preparados', $workData);
-            
+
             if (empty($workData['slug'])) {
                 $workData['slug'] = Str::slug($request->title);
             }
-            
+
             // Garantir slug único
             $originalSlug = $workData['slug'];
             $counter = 1;
@@ -167,10 +167,9 @@ class PortfolioController extends Controller
 
             return redirect()->route('portfolio.works.index')
                 ->with('success', 'Trabalho de portfólio criado com sucesso!');
-
         } catch (\Exception $e) {
             DB::rollback();
-            
+
             // Verificar se é uma requisição AJAX
             if ($request->expectsJson() || $request->ajax()) {
                 return response()->json([
@@ -178,7 +177,7 @@ class PortfolioController extends Controller
                     'message' => 'Erro ao criar trabalho: ' . $e->getMessage()
                 ], 422);
             }
-            
+
             return back()->withInput()
                 ->with('error', 'Erro ao criar trabalho: ' . $e->getMessage());
         }
@@ -194,12 +193,12 @@ class PortfolioController extends Controller
         if ($work->user_id && $work->user_id !== Auth::id()) {
             abort(403);
         }
-        
+
         // Se não tem user_id no trabalho, verificar pelo cliente
         if (!$work->user_id && $work->client && $work->client->user_id !== Auth::id()) {
             abort(403);
         }
-        
+
         // Se não tem nem user_id nem cliente, negar acesso
         if (!$work->user_id && !$work->client) {
             abort(403, 'Trabalho não possui proprietário definido.');
@@ -209,7 +208,7 @@ class PortfolioController extends Controller
             'category',
             'client',
             'orcamento',
-            'images' => function($query) {
+            'images' => function ($query) {
                 $query->ordered();
             },
             'authors'
@@ -231,7 +230,7 @@ class PortfolioController extends Controller
             abort(403);
         }
 
-        $work->load(['images' => function($query) {
+        $work->load(['images' => function ($query) {
             $query->orderBy('sort_order');
         }, 'authors']);
 
@@ -280,11 +279,11 @@ class PortfolioController extends Controller
             // Atualizar dados básicos
             $workData = $request->except(['featured_image', 'images', 'authors', 'author_roles']);
             $workData['user_id'] = Auth::id();
-            
+
             if (empty($workData['slug'])) {
                 $workData['slug'] = Str::slug($request->title);
             }
-            
+
             // Garantir slug único (exceto para o próprio trabalho)
             $originalSlug = $workData['slug'];
             $counter = 1;
@@ -301,7 +300,7 @@ class PortfolioController extends Controller
                 if ($work->featured_image && Storage::disk('public')->exists($work->featured_image)) {
                     Storage::disk('public')->delete($work->featured_image);
                 }
-                
+
                 $featuredImage = $request->file('featured_image');
                 $path = $featuredImage->store('portfolio/featured', 'public');
                 $work->update(['featured_image' => $path]);
@@ -323,13 +322,13 @@ class PortfolioController extends Controller
             if ($request->filled('delete_images')) {
                 $imagesToDelete = explode(',', $request->delete_images);
                 \Log::info('Imagens para deletar', ['images' => $imagesToDelete]);
-                
+
                 foreach ($imagesToDelete as $imageId) {
                     if ($imageId) {
                         $image = PortfolioWorkImage::where('id', $imageId)
                             ->where('portfolio_work_id', $work->id)
                             ->first();
-                        
+
                         if ($image) {
                             \Log::info('Deletando imagem', ['id' => $imageId, 'path' => $image->path]);
                             $image->delete();
@@ -337,7 +336,7 @@ class PortfolioController extends Controller
                     }
                 }
             }
-            
+
             // Processar imagens adicionais
             \Log::info('Verificando imagens no update', [
                 'has_images' => $request->hasFile('images'),
@@ -345,7 +344,7 @@ class PortfolioController extends Controller
                 'all_files' => $request->allFiles(),
                 'request_data' => $request->all()
             ]);
-            
+
             if ($request->hasFile('images')) {
                 \Log::info('Iniciando upload de imagens no update', ['work_id' => $work->id]);
                 $this->uploadImages($work, $request->file('images'));
@@ -358,7 +357,6 @@ class PortfolioController extends Controller
 
             return redirect()->route('portfolio.works.index')
                 ->with('success', 'Trabalho atualizado com sucesso!');
-
         } catch (\Exception $e) {
             DB::rollback();
             return back()->withInput()
@@ -396,7 +394,6 @@ class PortfolioController extends Controller
 
             return redirect()->route('portfolio.works.index')
                 ->with('success', 'Trabalho removido com sucesso!');
-
         } catch (\Exception $e) {
             DB::rollback();
             return back()->with('error', 'Erro ao remover trabalho: ' . $e->getMessage());
@@ -430,12 +427,12 @@ class PortfolioController extends Controller
 
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%")
-                  ->orWhereHas('client', function($clientQuery) use ($search) {
-                      $clientQuery->where('nome', 'like', "%{$search}%");
-                  });
+                    ->orWhere('description', 'like', "%{$search}%")
+                    ->orWhereHas('client', function ($clientQuery) use ($search) {
+                        $clientQuery->where('nome', 'like', "%{$search}%");
+                    });
             });
         }
 
@@ -451,7 +448,7 @@ class PortfolioController extends Controller
     public function pipeline(Request $request)
     {
         $query = Orcamento::with(['cliente', 'autores'])
-            ->whereHas('cliente', function($q) {
+            ->whereHas('cliente', function ($q) {
                 $q->where('user_id', Auth::id());
             })
             ->where('status', 'finalizado')
@@ -472,12 +469,12 @@ class PortfolioController extends Controller
 
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('titulo', 'like', "%{$search}%")
-                  ->orWhere('descricao', 'like', "%{$search}%")
-                  ->orWhereHas('cliente', function($clientQuery) use ($search) {
-                      $clientQuery->where('nome', 'like', "%{$search}%");
-                  });
+                    ->orWhere('descricao', 'like', "%{$search}%")
+                    ->orWhereHas('cliente', function ($clientQuery) use ($search) {
+                        $clientQuery->where('nome', 'like', "%{$search}%");
+                    });
             });
         }
 
@@ -495,20 +492,20 @@ class PortfolioController extends Controller
     private function uploadImages(PortfolioWork $work, array $images)
     {
         \Log::info('uploadImages iniciado', ['work_id' => $work->id, 'images_count' => count($images)]);
-        
+
         foreach ($images as $index => $image) {
             \Log::info('Processando imagem', ['index' => $index, 'is_valid' => $image->isValid()]);
-            
+
             if ($image->isValid()) {
                 $filename = time() . '_' . $index . '_' . $image->getClientOriginalName();
                 $path = $image->storeAs('portfolio/works', $filename, 'public');
-                
+
                 \Log::info('Imagem salva no storage', ['filename' => $filename, 'path' => $path]);
-                
+
                 // Obter dimensões da imagem
                 $imagePath = storage_path('app/public/' . $path);
                 $imageSize = getimagesize($imagePath);
-                
+
                 $imageData = [
                     'portfolio_work_id' => $work->id,
                     'filename' => $filename,
@@ -520,9 +517,9 @@ class PortfolioController extends Controller
                     'height' => $imageSize ? $imageSize[1] : null,
                     'sort_order' => PortfolioWorkImage::getNextSortOrder($work->id)
                 ];
-                
+
                 \Log::info('Dados da imagem para salvar no BD', $imageData);
-                
+
                 try {
                     $portfolioImage = PortfolioWorkImage::create($imageData);
                     \Log::info('Imagem salva no BD com sucesso', ['image_id' => $portfolioImage->id]);
@@ -534,7 +531,7 @@ class PortfolioController extends Controller
                 \Log::warning('Imagem inválida', ['index' => $index]);
             }
         }
-        
+
         \Log::info('uploadImages finalizado');
     }
 }

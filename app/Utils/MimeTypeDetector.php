@@ -59,7 +59,6 @@ class MimeTypeDetector
     public static function detect($file): string
     {
         $methods = [
-            'detectFromLaravel',
             'detectFromMimeContentType',
             'detectFromExtension',
             'detectFromFileSignature'
@@ -107,23 +106,9 @@ class MimeTypeDetector
     }
 
     /**
-     * Método 1: Usar getMimeType() do Laravel (com verificação de segurança)
+     * Método 1: Usar getMimeType() do Laravel (REMOVIDO)
+     * Este método foi removido pois depende da extensão php_fileinfo que não está disponível
      */
-    private static function detectFromLaravel($file): ?string
-    {
-        if ($file instanceof UploadedFile) {
-            try {
-                // Verificar se o método getMimeType() funciona sem finfo
-                $mimeType = $file->getMimeType();
-                return $mimeType;
-            } catch (\Exception $e) {
-                // Se falhar (provavelmente por falta de finfo), retornar null
-                Log::warning('Laravel getMimeType() falhou: ' . $e->getMessage());
-                return null;
-            }
-        }
-        return null;
-    }
 
     /**
      * Método 2: Usar finfo diretamente (REMOVIDO - não disponível)

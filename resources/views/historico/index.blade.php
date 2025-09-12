@@ -774,6 +774,17 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('=== SCRIPT CARREGADO ===');
+    
+    // Verificar se existem botões de exclusão na página
+    const deleteButtons = document.querySelectorAll('.delete-btn');
+    console.log('Botões de exclusão encontrados:', deleteButtons.length);
+    console.log('Botões:', deleteButtons);
+    
+    // Verificar se há elementos com data-entry-id
+    const elementsWithEntryId = document.querySelectorAll('[data-entry-id]');
+    console.log('Elementos com data-entry-id:', elementsWithEntryId.length);
+    console.log('Elementos:', elementsWithEntryId);
     // Verificar se os elementos existem antes de adicionar event listeners
     const filterType = document.getElementById('filter-type');
     const filterDateStart = document.getElementById('filter-date-start');
@@ -1045,6 +1056,14 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
+        // Buscar o elemento da entrada
+        const entryContent = document.querySelector(`[data-entry-id="${entryId}"]`);
+        if (!entryContent) {
+            console.error('Elemento da entrada não encontrado para ID:', entryId);
+            showNotification('Erro: Elemento da entrada não encontrado', 'error');
+            return;
+        }
+        
         showLoading();
         
         try {
@@ -1110,24 +1129,108 @@ document.addEventListener('DOMContentLoaded', function() {
     let entryToDelete = null;
     
     // Event listeners para botões de exclusão
-    document.addEventListener('click', function(e) {
+    console.log('Registrando event listener de clique...');
+    
+    // Teste simples para verificar se o event listener funciona
+    console.log('Testando se document.addEventListener funciona...');
+    
+    // Usar uma abordagem mais robusta
+    function setupClickListener() {
+        console.log('Configurando click listener...');
+        document.addEventListener('click', function(e) {
+            console.log('EVENT LISTENER FUNCIONANDO! Clique detectado em:', e.target.tagName);
+        console.log('=== CLIQUE DETECTADO ===');
+        console.log('Target:', e.target);
+        console.log('Target classes:', e.target.className);
+        console.log('Target tagName:', e.target.tagName);
+        console.log('Target closest .delete-btn:', e.target.closest('.delete-btn'));
+        
+        // Log adicional para debug
+        if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
+            console.log('BOTÃO CLICADO!');
+            const button = e.target.tagName === 'BUTTON' ? e.target : e.target.closest('button');
+            console.log('Botão:', button);
+            console.log('Classes do botão:', button.className);
+            console.log('Dataset do botão:', button.dataset);
+        }
         if (e.target.closest('.delete-btn')) {
-            const entryId = e.target.closest('.delete-btn').dataset.entryId;
-            const entryElement = document.querySelector(`[data-entry-id="${entryId}"]`);
+            console.log('Clique em botão de exclusão detectado!');
+            const deleteBtn = e.target.closest('.delete-btn');
+            console.log('Botão de exclusão clicado:', deleteBtn);
+            console.log('Dataset do botão:', deleteBtn ? deleteBtn.dataset : 'null');
+            
+            // Usar getAttribute diretamente para garantir que funcione
+            const entryId = deleteBtn ? deleteBtn.getAttribute('data-entry-id') : null;
+            console.log('Entry ID obtido:', entryId);
+            console.log('Dataset completo:', deleteBtn ? deleteBtn.dataset : 'null');
+            
+            // Verificar se o atributo existe no HTML
+            const entryIdFromAttribute = deleteBtn ? deleteBtn.getAttribute('data-entry-id') : null;
+            console.log('Entry ID do atributo HTML:', entryIdFromAttribute);
+            
+            // Verificar se entryId existe
+            if (!entryId) {
+                console.error('ID da entrada não encontrado no dataset do botão');
+                console.error('Botão completo:', deleteBtn);
+                showNotification('Erro: ID da entrada não encontrado', 'error');
+                return;
+            }
+            
+            // Encontrar o container da entrada usando closest (busca no elemento pai)
+            const entryElement = deleteBtn.closest('[data-entry-id]');
+            console.log('Container da entrada encontrado:', entryElement);
+            console.log('data-entry-id do container:', entryElement ? entryElement.dataset.entryId : 'não encontrado');
+            
+            // Verificar se entryElement existe
+            if (!entryElement) {
+                console.error('Container da entrada não encontrado para ID:', entryId);
+                console.error('Elemento do botão:', deleteBtn);
+                console.error('Seletores disponíveis:', document.querySelectorAll('[data-entry-id]'));
+                showNotification('Erro: Container da entrada não encontrado', 'error');
+                return;
+            }
+            
+            // Verificar se o ID do container corresponde ao ID do botão
+            if (entryElement.dataset.entryId !== entryId) {
+                console.error('ID do container não corresponde ao ID do botão');
+                console.error('ID do botão:', entryId);
+                console.error('ID do container:', entryElement.dataset.entryId);
+                showNotification('Erro: Inconsistência nos IDs', 'error');
+                return;
+            }
+            
             const titleElement = entryElement.querySelector('.editable-title');
             const entryTitle = titleElement ? titleElement.textContent.trim() : 'Item sem título';
+            console.log('Título da entrada:', entryTitle);
             
             // Armazenar dados para exclusão
             entryToDelete = {
                 id: entryId,
                 title: entryTitle,
-                element: entryElement.closest('.relative.flex.items-start.mb-8.group')
+                element: entryElement
             };
             
+            console.log('entryToDelete criado:', entryToDelete);
+            console.log('entryToDelete.id:', entryToDelete.id);
+            
             // Mostrar modal de confirmação
-            showDeleteModal(entryTitle);
+            console.log('Chamando showDeleteModal com título:', entryTitle);
+            try {
+                showDeleteModal(entryTitle);
+                console.log('showDeleteModal executada com sucesso');
+            } catch (error) {
+                console.error('ERRO ao chamar showDeleteModal:', error);
+            }
         }
     });
+    }
+    
+    // Chamar a função setupClickListener quando o DOM estiver carregado
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupClickListener);
+    } else {
+        setupClickListener();
+    }
     
     // Funções para gerenciamento de arquivos
     function initFileManagement(entryId) {
@@ -1378,9 +1481,16 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Funções do modal de exclusão
     function showDeleteModal(itemTitle) {
+        console.log('=== showDeleteModal CHAMADA ===');
+        console.log('itemTitle recebido:', itemTitle);
+        
         const modal = document.getElementById('deleteModal');
         const titleElement = document.getElementById('deleteItemTitle');
         const cancelButton = document.getElementById('cancelDelete');
+        
+        console.log('Modal encontrado:', modal);
+        console.log('TitleElement encontrado:', titleElement);
+        console.log('CancelButton encontrado:', cancelButton);
         
         if (modal && titleElement) {
             titleElement.textContent = itemTitle;
@@ -1404,11 +1514,69 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     async function executeDelete() {
-        if (!entryToDelete || !entryToDelete.id) {
-            console.error('Dados de exclusão inválidos');
-            hideLoading();
+        console.log('=== INÍCIO executeDelete ===');
+        console.log('executeDelete chamada, entryToDelete:', entryToDelete);
+        console.log('Tipo de entryToDelete:', typeof entryToDelete);
+        console.log('entryToDelete é null?', entryToDelete === null);
+        console.log('entryToDelete é undefined?', entryToDelete === undefined);
+        
+        // Verificação mais robusta de entryToDelete
+        if (entryToDelete === null) {
+            console.error('ERRO: entryToDelete é null');
+            showNotification('Erro: Dados de exclusão não encontrados (null)', 'error');
             return;
         }
+        
+        if (entryToDelete === undefined) {
+            console.error('ERRO: entryToDelete é undefined');
+            showNotification('Erro: Dados de exclusão não encontrados (undefined)', 'error');
+            return;
+        }
+        
+        if (typeof entryToDelete !== 'object') {
+            console.error('ERRO: entryToDelete não é um objeto, tipo:', typeof entryToDelete);
+            console.error('Valor:', entryToDelete);
+            showNotification('Erro: Dados de exclusão inválidos', 'error');
+            return;
+        }
+        
+        console.log('entryToDelete é um objeto válido, verificando propriedades...');
+        console.log('Propriedades disponíveis:', Object.keys(entryToDelete));
+        console.log('entryToDelete.id:', entryToDelete.id);
+        console.log('Tipo de entryToDelete.id:', typeof entryToDelete.id);
+        
+        // Verificação específica da propriedade id
+        if (!entryToDelete.hasOwnProperty('id')) {
+            console.error('ERRO: entryToDelete não possui a propriedade "id"');
+            console.error('entryToDelete completo:', entryToDelete);
+            showNotification('Erro: Propriedade ID não encontrada', 'error');
+            return;
+        }
+        
+        if (entryToDelete.id === null) {
+            console.error('ERRO: entryToDelete.id é null');
+            showNotification('Erro: ID da entrada é null', 'error');
+            return;
+        }
+        
+        if (entryToDelete.id === undefined) {
+            console.error('ERRO: entryToDelete.id é undefined');
+            showNotification('Erro: ID da entrada é undefined', 'error');
+            return;
+        }
+        
+        if (entryToDelete.id === '') {
+            console.error('ERRO: entryToDelete.id é string vazia');
+            showNotification('Erro: ID da entrada é vazio', 'error');
+            return;
+        }
+        
+        console.log('ID válido encontrado:', entryToDelete.id);
+        console.log('Tipo do ID:', typeof entryToDelete.id);
+        
+        // Salvar o ID antes de fechar o modal
+        const entryIdToDelete = entryToDelete.id;
+        const entryElementToDelete = entryToDelete.element;
         
         showLoading();
         hideDeleteModal();
@@ -1419,7 +1587,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 throw new Error('Token CSRF não encontrado');
             }
             
-            const response = await fetch(`{{ route('orcamentos.historico.destroy', [$orcamento, '__ID__']) }}`.replace('__ID__', entryToDelete.id), {
+            const response = await fetch(`{{ route('orcamentos.historico.destroy', [$orcamento, '__ID__']) }}`.replace('__ID__', entryIdToDelete), {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1435,16 +1603,87 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = await response.json();
             
             if (data.success) {
-                // Remover item da timeline com animação
-                if (entryToDelete.element && entryToDelete.element.parentNode) {
-                    entryToDelete.element.style.transition = 'transform 0.3s ease-out';
-                    entryToDelete.element.style.transform = 'translateX(-20px)';
+                // Remover item da timeline com animação suave
+                if (entryElementToDelete && entryElementToDelete.parentNode) {
+                    // Buscar o elemento pai completo da timeline
+                    const timelineItem = entryElementToDelete.closest('.relative.flex.items-start.mb-8.group');
                     
-                    setTimeout(() => {
-                        if (entryToDelete.element && entryToDelete.element.parentNode) {
-                            entryToDelete.element.remove();
+                    if (timelineItem) {
+                        console.log('🎯 Removendo entrada completa da timeline:', timelineItem);
+                        // Adicionar animação de fade out e slide
+                        timelineItem.style.transition = 'all 0.4s ease-out';
+                        timelineItem.style.opacity = '0';
+                        timelineItem.style.transform = 'translateX(-30px) scale(0.95)';
+                        timelineItem.style.maxHeight = timelineItem.offsetHeight + 'px';
+                        
+                        // Após a animação inicial, colapsar a altura
+                        setTimeout(() => {
+                            if (timelineItem && timelineItem.parentNode) {
+                                timelineItem.style.maxHeight = '0';
+                                timelineItem.style.marginTop = '0';
+                                timelineItem.style.marginBottom = '0';
+                                timelineItem.style.paddingTop = '0';
+                                timelineItem.style.paddingBottom = '0';
+                                
+                                // Remover completamente após a animação
+                                setTimeout(() => {
+                                    if (timelineItem && timelineItem.parentNode) {
+                                        timelineItem.remove();
+                                        console.log('✅ Entrada completa removida da timeline');
+                                    }
+                                }, 300);
+                            }
+                        }, 200);
+                    } else {
+                        console.log('⚠️ Elemento pai da timeline não encontrado, removendo elemento direto');
+                        // Fallback para o comportamento anterior
+                        entryElementToDelete.style.transition = 'all 0.4s ease-out';
+                        entryElementToDelete.style.opacity = '0';
+                        entryElementToDelete.style.transform = 'translateX(-30px) scale(0.95)';
+                        
+                        setTimeout(() => {
+                            if (entryElementToDelete && entryElementToDelete.parentNode) {
+                                entryElementToDelete.remove();
+                            }
+                        }, 400);
+                    }
+                } else {
+                    // Fallback: tentar encontrar o elemento pelo ID se não tiver referência
+                    const fallbackElement = document.querySelector(`[data-entry-id="${entryIdToDelete}"]`);
+                    if (fallbackElement) {
+                        // Buscar o elemento pai completo da timeline (div com classes 'relative flex items-start mb-8 group')
+                        const timelineItem = fallbackElement.closest('.relative.flex.items-start.mb-8.group');
+                        if (timelineItem) {
+                            console.log('🎯 Removendo entrada completa da timeline (fallback):', timelineItem);
+                            timelineItem.style.transition = 'all 0.4s ease-out';
+                            timelineItem.style.opacity = '0';
+                            timelineItem.style.transform = 'translateX(-30px) scale(0.95)';
+                            timelineItem.style.maxHeight = timelineItem.offsetHeight + 'px';
+                            
+                            setTimeout(() => {
+                                timelineItem.style.maxHeight = '0';
+                                timelineItem.style.marginBottom = '0';
+                                timelineItem.style.paddingTop = '0';
+                                timelineItem.style.paddingBottom = '0';
+                                
+                                setTimeout(() => {
+                                    if (timelineItem && timelineItem.parentNode) {
+                                        timelineItem.remove();
+                                        console.log('✅ Entrada completa removida (fallback)');
+                                    }
+                                }, 300);
+                            }, 200);
+                        } else {
+                            console.log('⚠️ Elemento pai da timeline não encontrado, removendo elemento direto');
+                            fallbackElement.style.transition = 'all 0.4s ease-out';
+                            fallbackElement.style.opacity = '0';
+                            setTimeout(() => {
+                                if (fallbackElement && fallbackElement.parentNode) {
+                                    fallbackElement.remove();
+                                }
+                            }, 400);
                         }
-                    }, 300);
+                    }
                 }
                 
                 showNotification(data.message || 'Item excluído com sucesso');
@@ -1523,44 +1762,47 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
-});
-
-// Funções para o modal de imagem
-function openImageModal(imageUrl, imageName) {
-    const modal = document.getElementById('imageModal');
-    const modalImage = document.getElementById('modalImage');
-    const modalImageName = document.getElementById('modalImageName');
     
-    if (modal && modalImage && modalImageName) {
-        modalImage.src = imageUrl;
-        modalImage.alt = imageName;
-        modalImageName.textContent = imageName;
-        modal.classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-    }
-}
+    // Funções para o modal de imagem
+    window.openImageModal = function(imageUrl, imageName) {
+        const modal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
+        const modalImageName = document.getElementById('modalImageName');
+        
+        if (modal && modalImage && modalImageName) {
+            modalImage.src = imageUrl;
+            modalImage.alt = imageName;
+            modalImageName.textContent = imageName;
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+    };
 
-function closeImageModal() {
-    const modal = document.getElementById('imageModal');
-    if (modal) {
-        modal.classList.add('hidden');
-        document.body.style.overflow = 'auto';
-    }
-}
+    window.closeImageModal = function() {
+        const modal = document.getElementById('imageModal');
+        if (modal) {
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+    };
 
-// Fechar modal ao clicar fora da imagem
-document.addEventListener('click', function(e) {
-    const modal = document.getElementById('imageModal');
-    if (modal && e.target === modal) {
-        closeImageModal();
-    }
-});
+    // Fechar modal ao clicar fora da imagem
+    document.addEventListener('click', function(e) {
+        const modal = document.getElementById('imageModal');
+        if (modal && e.target === modal) {
+            closeImageModal();
+        }
+    });
 
-// Fechar modal com tecla ESC
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        closeImageModal();
-    }
+    // Fechar modal com tecla ESC para imagem
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const imageModal = document.getElementById('imageModal');
+            if (imageModal && !imageModal.classList.contains('hidden')) {
+                closeImageModal();
+            }
+        }
+    });
 });
 </script>
 @endpush

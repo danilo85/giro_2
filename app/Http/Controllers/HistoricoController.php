@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\HistoricoEntry;
 use App\Models\HistoricoFile;
 use App\Models\Orcamento;
+use App\Utils\MimeTypeDetector;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -169,7 +169,7 @@ class HistoricoController extends Controller
             'historico_entry_id' => $entry->id,
             'original_name' => $originalName,
             'file_path' => $filePath,
-            'mime_type' => $file->getMimeType(),
+            'mime_type' => MimeTypeDetector::detect($file),
             'file_size' => $file->getSize()
         ]);
     }

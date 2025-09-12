@@ -32,12 +32,12 @@ try {
     $fakeImages = [
         [
             'filename' => 'fake_image_1_' . time() . '.jpg',
-            'path' => 'portfolio/images/fake_image_1_' . time() . '.jpg',
+            'path' => 'portfolio/works/fake_image_1_' . time() . '.jpg',
             'original_name' => 'fake_image_1.jpg'
         ],
         [
             'filename' => 'fake_image_2_' . time() . '.jpg', 
-            'path' => 'portfolio/images/fake_image_2_' . time() . '.jpg',
+            'path' => 'portfolio/works/fake_image_2_' . time() . '.jpg',
             'original_name' => 'fake_image_2.jpg'
         ]
     ];

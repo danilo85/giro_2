@@ -8,9 +8,9 @@
 <meta property="og:title" content="{{ $work->meta_title ?: $work->title }}">
 <meta property="og:description" content="{{ $work->meta_description ?: Str::limit($work->description, 160) }}">
 <meta property="og:type" content="article">
-<meta property="og:url" content="{{ route('public.portfolio.public.work', $work->slug) }}">
+<meta property="og:url" content="{{ route('public.portfolio.work', $work->slug) }}">
 @if($work->featured_image)
-<meta property="og:image" content="{{ Storage::url($work->featured_image) }}">
+<meta property="og:image" content="{{ asset('storage/' . $work->featured_image) }}">
 @endif
 
 <!-- Twitter Card -->
@@ -18,7 +18,7 @@
 <meta name="twitter:title" content="{{ $work->meta_title ?: $work->title }}">
 <meta name="twitter:description" content="{{ $work->meta_description ?: Str::limit($work->description, 160) }}">
 @if($work->featured_image)
-<meta name="twitter:image" content="{{ Storage::url($work->featured_image) }}">
+<meta name="twitter:image" content="{{ asset('storage/' . $work->featured_image) }}">
 @endif
 
 <!-- Structured Data -->
@@ -28,9 +28,9 @@
   "@type": "CreativeWork",
   "name": "{{ $work->title }}",
   "description": "{{ $work->description }}",
-  "url": "{{ route('public.portfolio.public.work', $work->slug) }}",
+  "url": "{{ route('public.portfolio.work', $work->slug) }}",
   @if($work->featured_image)
-  "image": "{{ Storage::url($work->featured_image) }}",
+  "image": "{{ asset('storage/' . $work->featured_image) }}",
   @endif
   "dateCreated": "{{ $work->created_at->toISOString() }}",
   "author": [
@@ -59,10 +59,10 @@
         <ol class="flex items-center space-x-2 text-sm">
             <li><a href="{{ route('dashboard') }}" class="text-blue-600 hover:text-blue-700">Início</a></li>
             <li class="text-gray-400">/</li>
-            <li><a href="{{ route('public.portfolio.public.index') }}" class="text-blue-600 hover:text-blue-700">Portfólio</a></li>
+            <li><a href="{{ route('public.portfolio.index') }}" class="text-blue-600 hover:text-blue-700">Portfólio</a></li>
             @if($work->category)
                 <li class="text-gray-400">/</li>
-                <li><a href="{{ route('public.portfolio.public.category', $work->category->slug) }}" class="text-blue-600 hover:text-blue-700">{{ $work->category->name }}</a></li>
+                <li><a href="{{ route('public.portfolio.category', $work->category->slug) }}" class="text-blue-600 hover:text-blue-700">{{ $work->category->name }}</a></li>
             @endif
             <li class="text-gray-400">/</li>
             <li class="text-gray-700">{{ $work->title }}</li>
@@ -77,7 +77,7 @@
             <!-- Category Badge -->
             @if($work->category)
                 <div class="mb-6">
-                    <a href="{{ route('public.portfolio.public.category', $work->category->slug) }}" 
+                    <a href="{{ route('public.portfolio.category', $work->category->slug) }}" 
                        class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium text-white hover:opacity-90 transition-opacity" 
                        style="background-color: {{ $work->category->color }}">
                         <i class="fas fa-tag mr-2"></i>
@@ -122,7 +122,7 @@
 <section class="py-8">
     <div class="container mx-auto px-4">
         <div class="max-w-6xl mx-auto">
-            <img src="{{ Storage::url($work->featured_image) }}" 
+            <img src="{{ asset('storage/' . $work->featured_image) }}" 
                  alt="{{ $work->title }}" 
                  class="w-full rounded-xl shadow-lg">
         </div>
@@ -149,8 +149,8 @@
                             <h3 class="text-2xl font-bold text-gray-900 mb-6">Galeria</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 @foreach($work->images as $image)
-                                    <div class="group cursor-pointer" onclick="openLightbox('{{ Storage::url($image->image_path) }}', '{{ $image->alt_text }}')">
-                                        <img src="{{ Storage::url($image->image_path) }}" 
+                                    <div class="group cursor-pointer" onclick="openLightbox('{{ asset('storage/' . $image->path) }}', '{{ $image->alt_text }}')">
+                                        <img src="{{ asset('storage/' . $image->path) }}" 
                                              alt="{{ $image->alt_text }}" 
                                              class="w-full h-64 object-cover rounded-lg shadow-md group-hover:shadow-lg transition-shadow">
                                     </div>
@@ -211,22 +211,22 @@
                         <div class="border-t pt-6">
                             <h4 class="font-medium text-gray-700 mb-3">Compartilhar</h4>
                             <div class="flex space-x-3">
-                                <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(route('public.portfolio.public.work', $work->slug)) }}" 
+                                <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(route('public.portfolio.work', $work->slug)) }}" 
                                    target="_blank" 
                                    class="w-10 h-10 bg-blue-600 text-white rounded-lg flex items-center justify-center hover:bg-blue-700 transition-colors">
                                     <i class="fab fa-facebook-f"></i>
                                 </a>
-                                <a href="https://twitter.com/intent/tweet?url={{ urlencode(route('public.portfolio.public.work', $work->slug)) }}&text={{ urlencode($work->title) }}" 
+                                <a href="https://twitter.com/intent/tweet?url={{ urlencode(route('public.portfolio.work', $work->slug)) }}&text={{ urlencode($work->title) }}" 
                                    target="_blank" 
                                    class="w-10 h-10 bg-blue-400 text-white rounded-lg flex items-center justify-center hover:bg-blue-500 transition-colors">
                                     <i class="fab fa-twitter"></i>
                                 </a>
-                                <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ urlencode(route('public.portfolio.public.work', $work->slug)) }}" 
+                                <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ urlencode(route('public.portfolio.work', $work->slug)) }}" 
                                    target="_blank" 
                                    class="w-10 h-10 bg-blue-700 text-white rounded-lg flex items-center justify-center hover:bg-blue-800 transition-colors">
                                     <i class="fab fa-linkedin-in"></i>
                                 </a>
-                                <button onclick="copyToClipboard('{{ route('public.portfolio.public.work', $work->slug) }}')" 
+                                <button onclick="copyToClipboard('{{ route('public.portfolio.work', $work->slug) }}')" 
                                         class="w-10 h-10 bg-gray-600 text-white rounded-lg flex items-center justify-center hover:bg-gray-700 transition-colors">
                                     <i class="fas fa-link"></i>
                                 </button>
@@ -251,7 +251,7 @@
                     <article class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group">
                         <div class="relative overflow-hidden">
                             @if($relatedWork->featured_image)
-                                <img src="{{ Storage::url($relatedWork->featured_image) }}" 
+                                <img src="{{ asset('storage/' . $relatedWork->featured_image) }}" 
                                      alt="{{ $relatedWork->title }}" 
                                      class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
                             @else
@@ -263,7 +263,7 @@
                         
                         <div class="p-6">
                             <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
-                                <a href="{{ route('public.portfolio.public.work', $relatedWork->slug) }}">
+                                <a href="{{ route('public.portfolio.work', $relatedWork->slug) }}">
                                     {{ $relatedWork->title }}
                                 </a>
                             </h3>

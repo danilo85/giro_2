@@ -347,7 +347,7 @@
                                                 </svg>
                                             </a>
                                             @if($work->status === 'published')
-                                                <a href="{{ route('portfolio.public.work', $work->slug) }}" 
+                                                <a href="{{ route('public.portfolio.work', $work->slug) }}" 
                                                    target="_blank"
                                                    class="text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300 transition-colors">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
