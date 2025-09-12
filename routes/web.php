@@ -68,6 +68,8 @@ Route::get('/test-transaction-form', [TransactionController::class, 'create'])->
 // Test route for categories API (temporarily without auth)
 Route::get('/test-categories', [CategoryController::class, 'getCategoriesGrouped'])->name('test.categories');
 
+
+
 // AJAX Routes (require session but not full auth middleware)
 Route::get('/clientes/autocomplete', [ClienteController::class, 'autocomplete'])->name('clientes.autocomplete');
 
@@ -86,6 +88,40 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('users', UserController::class);
         Route::post('/users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
     });
+
+// Debug route for form submission (outside auth middleware)
+Route::post('/debug-form', function (\Illuminate\Http\Request $request) {
+    \Illuminate\Support\Facades\Log::info('=== DEBUG FORM SUBMISSION ===');
+    \Illuminate\Support\Facades\Log::info('Request method: ' . $request->method());
+    \Illuminate\Support\Facades\Log::info('Content type: ' . $request->header('Content-Type'));
+    \Illuminate\Support\Facades\Log::info('All input data:', $request->all());
+    \Illuminate\Support\Facades\Log::info('Has file images: ' . ($request->hasFile('images') ? 'YES' : 'NO'));
+    
+    if ($request->hasFile('images')) {
+        $files = $request->file('images');
+        \Illuminate\Support\Facades\Log::info('Images count: ' . count($files));
+        
+        foreach ($files as $index => $file) {
+            \Illuminate\Support\Facades\Log::info("Image $index:", [
+                'original_name' => $file->getClientOriginalName(),
+                'size' => $file->getSize(),
+                'mime_type' => $file->getMimeType(),
+                'is_valid' => $file->isValid(),
+                'error' => $file->getError()
+            ]);
+        }
+    } else {
+        \Illuminate\Support\Facades\Log::info('No images found in request');
+        \Illuminate\Support\Facades\Log::info('Files in request:', array_keys($request->allFiles()));
+    }
+    
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Debug data logged',
+        'has_images' => $request->hasFile('images'),
+        'images_count' => $request->hasFile('images') ? count($request->file('images')) : 0
+    ]);
+})->withoutMiddleware(['auth', 'verified']);
 
     // Profile routes
     Route::get('/profile', function () {
@@ -380,6 +416,11 @@ Route::prefix('public')->name('public.')->group(function () {
         // Página de autor específico
         Route::get('/autor/{author:slug}', [PortfolioApiController::class, 'authorPortfolio'])->name('author');
     });
+    
+    // Rota de contato
+    Route::get('/contato', function () {
+        return view('contact');
+    })->name('contact');
 });
 
 // File upload routes moved to RouteServiceProvider (without any middleware)

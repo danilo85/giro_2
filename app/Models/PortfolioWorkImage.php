@@ -10,6 +10,8 @@ class PortfolioWorkImage extends Model
 {
     use HasFactory;
 
+    protected $table = 'portfolio_works_images';
+
     protected $fillable = [
         'portfolio_work_id',
         'filename',
@@ -17,14 +19,18 @@ class PortfolioWorkImage extends Model
         'path',
         'alt_text',
         'caption',
-        'size',
+        'file_size',
         'mime_type',
+        'width',
+        'height',
         'sort_order',
         'is_featured'
     ];
 
     protected $casts = [
-        'size' => 'integer',
+        'file_size' => 'integer',
+        'width' => 'integer',
+        'height' => 'integer',
         'sort_order' => 'integer',
         'is_featured' => 'boolean'
     ];
@@ -118,12 +124,12 @@ class PortfolioWorkImage extends Model
      */
     public function getFormattedSizeAttribute()
     {
-        if (!$this->size) {
+        if (!$this->file_size) {
             return null;
         }
 
         $units = ['B', 'KB', 'MB', 'GB'];
-        $size = $this->size;
+        $size = $this->file_size;
         $unitIndex = 0;
 
         while ($size >= 1024 && $unitIndex < count($units) - 1) {

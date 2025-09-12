@@ -1,4 +1,4 @@
-@extends('layouts.public')
+@extends('layouts.app')
 
 @section('title', $work->meta_title ?: $work->title . ' - Portfólio - ' . config('app.name'))
 @section('description', $work->meta_description ?: Str::limit($work->description, 160))
@@ -8,7 +8,7 @@
 <meta property="og:title" content="{{ $work->meta_title ?: $work->title }}">
 <meta property="og:description" content="{{ $work->meta_description ?: Str::limit($work->description, 160) }}">
 <meta property="og:type" content="article">
-<meta property="og:url" content="{{ route('portfolio.public.work', $work->slug) }}">
+<meta property="og:url" content="{{ route('public.portfolio.public.work', $work->slug) }}">
 @if($work->featured_image)
 <meta property="og:image" content="{{ Storage::url($work->featured_image) }}">
 @endif
@@ -28,7 +28,7 @@
   "@type": "CreativeWork",
   "name": "{{ $work->title }}",
   "description": "{{ $work->description }}",
-  "url": "{{ route('portfolio.public.work', $work->slug) }}",
+  "url": "{{ route('public.portfolio.public.work', $work->slug) }}",
   @if($work->featured_image)
   "image": "{{ Storage::url($work->featured_image) }}",
   @endif
@@ -57,12 +57,12 @@
 <nav class="bg-gray-50 py-4">
     <div class="container mx-auto px-4">
         <ol class="flex items-center space-x-2 text-sm">
-            <li><a href="{{ route('home') }}" class="text-blue-600 hover:text-blue-700">Início</a></li>
+            <li><a href="{{ route('dashboard') }}" class="text-blue-600 hover:text-blue-700">Início</a></li>
             <li class="text-gray-400">/</li>
-            <li><a href="{{ route('portfolio.public.index') }}" class="text-blue-600 hover:text-blue-700">Portfólio</a></li>
+            <li><a href="{{ route('public.portfolio.public.index') }}" class="text-blue-600 hover:text-blue-700">Portfólio</a></li>
             @if($work->category)
                 <li class="text-gray-400">/</li>
-                <li><a href="{{ route('portfolio.public.category', $work->category->slug) }}" class="text-blue-600 hover:text-blue-700">{{ $work->category->name }}</a></li>
+                <li><a href="{{ route('public.portfolio.public.category', $work->category->slug) }}" class="text-blue-600 hover:text-blue-700">{{ $work->category->name }}</a></li>
             @endif
             <li class="text-gray-400">/</li>
             <li class="text-gray-700">{{ $work->title }}</li>
@@ -77,7 +77,7 @@
             <!-- Category Badge -->
             @if($work->category)
                 <div class="mb-6">
-                    <a href="{{ route('portfolio.public.category', $work->category->slug) }}" 
+                    <a href="{{ route('public.portfolio.public.category', $work->category->slug) }}" 
                        class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium text-white hover:opacity-90 transition-opacity" 
                        style="background-color: {{ $work->category->color }}">
                         <i class="fas fa-tag mr-2"></i>
@@ -211,22 +211,22 @@
                         <div class="border-t pt-6">
                             <h4 class="font-medium text-gray-700 mb-3">Compartilhar</h4>
                             <div class="flex space-x-3">
-                                <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(route('portfolio.public.work', $work->slug)) }}" 
+                                <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(route('public.portfolio.public.work', $work->slug)) }}" 
                                    target="_blank" 
                                    class="w-10 h-10 bg-blue-600 text-white rounded-lg flex items-center justify-center hover:bg-blue-700 transition-colors">
                                     <i class="fab fa-facebook-f"></i>
                                 </a>
-                                <a href="https://twitter.com/intent/tweet?url={{ urlencode(route('portfolio.public.work', $work->slug)) }}&text={{ urlencode($work->title) }}" 
+                                <a href="https://twitter.com/intent/tweet?url={{ urlencode(route('public.portfolio.public.work', $work->slug)) }}&text={{ urlencode($work->title) }}" 
                                    target="_blank" 
                                    class="w-10 h-10 bg-blue-400 text-white rounded-lg flex items-center justify-center hover:bg-blue-500 transition-colors">
                                     <i class="fab fa-twitter"></i>
                                 </a>
-                                <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ urlencode(route('portfolio.public.work', $work->slug)) }}" 
+                                <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ urlencode(route('public.portfolio.public.work', $work->slug)) }}" 
                                    target="_blank" 
                                    class="w-10 h-10 bg-blue-700 text-white rounded-lg flex items-center justify-center hover:bg-blue-800 transition-colors">
                                     <i class="fab fa-linkedin-in"></i>
                                 </a>
-                                <button onclick="copyToClipboard('{{ route('portfolio.public.work', $work->slug) }}')" 
+                                <button onclick="copyToClipboard('{{ route('public.portfolio.public.work', $work->slug) }}')" 
                                         class="w-10 h-10 bg-gray-600 text-white rounded-lg flex items-center justify-center hover:bg-gray-700 transition-colors">
                                     <i class="fas fa-link"></i>
                                 </button>
@@ -263,7 +263,7 @@
                         
                         <div class="p-6">
                             <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
-                                <a href="{{ route('portfolio.public.work', $relatedWork->slug) }}">
+                                <a href="{{ route('public.portfolio.public.work', $relatedWork->slug) }}">
                                     {{ $relatedWork->title }}
                                 </a>
                             </h3>
@@ -283,7 +283,7 @@
     <div class="container mx-auto px-4 text-center">
         <h2 class="text-3xl font-bold mb-4">Gostou deste projeto?</h2>
         <p class="text-xl opacity-90 mb-8">Vamos criar algo incrível juntos</p>
-        <a href="{{ route('contact') }}" 
+        <a href="{{ route('public.contact') }}" 
            class="inline-flex items-center px-8 py-3 bg-white text-blue-600 font-bold rounded-lg hover:bg-gray-100 transition-colors">
             Solicitar orçamento
             <i class="fas fa-arrow-right ml-2"></i>

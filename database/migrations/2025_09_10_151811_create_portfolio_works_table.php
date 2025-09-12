@@ -15,24 +15,20 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('slug')->unique();
-            $table->text('description');
-            $table->text('content')->nullable();
-            $table->foreignId('portfolio_category_id')->constrained()->onDelete('cascade');
-            $table->foreignId('client_id')->nullable()->constrained('clientes')->onDelete('set null');
-            $table->foreignId('orcamento_id')->nullable()->constrained('orcamentos')->onDelete('set null');
-            $table->date('project_date');
+            $table->text('description')->nullable();
+            $table->longText('content')->nullable();
+            $table->string('client')->nullable();
             $table->string('project_url')->nullable();
-            $table->json('technologies')->nullable(); // Array de tecnologias
+            $table->date('completion_date')->nullable();
+            $table->json('technologies')->nullable();
             $table->string('featured_image')->nullable();
+            $table->string('meta_title')->nullable();
+            $table->text('meta_description')->nullable();
+            $table->enum('status', ['draft', 'published'])->default('draft');
             $table->boolean('is_featured')->default(false);
-            $table->boolean('is_published')->default(false);
-            $table->string('seo_title')->nullable();
-            $table->text('seo_description')->nullable();
-            $table->json('seo_keywords')->nullable();
-            $table->integer('views_count')->default(0);
-            $table->integer('sort_order')->default(0);
+            $table->foreignId('portfolio_category_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

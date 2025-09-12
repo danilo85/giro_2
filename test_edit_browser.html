@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teste Upload Edição</title>
+</head>
+<body>
+    <h1>Teste de Upload na Edição</h1>
+    
+    <form id="testForm" action="http://localhost:8000/portfolio/works/1" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="_token" value="test-token">
+        <input type="hidden" name="_method" value="PUT">
+        
+        <input type="text" name="title" value="Teste Upload" required>
+        <input type="text" name="slug" value="teste-upload" required>
+        <textarea name="description">Descrição de teste</textarea>
+        <select name="client_id">
+            <option value="1">Cliente 1</option>
+        </select>
+        
+        <input type="file" name="images[]" id="images" multiple accept="image/*">
+        
+        <button type="submit">Enviar</button>
+    </form>
+    
+    <script>
+        document.getElementById('testForm').addEventListener('submit', function(e) {
+            const fileInput = document.getElementById('images');
+            console.log('Arquivos selecionados:', fileInput.files.length);
+            
+            for (let i = 0; i < fileInput.files.length; i++) {
+                console.log('Arquivo ' + i + ':', fileInput.files[i].name, fileInput.files[i].size + ' bytes');
+            }
+            
+            if (fileInput.files.length === 0) {
+                alert('Selecione pelo menos uma imagem!');
+                e.preventDefault();
+                return false;

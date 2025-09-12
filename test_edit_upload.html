@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teste Upload Edição</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+</head>
+<body>
+    <h1>Teste de Upload na Edição</h1>
+    
+    <form id="testForm" enctype="multipart/form-data">
+        <input type="file" id="imageInput" name="images[]" multiple accept="image/*">
+        <button type="button" onclick="testUpload()">Testar Upload</button>
+    </form>
+    
+    <div id="result"></div>
+    
+    <script>
+        function testUpload() {
+            const form = document.getElementById('testForm');
+            const fileInput = document.getElementById('imageInput');
+            const resultDiv = document.getElementById('result');
+            
+            if (fileInput.files.length === 0) {
+                resultDiv.innerHTML = '<p style="color: red;">Selecione pelo menos uma imagem</p>';
+                return;
+            }
+            
+            const formData = new FormData();
+            
+            // Adicionar token CSRF
+            const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || 'test-token';
+            formData.append('_token', token);
+            formData.append('_method', 'PUT');
+            
+            // Adicionar dados básicos
+            formData.append('title', 'Teste Edição');
+            formData.append('description', 'Teste de upload na edição');
+            formData.append('portfolio_category_id', '1');
+            
+            // Adicionar imagens
+            for (let i = 0; i < fileInput.files.length; i++) {
+                formData.append('images[]', fileInput.files[i]);
+                console.log('Adicionando imagem:', fileInput.files[i].name);
+            }
+            
+            // Debug do FormData
+            console.log('FormData entries:');
+            for (let pair of formData.entries()) {
+                console.log(pair[0] + ': ', pair[1]);
+            }
+            
+            resultDiv.innerHTML = '<p>Enviando...</p>';
+            
+            fetch('/portfolio/works/1', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => {
+                console.log('Response status:', response.status);
+                return response.text();
+            })
+            .then(data => {
+                console.log('Response data:', data);
+                resultDiv.innerHTML = '<h3>Resposta:</h3><pre>' + data + '</pre>';
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                resultDiv.innerHTML = '<p style="color: red;">Erro: ' + error.message + '</p>';
+            });
+        }
+    </script>
+</body>
+</html>

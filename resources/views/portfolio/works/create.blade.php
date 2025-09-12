@@ -3,7 +3,7 @@
 @section('content')
 <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
     <!-- Header -->
-    <div class="bg-white dark:bg-gray-800 shadow">
+    <div class="">
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between">
                 <div>
@@ -35,8 +35,8 @@
     </div>
 
     <!-- Content -->
-    <div class="max-w-4xl mx-auto py-6 sm:px-6 lg:px-8">
-        <form action="{{ route('portfolio.works.store') }}" method="POST" enctype="multipart/form-data" x-data="workForm()" onsubmit="return submitForm(event)" class="space-y-6">
+    <div class="max-w-7xl mx-auto py-0 px-4 sm:px-6 lg:px-8">
+        <form method="POST" action="{{ route('portfolio.works.store') }}" enctype="multipart/form-data" x-data="workForm()" @submit="submitForm($event)" class="space-y-6">
             @csrf
             
             <!-- Progress Steps -->
@@ -208,7 +208,7 @@
                 <!-- Technologies -->
                 <div>
                     <label for="technologies" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Tecnologias Utilizadas</label>
-                    <input type="text" name="technologies" id="technologies" value="{{ old('technologies') }}"
+                    <input type="text" name="technologies" id="technologies" value="{{ is_array(old('technologies')) ? implode(', ', old('technologies')) : old('technologies') }}"
                            placeholder="Ex: Laravel, Vue.js, Tailwind CSS"
                            class="mt-1 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 @error('technologies') border-red-300 @enderror">
                     @error('technologies')
@@ -374,13 +374,28 @@ function workForm() {
         },
         
         submitForm(event) {
-            // Processar technologies como array
-            const technologiesInput = document.getElementById('technologies');
-            const technologiesValue = technologiesInput.value.trim();
+            console.log('Enviando formulário...');
+            console.log('Imagens selecionadas:', this.selectedImages.length);
             
-            if (technologiesValue) {
-                // Converter string separada por vírgulas em array
-                const technologiesArray = technologiesValue.split(',').map(tech => tech.trim()).filter(tech => tech.length > 0);
+            // Verificar se há imagens selecionadas
+            if (this.selectedImages.length === 0) {
+                console.log('Nenhuma imagem selecionada');
+            } else {
+                // Garantir que as imagens estão no input file
+                this.updateFileInput();
+                
+                // Log dos arquivos no input
+                const fileInput = document.getElementById('images');
+                console.log('Arquivos no input:', fileInput.files.length);
+                for (let i = 0; i < fileInput.files.length; i++) {
+                    console.log(`Arquivo ${i}:`, fileInput.files[i].name, fileInput.files[i].size + ' bytes');
+                }
+            }
+            
+            // Processar technologies como array antes do envio
+            const technologiesInput = document.getElementById('technologies');
+            if (technologiesInput && technologiesInput.value.trim()) {
+                const technologiesArray = technologiesInput.value.split(',').map(tech => tech.trim()).filter(tech => tech.length > 0);
                 
                 // Remover o input original
                 technologiesInput.remove();
@@ -396,7 +411,8 @@ function workForm() {
                 });
             }
             
-            return true; // Permitir envio do formulário
+            // Permitir envio normal do formulário
+            return true;
         },
         
         setStep(step) {
@@ -464,11 +480,32 @@ function workForm() {
         },
         
         updateFileInput() {
+            // Criar um novo input file com os arquivos selecionados
+            const fileInput = document.getElementById('images');
             const dt = new DataTransfer();
+            
             this.selectedImages.forEach(image => {
                 dt.items.add(image.file);
             });
-            document.getElementById('images').files = dt.files;
+            
+            try {
+                fileInput.files = dt.files;
+            } catch (e) {
+                // Fallback para navegadores que não suportam DataTransfer
+                console.log('DataTransfer não suportado, usando método alternativo');
+                // Remover o input atual e criar um novo
+                const newInput = document.createElement('input');
+                newInput.type = 'file';
+                newInput.name = 'images[]';
+                newInput.id = 'images';
+                newInput.multiple = true;
+                newInput.accept = 'image/*';
+                newInput.className = 'sr-only';
+                newInput.addEventListener('change', (e) => this.handleFileSelect(e));
+                
+                // Substituir o input antigo
+                fileInput.parentNode.replaceChild(newInput, fileInput);
+            }
         }
     }
 }

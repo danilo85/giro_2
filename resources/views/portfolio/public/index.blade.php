@@ -123,7 +123,7 @@
     <div class="container mx-auto px-4 text-center">
         <h2 class="text-3xl font-bold mb-4">Gostou do que viu?</h2>
         <p class="text-xl opacity-90 mb-8">Vamos conversar sobre seu próximo projeto</p>
-        <a href="{{ route('contact') }}" 
+        <a href="{{ route('public.contact') }}" 
            class="inline-flex items-center px-8 py-3 bg-white text-blue-600 font-bold rounded-lg hover:bg-gray-100 transition-colors">
             Entre em contato
             <i class="fas fa-arrow-right ml-2"></i>

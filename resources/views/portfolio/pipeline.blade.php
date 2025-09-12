@@ -121,7 +121,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="pipeline-cards">
                             @forelse($budgets as $budget)
                                 <!-- Card do Orçamento -->
-                                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200 dark:border-gray-700">
+                                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200 dark:border-gray-700" data-budget-id="{{ $budget->id }}">
                                     <div class="p-6">
                                         <!-- Header do Card -->
                                         <div class="flex items-start justify-between mb-4">
@@ -135,14 +135,14 @@
                                             </div>
                                             <div class="ml-4">
                                                 @if($budget->portfolioWork)
-                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100">
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100 status-badge">
                                                         <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                                             <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                                                         </svg>
                                                         No Portfólio
                                                     </span>
                                                 @else
-                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100">
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100 status-badge">
                                                         <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
                                                         </svg>
@@ -263,7 +263,7 @@
                                             </a>
                                             @if(!$budget->portfolioWork)
                                                 <button onclick="createPortfolioWork({{ $budget->id }})" 
-                                                        class="inline-flex items-center justify-center w-8 h-8 text-green-600 hover:text-green-800 hover:bg-green-50 dark:text-green-400 dark:hover:text-green-300 dark:hover:bg-green-900/20 rounded-lg transition-all duration-200"
+                                                        class="inline-flex items-center justify-center w-8 h-8 text-green-600 hover:text-green-800 hover:bg-green-50 dark:text-green-400 dark:hover:text-green-300 dark:hover:bg-green-900/20 rounded-lg transition-all duration-200 action-button"
                                                         title="Adicionar ao Portfólio">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
@@ -271,7 +271,7 @@
                                                 </button>
                                             @else
                                                 <a href="{{ route('portfolio.works.show', $budget->portfolioWork) }}" 
-                                                   class="inline-flex items-center justify-center w-8 h-8 text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 dark:text-indigo-400 dark:hover:text-indigo-300 dark:hover:bg-indigo-900/20 rounded-lg transition-all duration-200"
+                                                   class="inline-flex items-center justify-center w-8 h-8 text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 dark:text-indigo-400 dark:hover:text-indigo-300 dark:hover:bg-indigo-900/20 rounded-lg transition-all duration-200 action-button"
                                                    title="Ver no Portfólio">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
@@ -333,6 +333,7 @@
             </div>
             <form id="createWorkForm">
                 <input type="hidden" id="budget_id" name="budget_id">
+                <input type="hidden" id="orcamento_id" name="orcamento_id">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="md:col-span-2">
                         <label for="work_title" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Título</label>
@@ -341,7 +342,7 @@
                     </div>
                     <div>
                         <label for="work_category" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Categoria</label>
-                        <select id="work_category" name="category_id" required 
+                        <select id="work_category" name="portfolio_category_id" required 
                                 class="w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                             <option value="">Selecione uma categoria</option>
                             @foreach($categories as $category)
@@ -448,6 +449,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function createPortfolioWork(budgetId) {
     currentBudgetId = budgetId;
     document.getElementById('budget_id').value = budgetId;
+    document.getElementById('orcamento_id').value = budgetId;
     document.getElementById('createWorkModal').classList.remove('hidden');
 }
 
@@ -459,6 +461,12 @@ function closeCreateWorkModal() {
 
 document.getElementById('createWorkForm').addEventListener('submit', async function(e) {
     e.preventDefault();
+    
+    // Mostrar loading no botão
+    const submitButton = this.querySelector('button[type="submit"]');
+    const originalText = submitButton.textContent;
+    submitButton.disabled = true;
+    submitButton.innerHTML = '<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Criando...';
     
     const formData = new FormData(this);
     
@@ -474,15 +482,37 @@ document.getElementById('createWorkForm').addEventListener('submit', async funct
         
         const result = await response.json();
         
-        if (response.ok) {
+        if (response.ok && result.success) {
             closeCreateWorkModal();
-            window.location.reload();
+            
+            // Mostrar mensagem de sucesso
+            if (result.message) {
+                // Criar e mostrar notificação de sucesso
+                const notification = document.createElement('div');
+                notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+                notification.textContent = result.message;
+                document.body.appendChild(notification);
+                
+                // Remover notificação após 2 segundos e redirecionar
+                setTimeout(() => {
+                    notification.remove();
+                    // Redirecionar para a listagem de trabalhos
+                    window.location.href = '{{ route("portfolio.works.index") }}';
+                }, 2000);
+            } else {
+                // Redirecionar imediatamente se não houver mensagem
+                window.location.href = '{{ route("portfolio.works.index") }}';
+            }
         } else {
             alert('Erro ao criar trabalho: ' + (result.message || 'Erro desconhecido'));
         }
     } catch (error) {
         console.error('Erro:', error);
         alert('Erro ao criar trabalho');
+    } finally {
+        // Restaurar botão sempre (sucesso ou erro)
+        submitButton.disabled = false;
+        submitButton.textContent = originalText;
     }
 });
 

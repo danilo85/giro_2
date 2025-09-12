@@ -571,7 +571,7 @@
                               x-transition:leave="transition ease-in duration-150"
                               x-transition:leave-start="opacity-100 transform scale-100"
                               x-transition:leave-end="opacity-0 transform scale-95">
-                             @if(auth()->user()->is_admin)
+                             @if(auth()->check() && auth()->user()->is_admin)
                              <a href="{{ route('users.index') }}" 
                                 class="{{ request()->routeIs('users.*') ? 'bg-blue-100 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white' }} group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
                                 :class="{ 'justify-center': $store.sidebar.collapsed }">

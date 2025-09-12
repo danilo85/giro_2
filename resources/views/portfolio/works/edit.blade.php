@@ -3,7 +3,7 @@
 @section('content')
 <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
     <!-- Header -->
-    <div class="bg-white dark:bg-gray-800 shadow">
+    <div class="">
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between">
                 <div>
@@ -59,9 +59,9 @@
     </div>
 
     <!-- Content -->
-    <div class="max-w-4xl mx-auto py-6 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto py-0 px-4 sm:px-6 lg:px-8">
         <form action="{{ route('portfolio.works.update', $work) }}" method="POST" enctype="multipart/form-data" 
-              x-data="workForm()" onsubmit="return submitForm(event)" class="space-y-6">
+              x-data="workForm()" @submit="submitForm($event)" class="space-y-6">
             @csrf
             @method('PUT')
             
@@ -231,7 +231,7 @@
                 <!-- Technologies -->
                 <div>
                     <label for="technologies" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Tecnologias Utilizadas</label>
-                    <input type="text" name="technologies" id="technologies" value="{{ old('technologies', $work->technologies) }}"
+                    <input type="text" name="technologies" id="technologies" value="{{ is_array(old('technologies', $work->technologies)) ? implode(', ', old('technologies', $work->technologies)) : old('technologies', $work->technologies) }}"
                            placeholder="Ex: Laravel, Vue.js, Tailwind CSS"
                            class="mt-1 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 @error('technologies') border-red-300 @enderror">
                     @error('technologies')
@@ -251,7 +251,7 @@
                         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" x-data="{ imagesToDelete: [] }">
                             @foreach($work->images as $image)
                                 <div class="relative group" x-data="{ marked: false }">
-                                    <img src="{{ Storage::url($image->image_path) }}" alt="{{ $image->alt_text }}" class="w-full h-32 object-cover rounded-lg" :class="marked ? 'opacity-50' : ''">
+                                    <img src="{{ Storage::url($image->path) }}" alt="{{ $image->alt_text }}" class="w-full h-32 object-cover rounded-lg" :class="marked ? 'opacity-50' : ''">
                                     <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
                                         <button type="button" @click="marked = !marked; toggleImageForDeletion({{ $image->id }})"
                                                 class="text-white hover:text-red-300" :class="marked ? 'text-red-400' : ''">
@@ -424,6 +424,24 @@ function workForm() {
         },
         
         submitForm(event) {
+            console.log('Enviando formulário de edição...');
+            console.log('Imagens selecionadas:', this.selectedImages.length);
+            
+            // Verificar se há imagens selecionadas
+            if (this.selectedImages.length === 0) {
+                console.log('Nenhuma nova imagem selecionada');
+            } else {
+                // Garantir que as imagens estão no input file
+                this.updateFileInput();
+                
+                // Log dos arquivos no input
+                const fileInput = document.getElementById('images');
+                console.log('Arquivos no input:', fileInput.files.length);
+                for (let i = 0; i < fileInput.files.length; i++) {
+                    console.log(`Arquivo ${i}:`, fileInput.files[i].name, fileInput.files[i].size + ' bytes');
+                }
+            }
+            
             // Processar technologies como array
             const technologiesInput = document.getElementById('technologies');
             const technologiesValue = technologiesInput.value.trim();
@@ -513,11 +531,33 @@ function workForm() {
         },
         
         updateFileInput() {
+            // Criar um novo input file com os arquivos selecionados
+            const fileInput = document.getElementById('images');
             const dt = new DataTransfer();
+            
             this.selectedImages.forEach(image => {
                 dt.items.add(image.file);
             });
-            document.getElementById('images').files = dt.files;
+            
+            try {
+                fileInput.files = dt.files;
+                console.log('Input atualizado com', dt.files.length, 'arquivos');
+            } catch (e) {
+                // Fallback para navegadores que não suportam DataTransfer
+                console.log('DataTransfer não suportado, usando método alternativo');
+                // Remover o input atual e criar um novo
+                const newInput = document.createElement('input');
+                newInput.type = 'file';
+                newInput.name = 'images[]';
+                newInput.id = 'images';
+                newInput.multiple = true;
+                newInput.accept = 'image/*';
+                newInput.className = 'sr-only';
+                newInput.addEventListener('change', (e) => this.handleFileSelect(e));
+                
+                // Substituir o input antigo
+                fileInput.parentNode.replaceChild(newInput, fileInput);
+            }
         },
         
         toggleImageForDeletion(imageId) {

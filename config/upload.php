@@ -23,7 +23,7 @@ return [
     |
     */
 
-    'max_file_size' => env('UPLOAD_MAX_FILE_SIZE', 20480), // 20MB in KB
+    'max_file_size' => env('UPLOAD_MAX_FILE_SIZE', 51200), // 50MB in KB
 
     /*
     |--------------------------------------------------------------------------

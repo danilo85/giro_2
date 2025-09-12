@@ -19,27 +19,22 @@ class PortfolioWork extends Model
         'content',
         'portfolio_category_id',
         'client_id',
-        'orcamento_id',
-        'project_date',
         'project_url',
+        'completion_date',
         'technologies',
         'featured_image',
-        'is_featured',
-        'is_published',
         'meta_title',
         'meta_description',
-        'meta_keywords',
-        'views_count',
-        'sort_order'
+        'status',
+        'is_featured',
+        'user_id',
+        'orcamento_id'
     ];
 
     protected $casts = [
-        'project_date' => 'date',
+        'completion_date' => 'date',
         'technologies' => 'array',
-        'is_featured' => 'boolean',
-        'is_published' => 'boolean',
-        'views_count' => 'integer',
-        'sort_order' => 'integer'
+        'is_featured' => 'boolean'
     ];
 
     protected static function boot()
@@ -49,9 +44,6 @@ class PortfolioWork extends Model
         static::creating(function ($work) {
             if (empty($work->slug)) {
                 $work->slug = Str::slug($work->title);
-            }
-            if (is_null($work->views_count)) {
-                $work->views_count = 0;
             }
         });
 
@@ -71,19 +63,11 @@ class PortfolioWork extends Model
     }
 
     /**
-     * Relacionamento com cliente
+     * Relacionamento com usuário
      */
-    public function client()
+    public function user()
     {
-        return $this->belongsTo(Cliente::class, 'client_id');
-    }
-
-    /**
-     * Relacionamento com orçamento
-     */
-    public function orcamento()
-    {
-        return $this->belongsTo(Orcamento::class, 'orcamento_id');
+        return $this->belongsTo(User::class);
     }
 
     /**
@@ -113,11 +97,27 @@ class PortfolioWork extends Model
     }
 
     /**
+     * Relacionamento com cliente
+     */
+    public function client()
+    {
+        return $this->belongsTo(Cliente::class, 'client_id');
+    }
+
+    /**
+     * Relacionamento com orçamento
+     */
+    public function orcamento()
+    {
+        return $this->belongsTo(Orcamento::class);
+    }
+
+    /**
      * Scope para trabalhos publicados
      */
     public function scopePublished($query)
     {
-        return $query->where('is_published', true);
+        return $query->where('status', 'published');
     }
 
     /**
@@ -129,11 +129,11 @@ class PortfolioWork extends Model
     }
 
     /**
-     * Scope para ordenação por data do projeto
+     * Scope para ordenação por data de conclusão
      */
-    public function scopeOrderByProjectDate($query, $direction = 'desc')
+    public function scopeOrderByCompletionDate($query, $direction = 'desc')
     {
-        return $query->orderBy('project_date', $direction);
+        return $query->orderBy('completion_date', $direction);
     }
 
     /**
@@ -170,19 +170,19 @@ class PortfolioWork extends Model
     }
 
     /**
-     * Accessor para data formatada do projeto
+     * Accessor para data formatada de conclusão
      */
-    public function getFormattedProjectDateAttribute()
+    public function getFormattedCompletionDateAttribute()
     {
-        return $this->project_date ? $this->project_date->format('M Y') : null;
+        return $this->completion_date ? $this->completion_date->format('M Y') : null;
     }
 
     /**
-     * Método para incrementar visualizações
+     * Get the route key for the model.
      */
-    public function incrementViews()
+    public function getRouteKeyName()
     {
-        $this->increment('views_count');
+        return 'slug';
     }
 
     /**
@@ -193,7 +193,7 @@ class PortfolioWork extends Model
         return static::published()
             ->where('id', '!=', $this->id)
             ->where('portfolio_category_id', $this->portfolio_category_id)
-            ->orderByProjectDate()
+            ->orderByCompletionDate()
             ->limit($limit)
             ->get();
     }

@@ -305,7 +305,7 @@
     <div class="container mx-auto px-4 text-center text-white">
         <h2 class="text-3xl font-bold mb-4">Precisa de um projeto em {{ $category->name }}?</h2>
         <p class="text-xl opacity-90 mb-8">Nossa equipe especializada está pronta para ajudar</p>
-        <a href="{{ route('contact') }}" 
+        <a href="{{ route('public.contact') }}" 
            class="inline-flex items-center px-8 py-3 bg-white text-gray-900 font-bold rounded-lg hover:bg-gray-100 transition-colors">
             Solicitar orçamento
             <i class="fas fa-arrow-right ml-2"></i>

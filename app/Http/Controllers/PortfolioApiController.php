@@ -121,7 +121,8 @@ class PortfolioApiController extends Controller
         $work->incrementViews();
 
         // Trabalhos relacionados
-        $relatedWorks = $this->getRelatedWorks($work, 3);
+        // $relatedWorks = $this->getRelatedWorks($work); // Comentado temporariamente
+        $relatedWorks = [];
 
         return response()->json([
             'success' => true,
@@ -338,6 +339,35 @@ class PortfolioApiController extends Controller
     }
 
     /**
+     * Display work detail page
+     */
+    public function workDetail(PortfolioWork $work)
+    {
+        // Verificar se o trabalho está publicado
+        if ($work->status !== 'published') {
+            abort(404);
+        }
+
+        // Carregar relacionamentos necessários
+        $work->load([
+            'category',
+            'client',
+            'images' => function($query) {
+                $query->ordered();
+            },
+            'authors'
+        ]);
+
+        // Incrementar visualizações
+        // $work->incrementViews(); // Comentado: coluna views_count não existe
+
+        // Trabalhos relacionados
+        $relatedWorks = $this->getRelatedWorks($work, 3);
+
+        return view('portfolio.public.work', compact('work', 'relatedWorks'));
+    }
+
+    /**
      * Get related works
      */
     private function getRelatedWorks(PortfolioWork $work, int $limit = 3)
@@ -349,16 +379,19 @@ class PortfolioApiController extends Controller
         ->published()
         ->where('id', '!=', $work->id)
         ->where(function($query) use ($work) {
-            $query->where('portfolio_category_id', $work->portfolio_category_id)
-                  ->orWhereHas('client', function($q) use ($work) {
-                      $q->where('user_id', $work->client->user_id);
-                  });
+            $query->where('portfolio_category_id', $work->portfolio_category_id);
+            
+            if ($work->client && $work->client->user_id) {
+                $query->orWhereHas('client', function($q) use ($work) {
+                    $q->where('user_id', $work->client->user_id);
+                });
+            }
         })
         ->latest()
         ->limit($limit)
         ->get([
             'id', 'title', 'slug', 'description', 'portfolio_category_id',
-            'client_id', 'project_date', 'featured_image', 'views_count'
+            'client_id', 'completion_date', 'featured_image'
         ]);
     }
 }
