@@ -1254,11 +1254,28 @@ function renderTransactions(transactions) {
         return;
     }
     
+    // Filtrar transações baseado no contexto atual
+    const filteredTransactions = transactions.filter(transaction => {
+        // Se há um filtro ativo de cartão de crédito, mostrar apenas transações desse cartão
+        if (currentFilters.credit_card_id) {
+            return transaction.credit_card && transaction.credit_card.id == currentFilters.credit_card_id;
+        }
+        // Caso contrário, ocultar transações que são de cartão de crédito
+        return !transaction.credit_card;
+    });
+    
+    // Se após o filtro não há transações, mostrar empty state
+    if (filteredTransactions.length === 0) {
+        container.classList.add('hidden');
+        emptyState.classList.remove('hidden');
+        return;
+    }
+    
     emptyState.classList.add('hidden');
     container.classList.remove('hidden');
     container.innerHTML = '';
     
-    transactions.forEach(transaction => {
+    filteredTransactions.forEach(transaction => {
         const card = template.content.cloneNode(true);
         
         // Preencher dados

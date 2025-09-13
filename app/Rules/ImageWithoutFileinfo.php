@@ -33,8 +33,18 @@ class ImageWithoutFileinfo implements ValidationRule
             return;
         }
 
-        // Verificar tamanho do arquivo
-        if ($value->getSize() > $this->maxSize) {
+        // Verificar tamanho do arquivo de forma segura
+        $fileSize = 0;
+        try {
+            if ($value->isValid() && $value->getRealPath() && file_exists($value->getRealPath())) {
+                $fileSize = $value->getSize();
+            }
+        } catch (\Exception $e) {
+            // Se não conseguir obter o tamanho, permitir que continue
+            $fileSize = 0;
+        }
+        
+        if ($fileSize > 0 && $fileSize > $this->maxSize) {
             $sizeInKb = round($this->maxSize / 1024);
             $fail("O arquivo :attribute não pode ser maior que {$sizeInKb}KB.");
             return;

@@ -65,10 +65,24 @@ class FileUploadHelper
         ]);
         
         if ($success) {
+            // Verificar se o arquivo ainda existe antes de tentar obter o tamanho
+            $fileSize = 0;
+            try {
+                if ($file->isValid() && $file->getRealPath() && file_exists($file->getRealPath())) {
+                    $fileSize = $file->getSize();
+                } else {
+                    // Se o arquivo temporário não existe mais, usar o tamanho do arquivo salvo
+                    $fileSize = file_exists($fullPath) ? filesize($fullPath) : 0;
+                }
+            } catch (\Exception $e) {
+                Log::warning('Erro ao obter tamanho do arquivo', ['error' => $e->getMessage()]);
+                $fileSize = file_exists($fullPath) ? filesize($fullPath) : 0;
+            }
+            
             Log::info('Arquivo salvo com sucesso', [
                 'filename' => $filename,
                 'path' => $relativePath,
-                'size' => $file->getSize()
+                'size' => $fileSize
             ]);
             return $relativePath;
         } else {

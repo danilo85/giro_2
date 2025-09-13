@@ -10,6 +10,7 @@ use App\Models\HistoricoOrcamento;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
@@ -65,7 +66,7 @@ class OrcamentoController extends Controller
     {
         $clientes = Cliente::forUser(Auth::id())->orderBy('nome')->get();
         $autores = Autor::forUser(Auth::id())->orderBy('nome')->get();
-        $modelos = ModeloProposta::all();
+        $modelos = ModeloProposta::forUser(Auth::id())->active()->orderBy('nome')->get();
         
         return view('orcamentos.create', compact('clientes', 'autores', 'modelos'));
     }
@@ -236,7 +237,7 @@ class OrcamentoController extends Controller
 
         $clientes = Cliente::forUser(Auth::id())->orderBy('nome')->get();
         $autores = Autor::forUser(Auth::id())->orderBy('nome')->get();
-        $modelos = ModeloProposta::all();
+        $modelos = ModeloProposta::forUser(Auth::id())->active()->orderBy('nome')->get();
         $orcamento->load(['autores']);
         
         return view('orcamentos.edit', compact('orcamento', 'clientes', 'autores', 'modelos'));
@@ -609,6 +610,155 @@ class OrcamentoController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Erro ao rejeitar orçamento: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Página de gerenciamento de imagens do perfil
+     */
+    public function profileImages(Orcamento $orcamento)
+    {
+        // Verificar se o orçamento pertence ao usuário
+        if ($orcamento->cliente->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        return view('orcamentos.profile-images', compact('orcamento'));
+    }
+
+    /**
+     * Upload de QR Code
+     */
+    public function uploadQrCode(Request $request, Orcamento $orcamento)
+    {
+        // Verificar se o orçamento pertence ao usuário
+        if ($orcamento->cliente->user_id !== Auth::id()) {
+            return response()->json(['error' => 'Não autorizado'], 403);
+        }
+
+        $request->validate([
+            'qrcode' => 'required|image|mimes:jpeg,png,jpg|max:2048'
+        ]);
+
+        try {
+            // Deletar imagem anterior se existir
+            if ($orcamento->qrcode_image) {
+                Storage::disk('public')->delete($orcamento->qrcode_image);
+            }
+
+            // Salvar nova imagem
+            $path = $request->file('qrcode')->store('orcamentos/qrcodes', 'public');
+            
+            $orcamento->update([
+                'qrcode_image' => $path
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'QR Code enviado com sucesso!',
+                'image_url' => Storage::disk('public')->url($path)
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao enviar QR Code: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Upload de Logo
+     */
+    public function uploadLogo(Request $request, Orcamento $orcamento)
+    {
+        // Verificar se o orçamento pertence ao usuário
+        if ($orcamento->cliente->user_id !== Auth::id()) {
+            return response()->json(['error' => 'Não autorizado'], 403);
+        }
+
+        $request->validate([
+            'logo' => 'required|image|mimes:jpeg,png,jpg|max:2048'
+        ]);
+
+        try {
+            // Deletar imagem anterior se existir
+            if ($orcamento->logo_image) {
+                Storage::disk('public')->delete($orcamento->logo_image);
+            }
+
+            // Salvar nova imagem
+            $path = $request->file('logo')->store('orcamentos/logos', 'public');
+            
+            $orcamento->update([
+                'logo_image' => $path
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Logo enviado com sucesso!',
+                'image_url' => Storage::disk('public')->url($path)
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao enviar logo: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Deletar QR Code
+     */
+    public function deleteQrCode(Orcamento $orcamento)
+    {
+        // Verificar se o orçamento pertence ao usuário
+        if ($orcamento->cliente->user_id !== Auth::id()) {
+            return response()->json(['error' => 'Não autorizado'], 403);
+        }
+
+        try {
+            if ($orcamento->qrcode_image) {
+                Storage::disk('public')->delete($orcamento->qrcode_image);
+                $orcamento->update(['qrcode_image' => null]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'QR Code removido com sucesso!'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao remover QR Code: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Deletar Logo
+     */
+    public function deleteLogo(Orcamento $orcamento)
+    {
+        // Verificar se o orçamento pertence ao usuário
+        if ($orcamento->cliente->user_id !== Auth::id()) {
+            return response()->json(['error' => 'Não autorizado'], 403);
+        }
+
+        try {
+            if ($orcamento->logo_image) {
+                Storage::disk('public')->delete($orcamento->logo_image);
+                $orcamento->update(['logo_image' => null]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Logo removido com sucesso!'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao remover logo: ' . $e->getMessage()
             ], 500);
         }
     }

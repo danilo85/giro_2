@@ -107,8 +107,8 @@
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Conteúdo do Modelo</h3>
                 </div>
                 <div class="p-6">
-                    <div class="prose dark:prose-invert max-w-none">
-                        {!! nl2br(e($modelo->conteudo)) !!}
+                    <div class="prose dark:prose-invert max-w-none text-gray-900 dark:text-gray-100">
+                        {!! $modelo->conteudo !!}
                     </div>
                 </div>
                 

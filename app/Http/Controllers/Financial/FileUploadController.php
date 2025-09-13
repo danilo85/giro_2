@@ -49,11 +49,21 @@ class FileUploadController extends Controller
             // Detectar MIME type usando classe utilitária robusta
             $mimeType = MimeTypeDetector::detect($file);
             
+            // Obter tamanho do arquivo de forma segura
+            $fileSize = 0;
+            try {
+                if ($file->isValid() && $file->getRealPath() && file_exists($file->getRealPath())) {
+                    $fileSize = $file->getSize();
+                }
+            } catch (\Exception $e) {
+                Log::warning('Erro ao obter tamanho do arquivo financeiro', ['error' => $e->getMessage()]);
+            }
+            
             // Log para debug
             Log::info('Upload de arquivo financeiro', [
                 'nome' => $file->getClientOriginalName(),
                 'mime_type_detectado' => $mimeType,
-                'tamanho' => $file->getSize(),
+                'tamanho' => $fileSize,
                 'transaction_id' => $transactionId
             ]);
             
@@ -63,7 +73,7 @@ class FileUploadController extends Controller
                 'nome_arquivo' => $file->getClientOriginalName(),
                 'url_arquivo' => $fileUrl,
                 'tipo_arquivo' => $mimeType,
-                'tamanho' => $file->getSize()
+                'tamanho' => $fileSize
             ]);
             
             return response()->json([
@@ -201,11 +211,21 @@ class FileUploadController extends Controller
             // Detectar MIME type usando classe utilitária robusta
             $mimeType = MimeTypeDetector::detect($file);
             
+            // Obter tamanho do arquivo de forma segura
+            $fileSizeTemp = 0;
+            try {
+                if ($file->isValid() && $file->getRealPath() && file_exists($file->getRealPath())) {
+                    $fileSizeTemp = $file->getSize();
+                }
+            } catch (\Exception $e) {
+                Log::warning('Erro ao obter tamanho do arquivo temporário', ['error' => $e->getMessage()]);
+            }
+            
             // Log para debug
             Log::info('Upload temporário de arquivo', [
                 'nome' => $file->getClientOriginalName(),
                 'mime_type_detectado' => $mimeType,
-                'tamanho' => $file->getSize(),
+                'tamanho' => $fileSizeTemp,
                 'temp_id' => $tempId
             ]);
             
@@ -215,7 +235,7 @@ class FileUploadController extends Controller
                 'nome_arquivo' => $file->getClientOriginalName(),
                 'url_arquivo' => $fileUrl,
                 'tipo_arquivo' => $mimeType,
-                'tamanho' => $file->getSize(),
+                'tamanho' => $fileSizeTemp,
                 'user_id' => Auth::id()
             ]);
             

@@ -441,6 +441,12 @@ document.getElementById('modelo_proposta_id').addEventListener('change', functio
         const conteudo = selectedOption.dataset.conteudo;
         if (conteudo) {
             document.getElementById('descricao').value = conteudo;
+            // Atualizar também o editor visual
+            const editor = document.getElementById('descricao-editor');
+            if (editor) {
+                editor.innerHTML = conteudo;
+                syncEditorContent();
+            }
         }
         
         // Fill default value

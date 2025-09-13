@@ -4,6 +4,15 @@
 
 @section('content')
 <div class="max-w-7xl mx-auto">
+    @php
+        $breadcrumbs = [
+            ['name' => 'Home', 'url' => route('dashboard'), 'icon' => 'fas fa-home'],
+            ['name' => 'Financeiro', 'url' => '#'],
+            ['name' => 'Cartões de Crédito', 'url' => route('financial.credit-cards.index')],
+            ['name' => 'Criar Cartão', 'url' => '#']
+        ];
+    @endphp
+    
     <!-- Breadcrumb -->
     <x-breadcrumb :items="[
         ['label' => 'Home', 'url' => route('dashboard')],

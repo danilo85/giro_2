@@ -128,79 +128,73 @@ class ProfileController extends Controller
     /**
      * Upload logo da empresa.
      */
-    public function uploadLogo(Request $request)
+    public function uploadLogo(Request $request, $type)
     {
-        \Log::info('=== UPLOAD LOGO INICIADO ===', [
-            'user_id' => auth()->id(),
-            'method' => $request->method(),
-            'url' => $request->url(),
-            'request_data' => $request->all(),
-            'files' => $request->allFiles(),
-            'has_files' => $request->hasFile('logo_horizontal') || $request->hasFile('logo_vertical') || $request->hasFile('logo_icone')
+        $request->validate([
+            'logo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
-        
-        $user = Auth::user();
-        
-        $logoConfig = config('upload.logos');
-        
-        // Verificar se logoConfig existe e tem validation_rules
-        if (!$logoConfig || !isset($logoConfig['validation_rules'])) {
-            return back()->with('error', 'Configuração de upload não encontrada.');
-        }
-        
-        // Verificar quais arquivos foram enviados
-        $uploadedLogos = [];
-        $logoTypes = ['horizontal', 'vertical', 'icone'];
-        
-        foreach ($logoTypes as $type) {
-            $fieldName = 'logo_' . $type;
-            if ($request->hasFile($fieldName)) {
-                $uploadedLogos[$type] = $request->file($fieldName);
+
+        // Validar tipo
+        if (!in_array($type, ['horizontal', 'vertical', 'icone'])) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Tipo de logo inválido.'
+                ], 400);
             }
+            return back()->with('error', 'Tipo de logo inválido.');
         }
-        
-        if (empty($uploadedLogos)) {
-            return back()->with('error', 'Nenhum arquivo foi enviado.');
-        }
-        
-        // Validar cada arquivo enviado
-        $validationRules = [];
-        foreach ($uploadedLogos as $type => $file) {
-            $fieldName = 'logo_' . $type;
-            $validationRules[$fieldName] = $logoConfig['validation_rules'];
-        }
-        
-        $request->validate($validationRules);
-        
-        $successMessages = [];
-        
-        DB::transaction(function () use ($request, $user, $uploadedLogos, &$successMessages) {
-            foreach ($uploadedLogos as $type => $file) {
-                // Deletar logo existente do mesmo tipo
-                $existingLogo = $user->logos()->where('tipo', $type)->first();
-                if ($existingLogo) {
-                    if (Storage::disk('public')->exists($existingLogo->caminho)) {
-                        Storage::disk('public')->delete($existingLogo->caminho);
-                    }
-                    $existingLogo->delete();
-                }
-                
-                // Store the logo file
-                $logoPath = FileUploadHelper::storeFile($file, 'logos');
-                
-                UserLogo::create([
-                    'user_id' => $user->id,
-                    'tipo' => $type,
-                    'caminho' => $logoPath,
-                    'nome_original' => $file->getClientOriginalName(),
+
+        try {
+            DB::beginTransaction();
+
+            $user = auth()->user();
+
+            // Remove logo existente do mesmo tipo
+            $logoExistente = $user->logos()->where('tipo', $type)->first();
+            if ($logoExistente) {
+                Storage::disk('public')->delete($logoExistente->caminho);
+                $logoExistente->delete();
+            }
+
+            // Upload do novo logo
+            $file = $request->file('logo');
+            $filename = time() . '_' . $type . '_' . $file->getClientOriginalName();
+            $path = FileUploadHelper::storeFile($file, 'logos', $filename);
+
+            // Salva no banco
+            $user->logos()->create([
+                'tipo' => $type,
+                'caminho' => $path,
+                'nome_original' => $file->getClientOriginalName()
+            ]);
+
+            DB::commit();
+
+            // Se for requisição AJAX, retorna JSON
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Logo enviado com sucesso!',
+                    'logo_url' => asset('storage/' . $path)
                 ]);
-                
-                $successMessages[] = 'Logo ' . $type . ' atualizado';
             }
-        });
-        
-        $message = implode(', ', $successMessages) . ' com sucesso!';
-        return back()->with('success', $message);
+
+            // Se for requisição normal, redireciona de volta
+            return back()->with('success', 'Logo enviado com sucesso!');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Erro ao enviar logo: ' . $e->getMessage()
+                ], 500);
+            }
+            
+            return back()->with('error', 'Erro ao enviar logo: ' . $e->getMessage());
+        }
     }
     
     /**
@@ -264,32 +258,60 @@ class ProfileController extends Controller
             'assinatura_digital' => $signaturePath
         ]);
         
+        // Verificar se é uma requisição AJAX
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Assinatura digital atualizada com sucesso!',
+                'signature_url' => Storage::url($signaturePath)
+            ]);
+        }
+        
         return back()->with('success', 'Assinatura digital atualizada com sucesso!');
     }
     
     /**
      * Deletar logo específico.
      */
-    public function deleteLogo(Request $request)
+    public function deleteLogo(Request $request, $type)
     {
-        $user = Auth::user();
-        
-        $request->validate([
-            'tipo' => ['required', 'in:horizontal,vertical,icone'],
-        ]);
-        
-        $logo = $user->logos()->where('tipo', $request->tipo)->first();
-        
-        if ($logo) {
-            if (Storage::disk('public')->exists($logo->caminho)) {
-                Storage::disk('public')->delete($logo->caminho);
-            }
-            $logo->delete();
-            
-            return back()->with('success', 'Logo ' . $request->tipo . ' removido com sucesso!');
+        // Validar tipo
+        if (!in_array($type, ['horizontal', 'vertical', 'icone'])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tipo de logo inválido.'
+            ], 400);
         }
-        
-        return back()->with('error', 'Logo não encontrado.');
+
+        try {
+            $user = auth()->user();
+
+            $logo = $user->logos()->where('tipo', $type)->first();
+
+            if (!$logo) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Logo não encontrado.'
+                ], 404);
+            }
+
+            // Remove arquivo do storage
+            Storage::disk('public')->delete($logo->caminho);
+
+            // Remove registro do banco
+            $logo->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Logo removido com sucesso!'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao remover logo: ' . $e->getMessage()
+            ], 500);
+        }
     }
     
     /**
@@ -319,43 +341,48 @@ class ProfileController extends Controller
      */
     public function updateSocialMedia(Request $request)
     {
-        $user = Auth::user();
-        
-        // Validação dos URLs das redes sociais
         $request->validate([
-            'facebook_url' => ['nullable', 'url', 'regex:/^https?:\/\/(www\.)?facebook\.com\/.*/'],
-            'instagram_url' => ['nullable', 'url', 'regex:/^https?:\/\/(www\.)?instagram\.com\/.*/'],
-            'twitter_url' => ['nullable', 'url', 'regex:/^https?:\/\/(www\.)?(twitter|x)\.com\/.*/'],
-            'linkedin_url' => ['nullable', 'url', 'regex:/^https?:\/\/(www\.)?linkedin\.com\/.*/'],
-            'youtube_url' => ['nullable', 'url', 'regex:/^https?:\/\/(www\.)?youtube\.com\/.*/'],
-            'tiktok_url' => ['nullable', 'url', 'regex:/^https?:\/\/(www\.)?tiktok\.com\/.*/'],
-            'whatsapp_url' => ['nullable', 'url', 'regex:/^https?:\/\/(wa\.me|api\.whatsapp\.com)\/.*/'],
-            'website_url' => ['nullable', 'url'],
-        ], [
-            '*.url' => 'O campo deve ser uma URL válida.',
-            'facebook_url.regex' => 'A URL do Facebook deve ser válida.',
-            'instagram_url.regex' => 'A URL do Instagram deve ser válida.',
-            'twitter_url.regex' => 'A URL do Twitter/X deve ser válida.',
-            'linkedin_url.regex' => 'A URL do LinkedIn deve ser válida.',
-            'youtube_url.regex' => 'A URL do YouTube deve ser válida.',
-            'tiktok_url.regex' => 'A URL do TikTok deve ser válida.',
-            'whatsapp_url.regex' => 'A URL do WhatsApp deve ser válida.',
+            'instagram' => 'nullable|url',
+            'facebook' => 'nullable|url',
+            'linkedin' => 'nullable|url',
+            'twitter' => 'nullable|url',
+            'youtube' => 'nullable|url',
+            'tiktok' => 'nullable|url',
+            'whatsapp' => 'nullable|url',
+            'website' => 'nullable|url',
         ]);
+
+        $user = auth()->user();
         
-        $socialMediaData = $request->only([
-            'facebook_url',
-            'instagram_url', 
-            'twitter_url',
-            'linkedin_url',
-            'youtube_url',
-            'tiktok_url',
-            'whatsapp_url',
-            'website_url'
-        ]);
+        // Mapear os campos do formulário para os campos do banco
+        $socialMediaFields = [
+            'instagram' => 'instagram_url',
+            'facebook' => 'facebook_url',
+            'linkedin' => 'linkedin_url',
+            'twitter' => 'twitter_url',
+            'youtube' => 'youtube_url',
+            'tiktok' => 'tiktok_url',
+            'whatsapp' => 'whatsapp_url',
+            'website' => 'website_url',
+        ];
         
-        $user->update($socialMediaData);
+        foreach ($socialMediaFields as $formField => $dbField) {
+            if ($request->has($formField)) {
+                $user->$dbField = $request->$formField;
+            }
+        }
         
-        return back()->with('success', 'Redes sociais atualizadas com sucesso!');
+        $user->save();
+
+        // Verificar se é uma requisição AJAX
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Redes sociais atualizadas com sucesso!'
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Redes sociais atualizadas com sucesso!');
     }
     
     /**
@@ -390,5 +417,119 @@ class ProfileController extends Controller
         }
         
         return back()->with('success', $platformName . ' removido com sucesso!');
+    }
+
+    /**
+     * Upload imagem de rodapé.
+     */
+    public function uploadRodapeImage(Request $request)
+    {
+        $user = Auth::user();
+        
+        $request->validate([
+            'rodape_image' => ['required', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
+        ]);
+        
+        // Deletar imagem existente
+        if ($user->rodape_image && Storage::disk('public')->exists($user->rodape_image)) {
+            Storage::disk('public')->delete($user->rodape_image);
+        }
+        
+        // Store the rodape image file
+        $rodapePath = FileUploadHelper::storeFile($request->file('rodape_image'), 'rodape');
+        
+        $user->update([
+            'rodape_image' => $rodapePath
+        ]);
+        
+        // Verificar se é uma requisição AJAX
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Imagem de rodapé atualizada com sucesso!',
+                'image_url' => Storage::url($rodapePath)
+            ]);
+        }
+        
+        return back()->with('success', 'Imagem de rodapé atualizada com sucesso!');
+    }
+
+    /**
+     * Upload imagem de QR code.
+     */
+    public function uploadQrcodeImage(Request $request)
+    {
+        $user = Auth::user();
+        
+        $request->validate([
+            'qrcode_image' => ['required', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
+        ]);
+        
+        // Deletar imagem existente
+        if ($user->qrcode_image && Storage::disk('public')->exists($user->qrcode_image)) {
+            Storage::disk('public')->delete($user->qrcode_image);
+        }
+        
+        // Store the qrcode image file
+        $qrcodePath = FileUploadHelper::storeFile($request->file('qrcode_image'), 'qrcode');
+        
+        $user->update([
+            'qrcode_image' => $qrcodePath
+        ]);
+        
+        // Verificar se é uma requisição AJAX
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Imagem de QR code atualizada com sucesso!',
+                'image_url' => Storage::url($qrcodePath)
+            ]);
+        }
+        
+        return back()->with('success', 'Imagem de QR code atualizada com sucesso!');
+    }
+
+    /**
+     * Deletar imagem de rodapé.
+     */
+    public function deleteRodapeImage()
+    {
+        $user = Auth::user();
+        
+        if ($user->rodape_image) {
+            if (Storage::disk('public')->exists($user->rodape_image)) {
+                Storage::disk('public')->delete($user->rodape_image);
+            }
+            
+            $user->update([
+                'rodape_image' => null
+            ]);
+            
+            return back()->with('success', 'Imagem de rodapé removida com sucesso!');
+        }
+        
+        return back()->with('error', 'Nenhuma imagem de rodapé encontrada.');
+    }
+
+    /**
+     * Deletar imagem de QR code.
+     */
+    public function deleteQrcodeImage()
+    {
+        $user = Auth::user();
+        
+        if ($user->qrcode_image) {
+            if (Storage::disk('public')->exists($user->qrcode_image)) {
+                Storage::disk('public')->delete($user->qrcode_image);
+            }
+            
+            $user->update([
+                'qrcode_image' => null
+            ]);
+            
+            return back()->with('success', 'Imagem de QR code removida com sucesso!');
+        }
+        
+        return back()->with('error', 'Nenhuma imagem de QR code encontrada.');
     }
 }

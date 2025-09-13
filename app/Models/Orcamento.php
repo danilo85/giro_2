@@ -27,7 +27,9 @@ class Orcamento extends Model
         'status',
         'observacoes',
         'observacoes_internas',
-        'token_publico'
+        'token_publico',
+        'qrcode_image',
+        'logo_image'
     ];
 
     protected $casts = [
