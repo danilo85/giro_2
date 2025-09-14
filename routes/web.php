@@ -448,6 +448,3 @@ Route::prefix('public')->name('public.')->group(function () {
 // File upload routes moved to RouteServiceProvider (without any middleware)
 
 // Debug routes (only in development) - REMOVIDO
-
-// Incluir rotas de teste
-require __DIR__ . '/test.php';
