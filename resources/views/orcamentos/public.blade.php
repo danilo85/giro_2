@@ -83,7 +83,7 @@
             @endphp
             
             <!-- Status Badge (bolinha pulsante) -->
-            <div class="absolute top-8 right-8 flex items-center space-x-2 animate-pulse">
+            <div class="absolute top-8 right-8 flex items-center space-x-2 animate-pulse no-print">
                 <div class="w-4 h-4 {{ $statusClass }} rounded-full"></div>
                             </div>
 
@@ -127,7 +127,7 @@
                     <p class="text-gray-700 mt-1">Prazo estimado é de {{ $orcamento->prazo_entrega_dias }} dias úteis</p>
                 </div>
 
-                <div class="bg-gray-50  p-8 mb-0 print-bg-transparent border border-gray-200">
+                <div class="bg-gray-50  p-8 mb-0  border border-gray-200">
                     <div>
                         <p class="text-gray-500 uppercase text-sm font-semibold tracking-wide">Total</p>
                         <p class="text-5xl font-black text-gray-900 mt-2">R$ {{ number_format($orcamento->valor_total, 2, ',', '.') }}</p>
@@ -147,7 +147,7 @@
                 </div>
             
 
-                <div class="bg-white p-6 mt-10" x-data="{ confirmingApproval: false, confirmingRejection: false }">
+                <div class="bg-white p-6 mt-10 no-print" x-data="{ confirmingApproval: false, confirmingRejection: false }">
                      @if(strtolower($orcamento->status) === 'analisando')
                         <div class="text-center">
                             <h3 class="text-lg font-semibold text-gray-800">Ações</h3>
@@ -203,10 +203,10 @@
                         <div class="flex items-center space-x-4">
                             {{-- Logo ícone do usuário --}}
                             @php
-                                $iconLogo = optional($orcamento->cliente->user)->getLogoByType('icone');
+                                $iconLogo = optional($orcamento->cliente->user)->getLogoByType('vertical');
                             @endphp
                             @if($iconLogo && file_exists(storage_path('app/public/' . $iconLogo->caminho)))
-                                <img src="{{ $iconLogo->url }}" alt="Logo da Empresa" class="h-12 w-auto rounded">
+                                <img src="{{ $iconLogo->url }}" alt="Logo da Empresa" class="h-16 w-auto rounded">
                             @else
                                 <div class="bg-gray-800 text-white px-4 py-2 rounded font-bold text-lg">
                                     <span class="text-white">LOGO</span>
@@ -214,7 +214,7 @@
                             @endif
                             
                             {{-- Contatos ao lado da logo --}}
-                            <div class="flex items-center space-x-4 text-sm text-gray-600">
+                            {{-- <div class="flex items-center space-x-4 text-sm text-gray-600">
                                 @if(optional($orcamento->cliente->user)->website_url)
                                     <a href="{{ $orcamento->cliente->user->website_url }}" target="_blank" class="flex items-center hover:text-blue-600 transition-colors" title="Website">
                                         <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
@@ -252,11 +252,11 @@
                                         {{ $orcamento->cliente->user->whatsapp }}
                                     </a>
                                 @endif
-                            </div>
+                            </div> --}}
                         </div>
 
                         {{-- Segunda linha: Redes sociais centralizadas --}}
-                        <div class="flex justify-center mt-4">
+                        {{-- <div class="flex justify-center mt-4">
                             <div class="flex space-x-3">
                                 @if(optional($orcamento->cliente->user)->facebook_url)
                                     <a href="{{ $orcamento->cliente->user->facebook_url }}" target="_blank" class="text-gray-500 hover:text-blue-600 transition-colors" title="Facebook">
@@ -308,16 +308,20 @@
                                     </a>
                                 @endif
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
 
-                    {{-- Lado direito: QR Code --}}
-                    <div class="w-16 h-16 bg-gray-200 border-2 border-gray-300 flex items-center justify-center">
-                        {{-- QR Code placeholder - pode ser substituído por um QR code real --}}
-                        <svg class="w-12 h-12 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M3 3h6v6H3V3zm2 2v2h2V5H5zM3 15h6v6H3v-6zm2 2v2h2v-2H5zM15 3h6v6h-6V3zm2 2v2h2V5h-2zM15 15h2v2h-2v-2zM17 17h2v2h-2v-2zM19 15h2v2h-2v-2zM15 19h2v2h-2v-2zM17 21h2v2h-2v-2zM19 19h2v2h-2v-2zM21 17h2v2h-2v-2zM15 17h2v2h-2v-2z"/>
-                        </svg>
-                    </div>
+                    {{-- Lado direito: Logo Ícone --}}
+                    @php
+                        $logoIcone = optional($orcamento->cliente->user)->getLogoByType('icone');
+                    @endphp
+                    @if($logoIcone && file_exists(storage_path('app/public/' . $logoIcone->caminho)))
+                        <img src="{{ $logoIcone->url }}" alt="Logo Ícone" class="h-16 w-auto rounded">
+                    @else
+                        <div class="w-16 h-16 bg-gray-200 border-2 border-gray-300 flex items-center justify-center">
+                            <span class="text-gray-600 text-xs font-bold">ÍCONE</span>
+                        </div>
+                    @endif
                 </div>
             </footer>
         </div>

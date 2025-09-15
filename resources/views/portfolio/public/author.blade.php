@@ -67,7 +67,7 @@
         <ol class="flex items-center space-x-2 text-sm">
             <li><a href="{{ route('home') }}" class="text-blue-600 hover:text-blue-700">Início</a></li>
             <li class="text-gray-400">/</li>
-            <li><a href="{{ route('public.portfolio.index') }}" class="text-blue-600 hover:text-blue-700">Portfólio</a></li>
+            <li><a href="{{ route('public.portfolio.public.index') }}" class="text-blue-600 hover:text-blue-700">Portfólio</a></li>
             <li class="text-gray-400">/</li>
             <li class="text-gray-700">{{ $author->name }}</li>
         </ol>
@@ -218,7 +218,7 @@
                             <!-- Category Badge -->
                             @if($work->category)
                                 <div class="absolute top-4 left-4">
-                                    <a href="{{ route('public.portfolio.category', $work->category->slug) }}" 
+                                    <a href="{{ route('public.portfolio.public.category', $work->category->slug) }}" 
                                        class="px-3 py-1 rounded-full text-sm font-medium text-white hover:opacity-90 transition-opacity" 
                                        style="background-color: {{ $work->category->color }}">
                                         {{ $work->category->name }}
@@ -341,7 +341,7 @@
                             </a>
                         @endif
                         
-                        <a href="{{ route('public.portfolio.index') }}" 
+                        <a href="{{ route('public.portfolio.public.index') }}" 
                            class="inline-flex items-center px-6 py-3 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors">
                             Explorar portfólio
                             <i class="fas fa-search ml-2"></i>

@@ -4,14 +4,30 @@
 
 @section('content')
 <div class="min-h-screen bg-gray-50 dark:bg-gray-900" x-data="categoriesPage()">
-<div class="max-w-7xl mx-auto">
-    <!-- Breadcrumb -->
-    <x-breadcrumb :items="[
-        ['label' => 'Dashboard', 'url' => route('dashboard'), 'icon' => 'fas fa-home'],
-        ['label' => 'Portfólio', 'url' => '#'],
-        ['label' => 'Categorias']
-    ]" />
-
+    <!-- Header com Tags de Navegação -->
+    <div class="mb-6">
+        
+        <!-- Tags de Navegação Rápida -->
+        <div class="flex flex-wrap gap-2 mb-4">
+            <a href="{{ route('portfolio.dashboard') }}" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">
+                <i class="fas fa-folder mr-2"></i>
+                Dashboard
+            </a>
+            <a href="{{ route('portfolio.pipeline') }}" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">
+                <i class="fas fa-tasks mr-2"></i>
+                Pipeline
+            </a>
+            
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                <i class="fas fa-chart-pie mr-2"></i>
+                Categorias
+            </span>
+            <a href="{{ route('portfolio.works.index') }}" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">
+                <i class="fas fa-briefcase mr-2"></i>
+                Trabalhos
+            </a>
+        </div>
+    </div>
     <!-- Header -->
     <div class="mb-8">
         <div class="flex items-center justify-between mb-8">

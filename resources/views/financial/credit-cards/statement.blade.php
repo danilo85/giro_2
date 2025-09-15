@@ -3,14 +3,6 @@
 @section('title', $creditCard->name . ' - Extrato do Cartão - Giro')
 
 @section('content')
-<!-- Breadcrumb -->
-    <x-breadcrumb :items="[
-        ['label' => 'Home', 'url' => route('dashboard'), 'icon' => 'fas fa-home'],
-        ['label' => 'Financeiro', 'url' => '#'],
-        ['label' => 'Cartões', 'url' => route('financial.credit-cards.index')],
-        ['label' => $creditCard->nome, 'url' => route('financial.credit-cards.show', $creditCard)],
-        ['label' => 'Extrato']
-    ]" />
 
 <div class="max-w-7xl mx-auto">
     
@@ -124,7 +116,7 @@
                 </div>
                 <div class="mb-4">
                     <p class="text-3xl font-bold">R$ {{ number_format($creditCard->total_limit - $creditCard->used_limit, 2, ',', '.') }}</p>
-                    <p class="text-blue-100 text-sm mt-1">{{ number_format((($creditCard->total_limit - $creditCard->used_limit) / $creditCard->total_limit) * 100, 1) }}% disponível</p>
+                    <p class="text-blue-100 text-sm mt-1">{{ $creditCard->total_limit > 0 ? number_format((($creditCard->total_limit - $creditCard->used_limit) / $creditCard->total_limit) * 100, 1) : '0' }}% disponível</p>
                 </div>
                 <div class="flex items-center text-sm text-blue-100">
                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -4,23 +4,17 @@
 
 @section('content')
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <x-breadcrumb :items="[
-            ['label' => 'Home', 'url' => route('dashboard'), 'icon' => 'fas fa-home'],
-            ['label' => 'Financeiro', 'url' => '#'],
-            ['label' => 'Bancos', 'url' => route('financial.banks.index')],
-            ['label' => 'Nova Conta Bancária']
-        ]" />
+
     <!-- Header -->
     <div class="flex items-center justify-between mb-6">
+        
         <div>
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Nova Conta Bancária</h1>
             <p class="text-gray-600 dark:text-gray-400 mt-1">Adicione uma nova conta bancária ao seu sistema</p>
         </div>
         <a href="{{ route('financial.banks.index') }}" 
            class="inline-flex items-center p-2 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors group" title="Voltar">
-            <svg class="w-5 h-5 text-blue-500 group-hover:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-            </svg>
+            <i class="fas fa-arrow-left w-5 h-5 text-blue-500 group-hover:text-blue-600 transition-colors"></i>
         </a>
     </div>
 
@@ -195,14 +189,13 @@
             <!-- Form Actions -->
             <div class="flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-3 pt-6 border-t border-gray-200 dark:border-gray-700">
                 <a href="{{ route('financial.banks.index') }}" 
-                   class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                   class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center gap-2">
+                    <i class="fas fa-times"></i>
                     Cancelar
                 </a>
                 <button type="submit" 
                         class="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
+                    <i class="fas fa-save w-4 h-4"></i>
                     Criar Conta Bancária
                 </button>
             </div>

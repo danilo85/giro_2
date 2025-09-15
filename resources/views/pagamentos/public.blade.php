@@ -222,8 +222,8 @@
         <div class="header">
             <h1 class="titulo">RECIBO</h1>
             <div class="logo">
-                @if(optional($pagamento->orcamento->cliente->user)->getLogoByType('icone'))
-                    <img src="{{ asset('storage/' . $pagamento->orcamento->cliente->user->getLogoByType('icone')->caminho) }}" alt="Logo" style="max-height: 50px; max-width: 150px;">
+                @if(optional($pagamento->orcamento->cliente->user)->getLogoByType('horizontal'))
+                    <img src="{{ asset('storage/' . $pagamento->orcamento->cliente->user->getLogoByType('horizontal')->caminho) }}" alt="Logo" style="max-height: 50px; max-width: 150px;">
                 @elseif(optional($pagamento->orcamento->cliente->user)->name)
                     <div style="width: 50px; height: 50px; background-color: #007bff; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px;">
                         {{ strtoupper(substr($pagamento->orcamento->cliente->user->name, 0, 1)) }}

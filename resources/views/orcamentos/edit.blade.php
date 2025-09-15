@@ -4,13 +4,7 @@
 
 @section('content')
 <div class="max-w-4xl mx-auto space-y-6">
-    <!-- Breadcrumb -->
-    <x-breadcrumb :items="[
-        ['label' => 'Home', 'url' => route('dashboard')],
-        ['label' => 'Orçamentos', 'url' => route('orcamentos.index')],
-        ['label' => 'Editar Orçamento']
-    ]" />
-    
+
     <!-- Header -->
     <div class="flex items-center justify-between">
         <div>

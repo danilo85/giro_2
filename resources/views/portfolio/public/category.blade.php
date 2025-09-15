@@ -8,7 +8,7 @@
 <meta property="og:title" content="{{ $category->meta_title ?: $category->name . ' - Portfólio' }}">
 <meta property="og:description" content="{{ $category->meta_description ?: 'Conheça nossos trabalhos na categoria ' . $category->name }}">
 <meta property="og:type" content="website">
-<meta property="og:url" content="{{ route('public.portfolio.category', $category->slug) }}">
+<meta property="og:url" content="{{ route('public.portfolio.public.category', $category->slug) }}">
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary">
@@ -22,7 +22,7 @@
   "@type": "CollectionPage",
   "name": "{{ $category->name }}",
   "description": "{{ $category->description }}",
-  "url": "{{ route('public.portfolio.category', $category->slug) }}",
+  "url": "{{ route('public.portfolio.public.category', $category->slug) }}",
   "mainEntity": {
     "@type": "ItemList",
     "numberOfItems": {{ $works->total() }},
@@ -53,7 +53,7 @@
         <ol class="flex items-center space-x-2 text-sm">
             <li><a href="{{ route('home') }}" class="text-blue-600 hover:text-blue-700">Início</a></li>
             <li class="text-gray-400">/</li>
-            <li><a href="{{ route('public.portfolio.index') }}" class="text-blue-600 hover:text-blue-700">Portfólio</a></li>
+            <li><a href="{{ route('public.portfolio.public.index') }}" class="text-blue-600 hover:text-blue-700">Portfólio</a></li>
             <li class="text-gray-400">/</li>
             <li class="text-gray-700">{{ $category->name }}</li>
         </ol>
@@ -83,10 +83,10 @@
                     <i class="fas fa-folder mr-2"></i>
                     <span>{{ $works->total() }} {{ Str::plural('projeto', $works->total()) }}</span>
                 </div>
-                @if($category->works()->whereNotNull('project_url')->count() > 0)
+                @if($category->portfolioWorks()->whereNotNull('project_url')->count() > 0)
                     <div class="flex items-center">
                         <i class="fas fa-external-link-alt mr-2"></i>
-                        <span>{{ $category->works()->whereNotNull('project_url')->count() }} online</span>
+                        <span>{{ $category->portfolioWorks()->whereNotNull('project_url')->count() }} online</span>
                     </div>
                 @endif
             </div>
@@ -98,12 +98,12 @@
 <section class="bg-white py-6 border-b">
     <div class="container mx-auto px-4">
         <div class="flex flex-wrap justify-center gap-3">
-            <a href="{{ route('public.portfolio.index') }}" 
+            <a href="{{ route('public.portfolio.public.index') }}" 
                class="px-6 py-2 rounded-full border-2 border-gray-300 text-gray-700 hover:border-blue-500 hover:text-blue-600 transition-all duration-300">
                 Todas as categorias
             </a>
             @foreach($allCategories as $cat)
-                <a href="{{ route('public.portfolio.category', $cat->slug) }}" 
+                <a href="{{ route('public.portfolio.public.category', $cat->slug) }}" 
                    class="px-6 py-2 rounded-full border-2 transition-all duration-300 {{ $cat->id === $category->id ? 'text-white' : 'border-gray-300 text-gray-700 hover:border-blue-500 hover:text-blue-600' }}"
                    @if($cat->id === $category->id) style="background-color: {{ $cat->color }}; border-color: {{ $cat->color }};" @endif>
                     {{ $cat->name }}
@@ -128,15 +128,15 @@
                     <label class="text-sm font-medium text-gray-700">Ordenar por:</label>
                     <select onchange="window.location.href = this.value" 
                             class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                        <option value="{{ route('public.portfolio.category', [$category->slug, 'sort' => 'newest']) }}" 
+                        <option value="{{ route('public.portfolio.public.category', [$category->slug, 'sort' => 'newest']) }}" 
                                 {{ request('sort') === 'newest' || !request('sort') ? 'selected' : '' }}>
                             Mais recentes
                         </option>
-                        <option value="{{ route('public.portfolio.category', [$category->slug, 'sort' => 'oldest']) }}" 
+                        <option value="{{ route('public.portfolio.public.category', [$category->slug, 'sort' => 'oldest']) }}" 
                                 {{ request('sort') === 'oldest' ? 'selected' : '' }}>
                             Mais antigos
                         </option>
-                        <option value="{{ route('public.portfolio.category', [$category->slug, 'sort' => 'title']) }}" 
+                        <option value="{{ route('public.portfolio.public.category', [$category->slug, 'sort' => 'title']) }}" 
                                 {{ request('sort') === 'title' ? 'selected' : '' }}>
                             Título A-Z
                         </option>
@@ -251,7 +251,7 @@
                         Ainda não temos projetos na categoria <strong>{{ $category->name }}</strong>.
                         <br>Volte em breve para conferir nossas novidades!
                     </p>
-                    <a href="{{ route('public.portfolio.index') }}" 
+                    <a href="{{ route('public.portfolio.public.index') }}" 
                        class="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
                         Ver todos os projetos
                         <i class="fas fa-arrow-right ml-2"></i>
@@ -273,7 +273,7 @@
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             @foreach($relatedCategories as $relatedCategory)
-                <a href="{{ route('public.portfolio.category', $relatedCategory->slug) }}" 
+                <a href="{{ route('public.portfolio.public.category', $relatedCategory->slug) }}" 
                    class="group block p-6 bg-gray-50 rounded-xl hover:shadow-lg transition-all duration-300">
                     <div class="flex items-center mb-4">
                         <div class="w-12 h-12 rounded-lg flex items-center justify-center mr-4" 

@@ -282,8 +282,12 @@ Route::post('/debug-form', function (\Illuminate\Http\Request $request) {
 
     // Portfolio Module (Módulo de Portfólio)
     Route::prefix('portfolio')->name('portfolio.')->group(function () {
+        // Dashboard do portfólio
+        Route::get('/dashboard', [PortfolioController::class, 'dashboard'])->name('dashboard');
+        
         // Página principal do portfólio
-        Route::get('/', [PortfolioController::class, 'index'])->name('index');
+        Route::get('/', [PortfolioController::class, 'dashboard'])->name('index');
+        Route::get('/works-list', [PortfolioController::class, 'index'])->name('works.list');
         
         // Pipeline de orçamentos finalizados
         Route::get('/pipeline', [PortfolioController::class, 'pipeline'])->name('pipeline');

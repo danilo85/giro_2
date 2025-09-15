@@ -36,6 +36,9 @@ class FileUploadHelper
         $fullPath = $fullDirectory . '/' . $filename;
         $relativePath = $directory . '/' . $filename;
 
+        // Obter tamanho do arquivo ANTES de mover
+        $fileSize = $file->getSize();
+        
         // Mover arquivo manualmente
         $success = false;
         
@@ -46,7 +49,8 @@ class FileUploadHelper
             'is_valid' => $file->isValid(),
             'is_uploaded_file' => is_uploaded_file($file->getRealPath()),
             'directory_exists' => file_exists($fullDirectory),
-            'directory_writable' => is_writable($fullDirectory)
+            'directory_writable' => is_writable($fullDirectory),
+            'file_size' => $fileSize
         ]);
         
         // Tentar move_uploaded_file primeiro (para uploads reais)
@@ -68,7 +72,7 @@ class FileUploadHelper
             Log::info('Arquivo salvo com sucesso', [
                 'filename' => $filename,
                 'path' => $relativePath,
-                'size' => $file->getSize()
+                'size' => $fileSize
             ]);
             return $relativePath;
         } else {

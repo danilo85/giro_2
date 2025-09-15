@@ -380,9 +380,9 @@
                               x-transition:leave-start="opacity-100 transform scale-100"
                               x-transition:leave-end="opacity-0 transform scale-95">
                              <a href="{{ route('orcamentos.dashboard') }}" 
-                                class="{{ request()->routeIs('orcamentos.dashboard') ? 'bg-blue-100 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white' }} group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
+                                class="{{ (request()->routeIs('dashboard') || request()->routeIs('orcamentos.dashboard')) ? 'bg-blue-100 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white' }} group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
                                 :class="{ 'justify-center': $store.sidebar.collapsed }">
-                                 <svg class="{{ request()->routeIs('orcamentos.dashboard') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }} flex-shrink-0 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                 <svg class="{{ (request()->routeIs('dashboard') || request()->routeIs('orcamentos.dashboard')) ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }} flex-shrink-0 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5a2 2 0 012-2h4a2 2 0 012 2v6H8V5z"></path>
                                  </svg>
@@ -509,6 +509,23 @@
                               x-transition:leave="transition ease-in duration-150"
                               x-transition:leave-start="opacity-100 transform scale-100"
                               x-transition:leave-end="opacity-0 transform scale-95">
+                             <!-- Dashboard -->
+                             <a href="{{ route('portfolio.dashboard') }}" 
+                                class="{{ request()->routeIs('portfolio.dashboard') ? 'bg-blue-100 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white' }} group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
+                                :class="{ 'justify-center': $store.sidebar.collapsed }">
+                                 <svg class="{{ request()->routeIs('portfolio.dashboard') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }} flex-shrink-0 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                 </svg>
+                                 <span x-show="!$store.sidebar.collapsed || $store.sidebar.isMobile" 
+                                       x-transition:enter="transition ease-in-out duration-150"
+                                       x-transition:enter-start="opacity-0 transform scale-95"
+                                       x-transition:enter-end="opacity-100 transform scale-100"
+                                       x-transition:leave="transition ease-in-out duration-150"
+                                       x-transition:leave-start="opacity-100 transform scale-100"
+                                       x-transition:leave-end="opacity-0 transform scale-95"
+                                       class="ml-3">Dashboard</span>
+                             </a>
+
                              <a href="{{ route('portfolio.pipeline') }}" 
                                 class="{{ request()->routeIs('portfolio.pipeline') ? 'bg-blue-100 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white' }} group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
                                 :class="{ 'justify-center': $store.sidebar.collapsed }">
@@ -572,9 +589,7 @@
                                  x-transition:leave-start="opacity-100 transform scale-100"
                                  x-transition:leave-end="opacity-0 transform scale-95">
                              <span class="flex items-center">
-                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m3 5.197H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                 </svg>
+                                 <i class="fas fa-cogs w-5 h-5 mr-2"></i>
                                  Administração
                              </span>
                              <svg class="w-4 h-4 transform transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -594,9 +609,7 @@
                              <a href="{{ route('users.index') }}" 
                                 class="{{ request()->routeIs('users.*') ? 'bg-blue-100 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white' }} group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
                                 :class="{ 'justify-center': $store.sidebar.collapsed }">
-                                 <svg class="{{ request()->routeIs('users.*') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }} flex-shrink-0 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m3 5.197H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                 </svg>
+                                 <i class="fas fa-users {{ request()->routeIs('users.*') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }} flex-shrink-0 w-6 h-6"></i>
                                  <span x-show="!$store.sidebar.collapsed || $store.sidebar.isMobile" 
                                        x-transition:enter="transition ease-in-out duration-150"
                                        x-transition:enter-start="opacity-0 transform scale-95"
@@ -644,9 +657,9 @@
                              <form method="POST" action="{{ route('logout') }}">
                                  @csrf
                                  <button type="submit" 
-                                         class="w-full text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
+                                         class="w-full text-red-600 hover:bg-red-50 hover:text-red-700 dark:text-red-400 dark:hover:bg-red-900/20 dark:hover:text-red-300 group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
                                          :class="{ 'justify-center': $store.sidebar.collapsed }">
-                                     <svg class="text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300 flex-shrink-0 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                     <svg class="text-red-400 group-hover:text-red-500 dark:group-hover:text-red-300 flex-shrink-0 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
                                      </svg>
                                      <span x-show="!$store.sidebar.collapsed || $store.sidebar.isMobile" 

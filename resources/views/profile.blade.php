@@ -346,7 +346,7 @@
             
             <!-- Logomarcas Section -->
             <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mt-8">
-                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">Logomarcas da Empresa</h2>
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">Imagens</h2>
                 
                 <form id="logos-form" action="{{ route('profile.logo') }}" method="POST" enctype="multipart/form-data">
                     @csrf
@@ -355,7 +355,7 @@
                         <!-- Logo Horizontal -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Logo Horizontal
+                                Logo da empresa
                             </label>
                             <div class="logo-drop-zone border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 text-center hover:border-blue-400 transition-colors" 
                                  data-logo-type="horizontal" 
@@ -391,7 +391,7 @@
                         <!-- Logo Vertical -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Logo Vertical
+                                Logo Orçamento
                             </label>
                             <div class="logo-drop-zone border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 text-center hover:border-blue-400 transition-colors" 
                                  data-logo-type="vertical" 
@@ -427,7 +427,7 @@
                         <!-- Logo Ícone -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Ícone
+                                QR-Code
                             </label>
                             <div class="logo-drop-zone border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 text-center hover:border-blue-400 transition-colors" 
                                  data-logo-type="icone" 

@@ -189,7 +189,7 @@
                 <div class="px-4 py-5 sm:p-6">
                     <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Trabalhos nesta Categoria ({{ $category->works_count }})</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        @foreach($category->works()->limit(6)->get() as $work)
+                        @foreach($category->portfolioWorks()->limit(6)->get() as $work)
                             <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
                                 <div class="flex items-center space-x-3">
                                     @if($work->cover_image)

@@ -31,13 +31,6 @@
         </div>
     @endif
 
-    <!-- Breadcrumb -->
-    <x-breadcrumb :items="[
-        ['label' => 'Home', 'url' => route('dashboard')],
-        ['label' => 'Orçamentos', 'url' => route('orcamentos.index')],
-        ['label' => $orcamento->titulo]
-    ]" />
-
     <!-- Header -->
     <div class="flex items-center justify-between">
         <div>

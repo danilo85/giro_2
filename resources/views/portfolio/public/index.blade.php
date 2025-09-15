@@ -13,12 +13,12 @@
             
             <!-- Categories Filter -->
             <div class="flex flex-wrap justify-center gap-3 mb-8">
-                <a href="{{ route('public.portfolio.index') }}" 
+                <a href="{{ route('public.portfolio.public.index') }}" 
                    class="px-6 py-2 rounded-full border-2 border-white/30 hover:bg-white hover:text-blue-600 transition-all duration-300 {{ !request('category') ? 'bg-white text-blue-600' : 'text-white' }}">
                     Todos
                 </a>
                 @foreach($categories as $category)
-                    <a href="{{ route('public.portfolio.index', ['category' => $category->slug]) }}" 
+                    <a href="{{ route('public.portfolio.public.index', ['category' => $category->slug]) }}" 
                        class="px-6 py-2 rounded-full border-2 border-white/30 hover:bg-white hover:text-blue-600 transition-all duration-300 {{ request('category') === $category->slug ? 'bg-white text-blue-600' : 'text-white' }}">
                         {{ $category->name }}
                     </a>

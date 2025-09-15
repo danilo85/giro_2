@@ -4,12 +4,7 @@
 
 @section('content')
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <x-breadcrumb :items="[
-            ['label' => 'Home', 'url' => route('dashboard'), 'icon' => 'fas fa-home'],
-            ['label' => 'Financeiro', 'url' => '#'],
-            ['label' => 'Bancos', 'url' => route('financial.banks.index')],
-            ['label' => $bank->nome, 'url' => route('financial.banks.show', $bank)]
-        ]" />
+
     <!-- Header -->
     <div class="flex items-center justify-between mb-6">
         <div>

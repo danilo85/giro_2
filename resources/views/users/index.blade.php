@@ -4,12 +4,6 @@
 
 @section('content')
 <div class="max-w-7xl mx-auto">
-    <!-- Breadcrumb -->
-    <x-breadcrumb :items="[
-        ['label' => 'Dashboard', 'url' => route('dashboard')],
-        ['label' => 'Administração', 'url' => '#'],
-        ['label' => 'Usuários', 'url' => null]
-    ]" />
 
     <!-- Header -->
     <div class="mb-8">

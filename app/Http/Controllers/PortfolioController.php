@@ -487,6 +487,83 @@ class PortfolioController extends Controller
     }
 
     /**
+     * Dashboard do módulo de portfólio
+     */
+    public function dashboard()
+    {
+        $userId = Auth::id();
+        
+        // Estatísticas de trabalhos
+        $totalWorks = PortfolioWork::where('user_id', $userId)->count();
+        $publishedWorks = PortfolioWork::where('user_id', $userId)->where('status', 'published')->count();
+        $draftWorks = PortfolioWork::where('user_id', $userId)->where('status', 'draft')->count();
+        $featuredWorks = PortfolioWork::where('user_id', $userId)->where('is_featured', true)->count();
+        
+        // Estatísticas de categorias
+        $totalCategories = PortfolioCategory::where('user_id', $userId)->count();
+        $activeCategories = PortfolioCategory::where('user_id', $userId)->where('is_active', true)->count();
+        
+        // Orçamentos no pipeline (finalizados sem trabalho)
+        $pipelineCount = Orcamento::whereHas('cliente', function ($q) use ($userId) {
+                $q->where('user_id', $userId);
+            })
+            ->where('status', 'finalizado')
+            ->whereDoesntHave('portfolioWork')
+            ->count();
+            
+        // Trabalhos recentes (últimos 5)
+        $recentWorks = PortfolioWork::with(['category', 'client'])
+            ->where('user_id', $userId)
+            ->orderBy('created_at', 'desc')
+            ->limit(5)
+            ->get();
+            
+        // Estatísticas por categoria
+        $worksByCategory = PortfolioCategory::withCount(['portfolioWorks' => function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            }])
+            ->where('user_id', $userId)
+            ->where('is_active', true)
+            ->orderBy('portfolio_works_count', 'desc')
+            ->limit(5)
+            ->get();
+            
+        // Trabalhos em destaque
+        $featuredWorksList = PortfolioWork::with(['category', 'client'])
+            ->where('user_id', $userId)
+            ->where('is_featured', true)
+            ->where('status', 'published')
+            ->orderBy('created_at', 'desc')
+            ->limit(3)
+            ->get();
+            
+        // Orçamentos recentes no pipeline
+        $recentPipeline = Orcamento::with(['cliente', 'autores'])
+            ->whereHas('cliente', function ($q) use ($userId) {
+                $q->where('user_id', $userId);
+            })
+            ->where('status', 'finalizado')
+            ->whereDoesntHave('portfolioWork')
+            ->orderBy('created_at', 'desc')
+            ->limit(5)
+            ->get();
+        
+        return view('portfolio.dashboard', compact(
+            'totalWorks',
+            'publishedWorks', 
+            'draftWorks',
+            'featuredWorks',
+            'totalCategories',
+            'activeCategories',
+            'pipelineCount',
+            'recentWorks',
+            'worksByCategory',
+            'featuredWorksList',
+            'recentPipeline'
+        ));
+    }
+
+    /**
      * Upload e salvar imagens adicionais do trabalho
      */
     private function uploadImages(PortfolioWork $work, array $images)

@@ -4,14 +4,6 @@
 
 @section('content')
 <div class="max-w-7xl mx-auto">
-    <!-- Breadcrumb -->
-    <x-breadcrumb :items="[
-        ['label' => 'Home', 'url' => route('dashboard')],
-        ['label' => 'Financeiro', 'url' => route('financial.dashboard')],
-        ['label' => 'Cartões de Crédito', 'url' => route('financial.credit-cards.index')],
-        ['label' => $creditCard->nome_cartao, 'url' => route('financial.credit-cards.show', $creditCard)],
-        ['label' => 'Editar']
-    ]" />
 
     <!-- Header -->
     <div class="flex items-center justify-between mb-6">

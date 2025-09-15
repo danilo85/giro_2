@@ -4,14 +4,7 @@
 
 @section('content')
 <div class="max-w-7xl mx-auto">
-    <!-- Breadcrumb -->
-    <x-breadcrumb :items="[
-        ['label' => 'Home', 'url' => route('dashboard'), 'icon' => 'fas fa-home'],
-        ['label' => 'Financeiro', 'url' => '#'],
-        ['label' => 'Lançamentos', 'url' => route('financial.transactions.index')],
-        ['label' => 'Nova Transação']
-    ]" />
-    
+
     <!-- Header -->
     <div class="mb-8">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">

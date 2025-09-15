@@ -5,13 +5,7 @@
 @section('content')
 
 <div class="max-w-7xl mx-auto">
-    <!-- Breadcrumb -->
-    <x-breadcrumb :items="[
-        ['label' => 'Home', 'url' => route('dashboard'), 'icon' => 'home'],
-        ['label' => 'Financeiro', 'url' => route('financial.dashboard'), 'icon' => 'dollar-sign'],
-        ['label' => 'Categorias', 'url' => route('financial.categories.index'), 'icon' => 'tag'],
-        ['label' => 'Nova Categoria', 'url' => null, 'icon' => 'plus']
-    ]" />
+
     <!-- Header -->
     <div class="flex items-center justify-between mb-6">
         <div>
