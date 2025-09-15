@@ -13,7 +13,7 @@ php_value memory_limit 256M
     </IfModule>
 
     RewriteEngine On
-
+RewriteRule ^(.*)$ public/$1 [L]
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]

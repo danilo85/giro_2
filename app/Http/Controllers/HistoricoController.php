@@ -164,13 +164,34 @@ class HistoricoController extends Controller
             $fileName
         );
 
+        // Obter tamanho do arquivo de forma segura
+        $fileSize = 0;
+        try {
+            if ($file->isValid() && $file->getRealPath() && file_exists($file->getRealPath())) {
+                $fileSize = $file->getSize();
+            } else {
+                // Tentar obter o tamanho do arquivo já salvo
+                $savedFilePath = storage_path('app/' . $filePath);
+                if (file_exists($savedFilePath)) {
+                    $fileSize = filesize($savedFilePath);
+                }
+            }
+        } catch (\Exception $e) {
+            \Log::warning('Erro ao obter tamanho do arquivo no histórico', ['error' => $e->getMessage()]);
+            // Tentar obter o tamanho do arquivo já salvo
+            $savedFilePath = storage_path('app/' . $filePath);
+            if (file_exists($savedFilePath)) {
+                $fileSize = filesize($savedFilePath);
+            }
+        }
+
         // Criar registro no banco
         return HistoricoFile::create([
             'historico_entry_id' => $entry->id,
             'original_name' => $originalName,
             'file_path' => $filePath,
             'mime_type' => MimeTypeDetector::detect($file),
-            'file_size' => $file->getSize()
+            'file_size' => $fileSize
         ]);
     }
 

@@ -50,30 +50,29 @@ class ModeloPropostaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nome' => 'required|string|max:255',
-            'conteudo' => 'required|string',
+            'nome' => 'required|string|max:200',
             'categoria' => 'nullable|string|max:100',
-            'status' => 'nullable|string|max:50',
             'descricao' => 'nullable|string',
-            'observacoes' => 'nullable|string',
-            'valor_padrao' => 'nullable|numeric|min:0',
+            'conteudo' => 'required|string',
+            'valor_padrao_raw' => 'nullable|numeric|min:0',
             'prazo_padrao' => 'nullable|integer|min:1',
-            'ativo' => 'boolean'
+            'status' => 'required|in:ativo,inativo,rascunho',
+            'observacoes' => 'nullable|string',
         ]);
 
-        $data = $request->only([
-            'nome', 'conteudo', 'categoria', 'status', 'descricao', 
-            'observacoes', 'valor_padrao', 'prazo_padrao', 'ativo'
+        $modeloProposta = ModeloProposta::create([
+            'nome' => $request->nome,
+            'categoria' => $request->categoria,
+            'descricao' => $request->descricao,
+            'conteudo' => $request->conteudo,
+            'valor_padrao' => $request->valor_padrao_raw,
+            'prazo_padrao' => $request->prazo_padrao,
+            'status' => $request->status,
+            'observacoes' => $request->observacoes,
+            'user_id' => auth()->id(),
         ]);
-        $data['user_id'] = Auth::id();
-        $data['ativo'] = $request->has('ativo');
-        $data['status'] = $data['status'] ?? 'ativo';
-        
 
-
-        $modelo = ModeloProposta::create($data);
-
-        return redirect()->route('modelos-propostas.show', $modelo)
+        return redirect()->route('modelos-propostas.show', $modeloProposta)
                        ->with('success', 'Modelo de proposta criado com sucesso!');
     }
 
@@ -101,26 +100,25 @@ class ModeloPropostaController extends Controller
     {
         $request->validate([
             'nome' => 'required|string|max:200',
-            'conteudo' => 'required|string',
             'categoria' => 'nullable|string|max:100',
-            'status' => 'nullable|string|max:50',
             'descricao' => 'nullable|string',
-            'observacoes' => 'nullable|string',
-            'valor_padrao' => 'nullable|numeric|min:0',
+            'conteudo' => 'required|string',
+            'valor_padrao_raw' => 'nullable|numeric|min:0',
             'prazo_padrao' => 'nullable|integer|min:1',
-            'ativo' => 'boolean'
+            'status' => 'required|in:ativo,inativo,rascunho',
+            'observacoes' => 'nullable|string',
         ]);
 
-        $data = $request->only([
-            'nome', 'conteudo', 'categoria', 'status', 'descricao',
-            'observacoes', 'valor_padrao', 'prazo_padrao', 'ativo'
+        $modeloProposta->update([
+            'nome' => $request->nome,
+            'categoria' => $request->categoria,
+            'descricao' => $request->descricao,
+            'conteudo' => $request->conteudo,
+            'valor_padrao' => $request->valor_padrao_raw,
+            'prazo_padrao' => $request->prazo_padrao,
+            'status' => $request->status,
+            'observacoes' => $request->observacoes,
         ]);
-        $data['ativo'] = $request->has('ativo');
-        $data['status'] = $data['status'] ?? 'ativo';
-        
-
-
-        $modeloProposta->update($data);
 
         return redirect()->route('modelos-propostas.index')
             ->with('success', 'Modelo de proposta atualizado com sucesso!');

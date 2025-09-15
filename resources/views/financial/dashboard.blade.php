@@ -228,7 +228,7 @@
                                 </div>
                             </div>
                             <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2">
-                                <div class="bg-purple-600 dark:bg-purple-400 h-2 rounded-full" style="width: {{ $card->percentual_utilizado }}%"></div>
+                                <div class="bg-purple-600 dark:bg-purple-400 h-2 rounded-full" style="width: {{ min($card->percentual_utilizado, 100) }}%"></div>
                             </div>
                             <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
                                 <span>R$ {{ number_format($card->limite_utilizado, 2, ',', '.') }}</span>

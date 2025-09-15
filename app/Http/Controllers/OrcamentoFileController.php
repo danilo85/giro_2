@@ -30,9 +30,19 @@ class OrcamentoFileController extends Controller
 
         $file = $request->file('file');
         
+        // Obter tamanho do arquivo de forma segura
+        $fileSize = 0;
+        try {
+            if ($file->isValid() && $file->getRealPath() && file_exists($file->getRealPath())) {
+                $fileSize = $file->getSize();
+            }
+        } catch (\Exception $e) {
+            \Log::warning('Erro ao obter tamanho do arquivo no log', ['error' => $e->getMessage()]);
+        }
+
         \Log::info('Arquivo recebido', [
             'original_name' => $file->getClientOriginalName(),
-            'size' => $file->getSize(),
+            'size' => $fileSize,
             'extension' => $file->getClientOriginalExtension(),
             'path' => $file->getPathname()
         ]);
@@ -104,7 +114,7 @@ class OrcamentoFileController extends Controller
                 'nome_arquivo' => $fileName,
                 'url_arquivo' => Storage::url($path),
                 'tipo_arquivo' => $mimeType,
-                'tamanho' => $file->getSize(),
+                'tamanho' => $fileSize,
                 'categoria' => $request->input('categoria', 'anexo'),
             ]);
             

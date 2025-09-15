@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Rules\Password;
 
 class LoginController extends Controller
 {
@@ -74,5 +75,50 @@ class LoginController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/login');
+    }
+
+    /**
+     * Show the registration form.
+     */
+    public function showRegisterForm()
+    {
+        return view('auth.register');
+    }
+
+    /**
+     * Handle a registration request.
+     */
+    public function register(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => ['required', 'confirmed', Password::defaults()],
+        ], [
+            'name.required' => 'O nome é obrigatório.',
+            'email.required' => 'O email é obrigatório.',
+            'email.email' => 'O email deve ser um endereço válido.',
+            'email.unique' => 'Este email já está em uso.',
+            'password.required' => 'A senha é obrigatória.',
+            'password.confirmed' => 'A confirmação da senha não confere.',
+        ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'is_active' => true,
+            'is_online' => false,
+        ]);
+
+        // Update user online status
+        $user->update([
+            'is_online' => true,
+            'last_activity_at' => now(),
+        ]);
+
+        Auth::login($user);
+
+        return redirect('/dashboard')->with('success', 'Conta criada com sucesso! Bem-vindo ao Giro.');
     }
 }

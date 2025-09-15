@@ -583,13 +583,28 @@ class PortfolioController extends Controller
                 $imagePath = storage_path('app/public/' . $path);
                 $imageSize = getimagesize($imagePath);
 
+                // Obter o tamanho do arquivo de forma segura
+                $fileSize = 0;
+                try {
+                    if ($image->isValid() && $image->getRealPath() && file_exists($image->getRealPath())) {
+                        $fileSize = $image->getSize();
+                    } elseif (file_exists($imagePath)) {
+                        $fileSize = filesize($imagePath);
+                    }
+                } catch (\Exception $e) {
+                    \Log::warning('Erro ao obter tamanho do arquivo', ['error' => $e->getMessage()]);
+                    if (file_exists($imagePath)) {
+                        $fileSize = filesize($imagePath);
+                    }
+                }
+
                 $imageData = [
                     'portfolio_work_id' => $work->id,
                     'filename' => $filename,
                     'original_name' => $image->getClientOriginalName(),
                     'path' => $path,
                     'mime_type' => $image->getMimeType(),
-                    'file_size' => $image->getSize(),
+                    'file_size' => $fileSize,
                     'width' => $imageSize ? $imageSize[0] : null,
                     'height' => $imageSize ? $imageSize[1] : null,
                     'sort_order' => PortfolioWorkImage::getNextSortOrder($work->id)

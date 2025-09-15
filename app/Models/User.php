@@ -42,6 +42,8 @@ class User extends Authenticatable
         'email_extra',
         'biografia',
         'profissao',
+        'rodape_image',
+        'qrcode_image',
     ];
 
     /**
@@ -177,6 +179,28 @@ class User extends Authenticatable
     {
         if ($this->assinatura_digital) {
             return asset('storage/' . $this->assinatura_digital);
+        }
+        return null;
+    }
+
+    /**
+     * Get the user's rodape image URL.
+     */
+    public function getRodapeImageUrlAttribute()
+    {
+        if ($this->rodape_image) {
+            return asset('storage/' . $this->rodape_image);
+        }
+        return null;
+    }
+
+    /**
+     * Get the user's QR code image URL.
+     */
+    public function getQrcodeImageUrlAttribute()
+    {
+        if ($this->qrcode_image) {
+            return asset('storage/' . $this->qrcode_image);
         }
         return null;
     }

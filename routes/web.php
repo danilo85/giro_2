@@ -48,6 +48,10 @@ Route::middleware('guest')->group(function () {
     // Login
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [LoginController::class, 'login']);
+    
+    // Register
+    Route::get('/register', [LoginController::class, 'showRegisterForm'])->name('register');
+    Route::post('/register', [LoginController::class, 'register']);
 
     // Social Login
     Route::get('/auth/{provider}', [SocialLoginController::class, 'redirectToProvider'])->name('social.redirect');
@@ -131,13 +135,17 @@ Route::post('/debug-form', function (\Illuminate\Http\Request $request) {
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
     Route::post('/profile/avatar', [ProfileController::class, 'updateAvatar'])->name('profile.avatar');
-    Route::post('/profile/logo', [ProfileController::class, 'uploadLogo'])->name('profile.logo');
+    Route::post('/profile/logo/{type}', [ProfileController::class, 'uploadLogo'])->name('profile.logo');
     Route::post('/profile/signature', [ProfileController::class, 'uploadSignature'])->name('profile.signature');
-    Route::delete('/profile/logo', [ProfileController::class, 'deleteLogo'])->name('profile.logo.delete');
+    Route::delete('/profile/logo/{type}', [ProfileController::class, 'deleteLogo'])->name('profile.logo.delete');
     Route::delete('/profile/signature', [ProfileController::class, 'deleteSignature'])->name('profile.signature.delete');
     Route::delete('/profile', [ProfileController::class, 'delete'])->name('profile.delete');
     Route::put('/profile/social-media', [ProfileController::class, 'updateSocialMedia'])->name('profile.social-media.update');
     Route::delete('/profile/social-media/{platform}', [ProfileController::class, 'deleteSocialMedia'])->name('profile.social-media.delete');
+    Route::post('/profile/upload-rodape', [ProfileController::class, 'uploadRodapeImage'])->name('profile.rodape.upload');
+    Route::post('/profile/upload-qrcode', [ProfileController::class, 'uploadQrcodeImage'])->name('profile.qrcode.upload');
+    Route::delete('/profile/rodape', [ProfileController::class, 'deleteRodapeImage'])->name('profile.rodape.delete');
+    Route::delete('/profile/qrcode', [ProfileController::class, 'deleteQrcodeImage'])->name('profile.qrcode.delete');
 
     // Settings
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
@@ -248,6 +256,13 @@ Route::post('/debug-form', function (\Illuminate\Http\Request $request) {
     Route::resource('orcamentos', OrcamentoController::class);
     Route::patch('/orcamentos/{orcamento}/quitar', [OrcamentoController::class, 'quitar'])->name('orcamentos.quitar');
     Route::patch('/orcamentos/{orcamento}/update-status', [OrcamentoController::class, 'atualizarStatus'])->name('orcamentos.update-status');
+    
+    // Gerenciamento de Imagens dos Orçamentos
+    Route::get('/orcamentos/{orcamento}/profile-images', [OrcamentoController::class, 'profileImages'])->name('orcamentos.profile-images');
+    Route::post('/orcamentos/{orcamento}/upload-qrcode', [OrcamentoController::class, 'uploadQrCode'])->name('orcamentos.upload-qrcode');
+    Route::post('/orcamentos/{orcamento}/upload-logo', [OrcamentoController::class, 'uploadLogo'])->name('orcamentos.upload-logo');
+    Route::delete('/orcamentos/{orcamento}/qrcode', [OrcamentoController::class, 'deleteQrCode'])->name('orcamentos.delete-qrcode');
+    Route::delete('/orcamentos/{orcamento}/logo', [OrcamentoController::class, 'deleteLogo'])->name('orcamentos.delete-logo');
 
     // Histórico do Projeto
     Route::prefix('orcamentos/{orcamento}/historico')->name('orcamentos.historico.')->group(function () {
@@ -437,6 +452,3 @@ Route::prefix('public')->name('public.')->group(function () {
 // File upload routes moved to RouteServiceProvider (without any middleware)
 
 // Debug routes (only in development) - REMOVIDO
-
-// Incluir rotas de teste
-require __DIR__ . '/test.php';
