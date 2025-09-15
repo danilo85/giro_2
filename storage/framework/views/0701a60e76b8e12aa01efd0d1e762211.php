@@ -1,0 +1,467 @@
+<?php $__env->startSection('title', 'Editar Cartão de Crédito - Giro'); ?>
+
+<?php $__env->startSection('content'); ?>
+<div class="max-w-7xl mx-auto">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Editar Cartão de Crédito</h1>
+            <p class="text-gray-600 dark:text-gray-400 mt-1">Atualize as informações do cartão <?php echo e($creditCard->nome_cartao); ?></p>
+        </div>
+        <a href="<?php echo e(route('financial.credit-cards.index')); ?>" class="inline-flex items-center p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900/20 transition-colors group" title="Voltar">
+            <svg class="w-5 h-5 text-gray-500 group-hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+        </a>
+    </div>
+
+    <!-- Form Card -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+        <form action="<?php echo e(route('financial.credit-cards.update', $creditCard)); ?>" method="POST" id="credit-card-form">
+            <?php echo csrf_field(); ?>
+            <?php echo method_field('PUT'); ?>
+            
+            <div class="p-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Left Column -->
+                    <div class="space-y-6">
+                        <!-- Card Name -->
+                        <div>
+                            <label for="nome" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Nome do Cartão *
+                            </label>
+                            <input type="text" id="nome_cartao" name="nome_cartao" value="<?php echo e(old('nome_cartao', $creditCard->nome_cartao)); ?>" required
+                                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-colors"
+                                placeholder="Ex: Cartão Nubank, Itaú Mastercard">
+                            <?php $__errorArgs = ['nome'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <p class="text-red-500 text-sm mt-1"><?php echo e($message); ?></p>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                        </div>
+
+                        <!-- Card Brand -->
+                        <div>
+                            <label for="bandeira" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Bandeira *
+                            </label>
+                            <select id="bandeira" name="bandeira" required
+                                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-colors">
+                                <option value="">Selecione a bandeira</option>
+                                <option value="Visa" <?php echo e(old('bandeira', $creditCard->bandeira) == 'Visa' ? 'selected' : ''); ?>>Visa</option>
+                                <option value="Mastercard" <?php echo e(old('bandeira', $creditCard->bandeira) == 'Mastercard' ? 'selected' : ''); ?>>Mastercard</option>
+                                <option value="American Express" <?php echo e(old('bandeira', $creditCard->bandeira) == 'American Express' ? 'selected' : ''); ?>>American Express</option>
+                                <option value="Elo" <?php echo e(old('bandeira', $creditCard->bandeira) == 'Elo' ? 'selected' : ''); ?>>Elo</option>
+                                <option value="Hipercard" <?php echo e(old('bandeira', $creditCard->bandeira) == 'Hipercard' ? 'selected' : ''); ?>>Hipercard</option>
+                                <option value="Diners" <?php echo e(old('bandeira', $creditCard->bandeira) == 'Diners' ? 'selected' : ''); ?>>Diners</option>
+                                <option value="Discover" <?php echo e(old('bandeira', $creditCard->bandeira) == 'Discover' ? 'selected' : ''); ?>>Discover</option>
+                                <option value="JCB" <?php echo e(old('bandeira', $creditCard->bandeira) == 'JCB' ? 'selected' : ''); ?>>JCB</option>
+                                <option value="Outros" <?php echo e(old('bandeira', $creditCard->bandeira) == 'Outros' ? 'selected' : ''); ?>>Outros</option>
+                            </select>
+                            <?php $__errorArgs = ['bandeira'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <p class="text-red-500 text-sm mt-1"><?php echo e($message); ?></p>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                        </div>
+
+
+
+                        <!-- Card Number -->
+                        <div>
+                            <label for="numero" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Número do Cartão
+                            </label>
+                            <input type="text" id="numero" name="numero" value="<?php echo e(old('numero', $creditCard->numero)); ?>" maxlength="19"
+                                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-colors font-mono"
+                                placeholder="0000 0000 0000 0000">
+                            <?php $__errorArgs = ['numero'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <p class="text-red-500 text-sm mt-1"><?php echo e($message); ?></p>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                        </div>
+
+                        <!-- Credit Limit -->
+                        <div>
+                            <label for="limite" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Limite de Crédito *
+                            </label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400">R$</span>
+                                <input type="text" id="limite_total" name="limite_total" value="<?php echo e(old('limite_total', number_format($creditCard->limite_total, 2, ',', '.'))); ?>" required
+                                    class="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-colors"
+                                    placeholder="0,00">
+                            </div>
+                            <?php $__errorArgs = ['limite'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <p class="text-red-500 text-sm mt-1"><?php echo e($message); ?></p>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                        </div>
+
+                        <!-- Used Limit -->
+                        <div>
+                            <label for="limite_utilizado" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Limite Utilizado
+                            </label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400">R$</span>
+                                <input type="text" id="limite_utilizado" name="limite_utilizado" value="<?php echo e(old('limite_utilizado', number_format($creditCard->limite_utilizado ?? 0, 2, ',', '.'))); ?>"
+                                    class="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-colors"
+                                    placeholder="0,00">
+                            </div>
+                            <?php $__errorArgs = ['limite_utilizado'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <p class="text-red-500 text-sm mt-1"><?php echo e($message); ?></p>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="space-y-6">
+                        <!-- Due Day -->
+                        <div>
+                            <label for="data_vencimento" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Dia de Vencimento *
+                            </label>
+                            <select id="data_vencimento" name="data_vencimento" required
+                                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-colors">
+                                <option value="">Selecione o dia</option>
+                                <?php for($i = 1; $i <= 31; $i++): ?>
+                                    <option value="<?php echo e($i); ?>" <?php echo e(old('data_vencimento', $creditCard->data_vencimento) == $i ? 'selected' : ''); ?>><?php echo e($i); ?></option>
+                                <?php endfor; ?>
+                            </select>
+                            <?php $__errorArgs = ['data_vencimento'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <p class="text-red-500 text-sm mt-1"><?php echo e($message); ?></p>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                        </div>
+
+                        <!-- Closing Day -->
+                        <div>
+                            <label for="data_fechamento" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Dia de Fechamento *
+                            </label>
+                            <select id="data_fechamento" name="data_fechamento" required
+                                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-colors">
+                                <option value="">Selecione o dia</option>
+                                <?php for($i = 1; $i <= 31; $i++): ?>
+                                    <option value="<?php echo e($i); ?>" <?php echo e(old('data_fechamento', $creditCard->data_fechamento) == $i ? 'selected' : ''); ?>><?php echo e($i); ?></option>
+                                <?php endfor; ?>
+                            </select>
+                            <?php $__errorArgs = ['data_fechamento'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <p class="text-red-500 text-sm mt-1"><?php echo e($message); ?></p>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                        </div>
+
+                        <!-- Observations -->
+                        <div>
+                            <label for="observacoes" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Observações
+                            </label>
+                            <textarea id="observacoes" name="observacoes" rows="4"
+                                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-colors resize-none"
+                                placeholder="Informações adicionais sobre o cartão..."><?php echo e(old('observacoes', $creditCard->observacoes)); ?></textarea>
+                            <?php $__errorArgs = ['observacoes'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <p class="text-red-500 text-sm mt-1"><?php echo e($message); ?></p>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                        </div>
+
+                        <!-- Active Status -->
+                        <div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="ativo" name="ativo" value="1" <?php echo e(old('ativo', $creditCard->ativo) ? 'checked' : ''); ?>
+
+                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                <label for="ativo" class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Cartão ativo
+                                </label>
+                            </div>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                Cartões inativos não aparecerão nas listagens principais
+                            </p>
+                            <?php $__errorArgs = ['ativo'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <p class="text-red-500 text-sm mt-1"><?php echo e($message); ?></p>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                        </div>
+
+                        <!-- Card Preview -->
+                        <div class="bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl p-6 text-white" id="card-preview">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <h3 class="text-lg font-bold" id="preview-name">Nome do Cartão</h3>
+                                    <p class="text-sm opacity-80" id="preview-brand">Bandeira</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-xs opacity-80">Limite</p>
+                                    <p class="text-sm font-medium" id="preview-limit">R$ 0,00</p>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <p class="text-lg font-mono tracking-wider" id="preview-number">•••• •••• •••• ••••</p>
+                            </div>
+                            <div class="flex justify-between items-center text-xs">
+                                <span id="preview-due">Venc: --</span>
+                                <span id="preview-closing">Fech: --</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="px-6 py-4 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600 rounded-b-xl">
+                <div class="flex flex-col sm:flex-row items-center justify-end space-y-3 sm:space-y-0 sm:space-x-3">
+                    <a href="<?php echo e(route('financial.credit-cards.index')); ?>" 
+                       class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        Cancelar
+                    </a>
+                    <button type="submit" 
+                            class="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md">
+                        <span class="flex items-center space-x-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span>Atualizar Cartão</span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<?php $__env->startPush('scripts'); ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Format card number
+    const numeroInput = document.getElementById('numero');
+    numeroInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+        e.target.value = value;
+        updatePreview();
+    });
+
+    // Função para limpar valor monetário (remove formatação)
+    function cleanCurrencyValue(value) {
+        if (!value) return '';
+        // Remove todos os caracteres não numéricos exceto vírgula e ponto
+        return value.toString().replace(/[^0-9.,]/g, '');
+    }
+    
+    // Função para verificar se o valor já está formatado corretamente
+    function isAlreadyFormatted(value) {
+        // Verifica se contém pontos como separadores de milhares e vírgula como decimal
+        const pattern = /^\d{1,3}(\.\d{3})*(,\d{2})?$/;
+        return pattern.test(value);
+    }
+    
+    // Função para formatar valores monetários
+    function formatCurrency(value) {
+        // Limpa o valor primeiro
+        value = cleanCurrencyValue(value);
+        
+        // Se está vazio, retorna vazio
+        if (!value) return '';
+        
+        // Se já está formatado corretamente, não reformata
+        if (isAlreadyFormatted(value)) {
+            return value;
+        }
+        
+        // Remove tudo que não é dígito
+        let digits = value.replace(/\D/g, '');
+        
+        // Se não há dígitos, retorna vazio
+        if (!digits) return '';
+        
+        // Converte para número e divide por 100 para ter centavos
+        let number = parseInt(digits) / 100;
+        
+        // Formata no padrão brasileiro
+        return number.toLocaleString('pt-BR', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    }
+    
+    // Função para aplicar máscara de moeda
+    function applyCurrencyMask(element) {
+        let value = element.value;
+        let cursorPosition = element.selectionStart;
+        
+        // Se o valor está vazio ou é zero, não aplica formatação
+        if (!value || value === '0' || value === '0,00') {
+            return;
+        }
+        
+        // Salva a posição do cursor
+        let oldLength = value.length;
+        
+        // Aplica a formatação apenas se necessário
+        let formatted = formatCurrency(value);
+        
+        // Só atualiza se o valor mudou
+        if (formatted !== value) {
+            element.value = formatted;
+            
+            // Ajusta a posição do cursor
+            let newLength = formatted.length;
+            let newPosition = cursorPosition + (newLength - oldLength);
+            
+            // Garante que a posição do cursor seja válida
+            if (newPosition < 0) newPosition = 0;
+            if (newPosition > newLength) newPosition = newLength;
+            
+            element.setSelectionRange(newPosition, newPosition);
+        }
+    }
+
+    // Format currency inputs
+    const currencyInputs = ['limite_total', 'limite_utilizado'];
+    currencyInputs.forEach(inputId => {
+        const input = document.getElementById(inputId);
+        
+        input.addEventListener('input', function(e) {
+            applyCurrencyMask(e.target);
+            updatePreview();
+        });
+        
+        // Formatar valor inicial se existir
+        if (input.value && input.value !== '0,00') {
+            applyCurrencyMask(input);
+        }
+    });
+
+    // Update preview on input changes
+    const inputs = ['nome_cartao', 'bandeira', 'data_vencimento', 'data_fechamento'];
+    inputs.forEach(inputId => {
+        const input = document.getElementById(inputId);
+        input.addEventListener('input', updatePreview);
+        input.addEventListener('change', updatePreview);
+    });
+
+    function updatePreview() {
+        const nome = document.getElementById('nome_cartao').value || 'Nome do Cartão';
+        const bandeira = document.getElementById('bandeira').value || 'Bandeira';
+        const numero = document.getElementById('numero').value || '•••• •••• •••• ••••';
+        const limite = document.getElementById('limite_total').value || '0,00';
+        const diaVencimento = document.getElementById('data_vencimento').value;
+        const diaFechamento = document.getElementById('data_fechamento').value;
+
+        document.getElementById('preview-name').textContent = nome;
+        document.getElementById('preview-brand').textContent = bandeira;
+        document.getElementById('preview-limit').textContent = `R$ ${limite}`;
+        
+        // Format card number for preview
+        if (numero.replace(/\s/g, '').length > 0) {
+            const cleanNumber = numero.replace(/\s/g, '');
+            if (cleanNumber.length >= 4) {
+                const lastFour = cleanNumber.slice(-4);
+                document.getElementById('preview-number').textContent = `•••• •••• •••• ${lastFour}`;
+            } else {
+                document.getElementById('preview-number').textContent = numero;
+            }
+        } else {
+            document.getElementById('preview-number').textContent = '•••• •••• •••• ••••';
+        }
+
+        document.getElementById('preview-due').textContent = diaVencimento ? `Venc: ${diaVencimento}` : 'Venc: --';
+        document.getElementById('preview-closing').textContent = diaFechamento ? `Fech: ${diaFechamento}` : 'Fech: --';
+    }
+
+    // Form validation and data preparation
+    document.getElementById('credit-card-form').addEventListener('submit', function(e) {
+        // Prepare currency values for submission
+        const limiteInput = document.getElementById('limite_total');
+        const limiteUtilizadoInput = document.getElementById('limite_utilizado');
+        
+        // Convert formatted values to decimal format for backend
+        const limiteValue = limiteInput.value.replace(/\./g, '').replace(',', '.');
+        const limiteUtilizadoValue = limiteUtilizadoInput.value.replace(/\./g, '').replace(',', '.');
+        
+        // Validate numeric values
+        const limite = parseFloat(limiteValue) || 0;
+        const limiteUtilizado = parseFloat(limiteUtilizadoValue) || 0;
+
+        if (limiteUtilizado > limite) {
+            e.preventDefault();
+            alert('O limite utilizado não pode ser maior que o limite total do cartão.');
+            return false;
+        }
+
+        const numero = document.getElementById('numero').value.replace(/\s/g, '');
+        if (numero.length > 0 && (numero.length < 13 || numero.length > 19)) {
+            e.preventDefault();
+            alert('O número do cartão deve ter entre 13 e 19 dígitos.');
+            return false;
+        }
+        
+        // Set the decimal values for form submission
+        limiteInput.value = limiteValue;
+        limiteUtilizadoInput.value = limiteUtilizadoValue;
+    });
+
+    // Initialize preview
+    updatePreview();
+});
+</script>
+<?php $__env->stopPush(); ?>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\laragon\www\giro_2\resources\views/financial/credit-cards/edit.blade.php ENDPATH**/ ?>
