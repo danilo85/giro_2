@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Setting;
 
 class SettingsController extends Controller
 {
@@ -298,6 +299,41 @@ class SettingsController extends Controller
         }
         
         return $settings[$section][$key];
+    }
+
+    /**
+     * Toggle public registration setting.
+     */
+    public function toggleRegistration(Request $request)
+    {
+        // Only admins can toggle registration
+        if (!auth()->user()->isAdmin()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Acesso negado.'
+            ], 403);
+        }
+
+        try {
+            $enabled = $request->boolean('enabled');
+            
+            // Update or create the setting
+            Setting::updateOrCreate(
+                ['key' => 'public_registration_enabled'],
+                ['value' => $enabled ? '1' : '0']
+            );
+
+            return response()->json([
+                'success' => true,
+                'message' => $enabled ? 'Registro público habilitado com sucesso!' : 'Registro público desabilitado com sucesso!',
+                'enabled' => $enabled
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao alterar configuração: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     /**

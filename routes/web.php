@@ -50,8 +50,8 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [LoginController::class, 'login']);
     
     // Register
-    Route::get('/register', [LoginController::class, 'showRegisterForm'])->name('register');
-    Route::post('/register', [LoginController::class, 'register']);
+    Route::get('/register', [LoginController::class, 'showRegisterForm'])->name('register')->middleware('check.public.registration');
+    Route::post('/register', [LoginController::class, 'register'])->middleware('check.public.registration');
 
     // Social Login
     Route::get('/auth/{provider}', [SocialLoginController::class, 'redirectToProvider'])->name('social.redirect');
@@ -151,6 +151,7 @@ Route::post('/debug-form', function (\Illuminate\Http\Request $request) {
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
     Route::post('/settings/clear-cache', [SettingsController::class, 'clearCache'])->name('settings.clear-cache');
+    Route::post('/settings/toggle-registration', [SettingsController::class, 'toggleRegistration'])->name('settings.toggle-registration');
 
     // Financial Management Module
     Route::prefix('financial')->name('financial.')->group(function () {

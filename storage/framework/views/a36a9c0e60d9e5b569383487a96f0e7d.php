@@ -2,35 +2,45 @@
 
 <?php $__env->startSection('content'); ?>
 <div class="max-w-7xl mx-auto">
-    <!-- Breadcrumb -->
-    <?php if (isset($component)) { $__componentOriginale19f62b34dfe0bfdf95075badcb45bc2 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginale19f62b34dfe0bfdf95075badcb45bc2 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.breadcrumb','data' => ['items' => [
-        ['label' => 'Dashboard', 'url' => route('dashboard')],
-        ['label' => 'Orçamentos', 'url' => route('orcamentos.index')],
-        ['label' => 'Autores', 'url' => null]
-    ]]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? (array) $attributes->getIterator() : [])); ?>
-<?php $component->withName('breadcrumb'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag && $constructor = (new ReflectionClass(Illuminate\View\AnonymousComponent::class))->getConstructor()): ?>
-<?php $attributes = $attributes->except(collect($constructor->getParameters())->map->getName()->all()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['items' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute([
-        ['label' => 'Dashboard', 'url' => route('dashboard')],
-        ['label' => 'Orçamentos', 'url' => route('orcamentos.index')],
-        ['label' => 'Autores', 'url' => null]
-    ])]); ?>
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginale19f62b34dfe0bfdf95075badcb45bc2)): ?>
-<?php $attributes = $__attributesOriginale19f62b34dfe0bfdf95075badcb45bc2; ?>
-<?php unset($__attributesOriginale19f62b34dfe0bfdf95075badcb45bc2); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginale19f62b34dfe0bfdf95075badcb45bc2)): ?>
-<?php $component = $__componentOriginale19f62b34dfe0bfdf95075badcb45bc2; ?>
-<?php unset($__componentOriginale19f62b34dfe0bfdf95075badcb45bc2); ?>
-<?php endif; ?>
+    <!-- Tags de Navegação Rápida -->
+    <div class="flex flex-wrap gap-2 mb-6">
+        <a href="<?php echo e(route('dashboard')); ?>" class="inline-flex items-center px-3 py-1 text-sm font-medium rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors duration-200">
+            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2v0a2 2 0 012-2h6l2 2h6a2 2 0 012 2v1"></path>
+            </svg>
+            Dashboard
+        </a>
+        <a href="<?php echo e(route('orcamentos.index')); ?>" class="inline-flex items-center px-3 py-1 text-sm font-medium rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors duration-200">
+            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            Orçamentos
+        </a>
+        <a href="<?php echo e(route('clientes.index')); ?>" class="inline-flex items-center px-3 py-1 text-sm font-medium rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors duration-200">
+            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+            </svg>
+            Clientes
+        </a>
+        <span class="inline-flex items-center px-3 py-1 text-sm font-medium rounded-full bg-blue-600 text-white">
+            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+            </svg>
+            Autores
+        </span>
+        <a href="<?php echo e(route('pagamentos.index')); ?>" class="inline-flex items-center px-3 py-1 text-sm font-medium rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors duration-200">
+            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+            </svg>
+            Pagamentos
+        </a>
+        <a href="<?php echo e(route('modelos-propostas.index')); ?>" class="inline-flex items-center px-3 py-1 text-sm font-medium rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors duration-200">
+            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            Modelos de Propostas
+        </a>
+    </div>
 
     <!-- Header -->
 
@@ -272,10 +282,11 @@
                             </a>
                         </div>
                         <div class="flex space-x-3">
-                            <form method="POST" action="<?php echo e(route('autores.destroy', $autor)); ?>" class="inline" onsubmit="return confirm('Tem certeza que deseja excluir este autor?')">
+                            <form method="POST" action="<?php echo e(route('autores.destroy', $autor)); ?>" class="inline" id="delete-form-<?php echo e($autor->id); ?>">
                                 <?php echo csrf_field(); ?>
                                 <?php echo method_field('DELETE'); ?>
-                                <button type="submit" 
+                                <button type="button" 
+                                        onclick="openDeleteModal(<?php echo e($autor->id); ?>, '<?php echo e($autor->nome); ?>')"
                                         class="p-2 rounded-lg text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 transition-all duration-200 hover:bg-red-50 dark:hover:bg-red-900/20" 
                                         title="Excluir Autor">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -351,6 +362,38 @@
         </svg>
     </a>
 </div>
+
+<!-- Modal de Exclusão -->
+<div id="deleteModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 hidden">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800">
+        <div class="mt-3 text-center">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900">
+                <svg class="h-6 w-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                </svg>
+            </div>
+            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white mt-4">Confirmar Exclusão</h3>
+            <div class="mt-2 px-7 py-3">
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                    Tem certeza que deseja excluir este autor?
+                    <br>
+                    <span id="deleteAutorName" class="font-semibold text-gray-700 dark:text-gray-300"></span>
+                    <br>
+                    Esta ação não pode ser desfeita.
+                </p>
+            </div>
+            <div class="flex justify-center space-x-4 px-4 py-3">
+                <button id="cancelDelete" type="button" class="px-4 py-2 bg-gray-300 text-gray-800 text-base font-medium rounded-md shadow-sm hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                    Cancelar
+                </button>
+                <button id="confirmDelete" type="button" class="px-4 py-2 bg-red-600 text-white text-base font-medium rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500">
+                    Excluir
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startPush('scripts'); ?>
@@ -561,7 +604,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             </a>
                         </div>
                         <div class="flex space-x-3">
-                            <button onclick="if(confirm('Tem certeza que deseja excluir este autor?')) { fetch('/autores/${autor.id}', { method: 'DELETE', headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content } }).then(() => location.reload()); }" class="p-2 rounded-lg text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 transition-all duration-200 hover:bg-red-50 dark:hover:bg-red-900/20" title="Excluir Autor">
+                            <button onclick="openDeleteModal(${autor.id}, '${autor.nome}')" class="p-2 rounded-lg text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 transition-all duration-200 hover:bg-red-50 dark:hover:bg-red-900/20" title="Excluir Autor">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                 </svg>
@@ -608,6 +651,52 @@ document.addEventListener('DOMContentLoaded', function() {
             clearFilter();
             searchInput.focus();
         });
+    }
+});
+
+// Funções para gerenciar o modal de exclusão
+let autorToDelete = null;
+
+function openDeleteModal(autorId, autorNome) {
+    autorToDelete = autorId;
+    document.getElementById('deleteAutorName').textContent = autorNome;
+    document.getElementById('deleteModal').classList.remove('hidden');
+}
+
+function closeDeleteModal() {
+    autorToDelete = null;
+    document.getElementById('deleteModal').classList.add('hidden');
+}
+
+function confirmDelete() {
+    if (autorToDelete) {
+        const form = document.getElementById(`delete-form-${autorToDelete}`);
+        if (form) {
+            form.submit();
+        } else {
+            console.error('Formulário de exclusão não encontrado');
+            closeDeleteModal();
+        }
+    } else {
+        closeDeleteModal();
+    }
+}
+
+// Event listeners para o modal
+document.getElementById('cancelDelete').addEventListener('click', closeDeleteModal);
+document.getElementById('confirmDelete').addEventListener('click', confirmDelete);
+
+// Fechar modal ao clicar fora dele
+document.getElementById('deleteModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeDeleteModal();
+    }
+});
+
+// Fechar modal com ESC
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && !document.getElementById('deleteModal').classList.contains('hidden')) {
+        closeDeleteModal();
     }
 });
 </script>

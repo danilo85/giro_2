@@ -146,6 +146,7 @@
                     </div>
                 </div>
             </div>
+            </div>
         </div>
         
         <!-- Profile Information Form -->
@@ -348,122 +349,131 @@
             <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mt-8">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">Imagens</h2>
                 
-                <form id="logos-form" action="{{ route('profile.logo') }}" method="POST" enctype="multipart/form-data">
+                <div id="logos-container">
                     @csrf
                     
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <!-- Logo Horizontal -->
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Logo da empresa
-                            </label>
-                            <div class="logo-drop-zone border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 text-center hover:border-blue-400 transition-colors" 
-                                 data-logo-type="horizontal" 
-                                 ondrop="handleDrop(event, 'horizontal')" 
-                                 ondragover="handleDragOver(event)" 
-                                 ondragenter="handleDragEnter(event)" 
-                                 ondragleave="handleDragLeave(event)">
-                                @if(auth()->user()->getLogoByType('horizontal'))
-                                    <img id="logo-horizontal-preview" 
-                                         src="{{ auth()->user()->getLogoByType('horizontal')->url }}" 
-                                         alt="Logo Horizontal" 
-                                         class="max-h-20 mx-auto mb-2">
-                                @else
-                                    <div id="logo-horizontal-placeholder" class="text-gray-400 mb-2">
-                                        <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                        </svg>
-                                    </div>
-                                    <img id="logo-horizontal-preview" class="max-h-20 mx-auto mb-2 hidden" alt="Logo Horizontal">
-                                @endif
-                                <input type="file" id="logo-horizontal" name="logo_horizontal" accept="image/*" class="hidden" onchange="previewLogo(this, 'horizontal')">
-                                <button type="button" onclick="document.getElementById('logo-horizontal').click()" 
-                                        class="text-blue-600 hover:text-blue-700 text-sm font-medium">
-                                    {{ auth()->user()->getLogoByType('horizontal') ? 'Alterar' : 'Selecionar' }} Arquivo
-                                </button>
-                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">PNG, JPG, SVG até 2MB</p>
-                            </div>
-                            @error('logo_horizontal')
-                                <p class="text-sm text-red-600 dark:text-red-400 mt-1">{{ $message }}</p>
-                            @enderror
+                            <form id="logo-horizontal-form" action="{{ route('profile.logo', 'horizontal') }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Logo da empresa
+                                </label>
+                                <div class="logo-drop-zone border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 text-center hover:border-blue-400 transition-colors" 
+                                     data-logo-type="horizontal" 
+                                     ondrop="handleDrop(event, 'horizontal')" 
+                                     ondragover="handleDragOver(event)" 
+                                     ondragenter="handleDragEnter(event)" 
+                                     ondragleave="handleDragLeave(event)">
+                                    @if(auth()->user()->getLogoByType('horizontal'))
+                                        <img id="logo-horizontal-preview" 
+                                             src="{{ auth()->user()->getLogoByType('horizontal')->url }}" 
+                                             alt="Logo Horizontal" 
+                                             class="max-h-20 mx-auto mb-2">
+                                    @else
+                                        <div id="logo-horizontal-placeholder" class="text-gray-400 mb-2">
+                                            <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                            </svg>
+                                        </div>
+                                        <img id="logo-horizontal-preview" class="max-h-20 mx-auto mb-2 hidden" alt="Logo Horizontal">
+                                    @endif
+                                    <input type="file" id="logo-horizontal" name="logo" accept="image/*" class="hidden" onchange="previewLogo(this, 'horizontal')">
+                                    <button type="button" onclick="document.getElementById('logo-horizontal').click()" 
+                                            class="text-blue-600 hover:text-blue-700 text-sm font-medium">
+                                        {{ auth()->user()->getLogoByType('horizontal') ? 'Alterar' : 'Selecionar' }} Arquivo
+                                    </button>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">PNG, JPG, SVG até 2MB</p>
+                                </div>
+                                @error('logo')
+                                    <p class="text-sm text-red-600 dark:text-red-400 mt-1">{{ $message }}</p>
+                                @enderror
+                            </form>
                         </div>
                         
                         <!-- Logo Vertical -->
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Logo Orçamento
-                            </label>
-                            <div class="logo-drop-zone border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 text-center hover:border-blue-400 transition-colors" 
-                                 data-logo-type="vertical" 
-                                 ondrop="handleDrop(event, 'vertical')" 
-                                 ondragover="handleDragOver(event)" 
-                                 ondragenter="handleDragEnter(event)" 
-                                 ondragleave="handleDragLeave(event)">
-                                @if(auth()->user()->getLogoByType('vertical'))
-                                    <img id="logo-vertical-preview" 
-                                         src="{{ auth()->user()->getLogoByType('vertical')->url }}" 
-                                         alt="Logo Vertical" 
-                                         class="max-h-20 mx-auto mb-2">
-                                @else
-                                    <div id="logo-vertical-placeholder" class="text-gray-400 mb-2">
-                                        <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                        </svg>
-                                    </div>
-                                    <img id="logo-vertical-preview" class="max-h-20 mx-auto mb-2 hidden" alt="Logo Vertical">
-                                @endif
-                                <input type="file" id="logo-vertical" name="logo_vertical" accept="image/*" class="hidden" onchange="previewLogo(this, 'vertical')">
-                                <button type="button" onclick="document.getElementById('logo-vertical').click()" 
-                                        class="text-blue-600 hover:text-blue-700 text-sm font-medium">
-                                    {{ auth()->user()->getLogoByType('vertical') ? 'Alterar' : 'Selecionar' }} Arquivo
-                                </button>
-                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">PNG, JPG, SVG até 2MB</p>
-                            </div>
-                            @error('logo_vertical')
-                                <p class="text-sm text-red-600 dark:text-red-400 mt-1">{{ $message }}</p>
-                            @enderror
+                            <form id="logo-vertical-form" action="{{ route('profile.logo', 'vertical') }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Logo Orçamento
+                                </label>
+                                <div class="logo-drop-zone border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 text-center hover:border-blue-400 transition-colors" 
+                                     data-logo-type="vertical" 
+                                     ondrop="handleDrop(event, 'vertical')" 
+                                     ondragover="handleDragOver(event)" 
+                                     ondragenter="handleDragEnter(event)" 
+                                     ondragleave="handleDragLeave(event)">
+                                    @if(auth()->user()->getLogoByType('vertical'))
+                                        <img id="logo-vertical-preview" 
+                                             src="{{ auth()->user()->getLogoByType('vertical')->url }}" 
+                                             alt="Logo Vertical" 
+                                             class="max-h-20 mx-auto mb-2">
+                                    @else
+                                        <div id="logo-vertical-placeholder" class="text-gray-400 mb-2">
+                                            <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                            </svg>
+                                        </div>
+                                        <img id="logo-vertical-preview" class="max-h-20 mx-auto mb-2 hidden" alt="Logo Vertical">
+                                    @endif
+                                    <input type="file" id="logo-vertical" name="logo" accept="image/*" class="hidden" onchange="previewLogo(this, 'vertical')">
+                                    <button type="button" onclick="document.getElementById('logo-vertical').click()" 
+                                            class="text-blue-600 hover:text-blue-700 text-sm font-medium">
+                                        {{ auth()->user()->getLogoByType('vertical') ? 'Alterar' : 'Selecionar' }} Arquivo
+                                    </button>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">PNG, JPG, SVG até 2MB</p>
+                                </div>
+                                @error('logo')
+                                    <p class="text-sm text-red-600 dark:text-red-400 mt-1">{{ $message }}</p>
+                                @enderror
+                            </form>
                         </div>
                         
                         <!-- Logo Ícone -->
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                QR-Code
-                            </label>
-                            <div class="logo-drop-zone border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 text-center hover:border-blue-400 transition-colors" 
-                                 data-logo-type="icone" 
-                                 ondrop="handleDrop(event, 'icone')" 
-                                 ondragover="handleDragOver(event)" 
-                                 ondragenter="handleDragEnter(event)" 
-                                 ondragleave="handleDragLeave(event)">
-                                @if(auth()->user()->getLogoByType('icone'))
-                                    <img id="logo-icone-preview" 
-                                         src="{{ auth()->user()->getLogoByType('icone')->url }}" 
-                                         alt="Ícone" 
-                                         class="max-h-20 mx-auto mb-2">
-                                @else
-                                    <div id="logo-icone-placeholder" class="text-gray-400 mb-2">
-                                        <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                        </svg>
-                                    </div>
-                                    <img id="logo-icone-preview" class="max-h-20 mx-auto mb-2 hidden" alt="Ícone">
-                                @endif
-                                <input type="file" id="logo-icone" name="logo_icone" accept="image/*" class="hidden" onchange="previewLogo(this, 'icone')">
-                                <button type="button" onclick="document.getElementById('logo-icone').click()" 
-                                        class="text-blue-600 hover:text-blue-700 text-sm font-medium">
-                                    {{ auth()->user()->getLogoByType('icone') ? 'Alterar' : 'Selecionar' }} Arquivo
-                                </button>
-                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">PNG, JPG, SVG até 2MB</p>
-                            </div>
-                            @error('logo_icone')
-                                <p class="text-sm text-red-600 dark:text-red-400 mt-1">{{ $message }}</p>
-                            @enderror
+                            <form id="logo-icone-form" action="{{ route('profile.logo', 'icone') }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    QR-Code
+                                </label>
+                                <div class="logo-drop-zone border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 text-center hover:border-blue-400 transition-colors" 
+                                     data-logo-type="icone" 
+                                     ondrop="handleDrop(event, 'icone')" 
+                                     ondragover="handleDragOver(event)" 
+                                     ondragenter="handleDragEnter(event)" 
+                                     ondragleave="handleDragLeave(event)">
+                                    @if(auth()->user()->getLogoByType('icone'))
+                                        <img id="logo-icone-preview" 
+                                             src="{{ auth()->user()->getLogoByType('icone')->url }}" 
+                                             alt="Ícone" 
+                                             class="max-h-20 mx-auto mb-2">
+                                    @else
+                                        <div id="logo-icone-placeholder" class="text-gray-400 mb-2">
+                                            <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                            </svg>
+                                        </div>
+                                        <img id="logo-icone-preview" class="max-h-20 mx-auto mb-2 hidden" alt="Ícone">
+                                    @endif
+                                    <input type="file" id="logo-icone" name="logo" accept="image/*" class="hidden" onchange="previewLogo(this, 'icone')">
+                                    <button type="button" onclick="document.getElementById('logo-icone').click()" 
+                                            class="text-blue-600 hover:text-blue-700 text-sm font-medium">
+                                        {{ auth()->user()->getLogoByType('icone') ? 'Alterar' : 'Selecionar' }} Arquivo
+                                    </button>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">PNG, JPG, SVG até 2MB</p>
+                                </div>
+                                @error('logo')
+                                    <p class="text-sm text-red-600 dark:text-red-400 mt-1">{{ $message }}</p>
+                                @enderror
+                            </form>
                         </div>
                     </div>
                     
                     <!-- Save Logos Button -->
                     <div class="flex justify-end mt-6">
-                        <button type="submit" 
+                        <button type="button" onclick="saveAllLogos()" 
                                 class="inline-flex items-center px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
@@ -1301,6 +1311,123 @@ function previewLogo(input, type) {
         };
         reader.readAsDataURL(file);
     }
+}
+
+// Save all logos function
+function saveAllLogos() {
+    const logoTypes = ['horizontal', 'vertical', 'icone'];
+    const logosToUpload = [];
+    
+    // Verificar quais logos foram selecionados
+    logoTypes.forEach(type => {
+        const fileInput = document.getElementById(`logo-${type}`);
+        if (fileInput && fileInput.files.length > 0) {
+            logosToUpload.push({
+                type: type,
+                file: fileInput.files[0],
+                form: document.getElementById(`logo-${type}-form`)
+            });
+        }
+    });
+    
+    if (logosToUpload.length === 0) {
+        alert('Selecione pelo menos um logo para salvar.');
+        return;
+    }
+    
+    // Desabilitar o botão durante o upload
+    const saveButton = event.target;
+    const originalText = saveButton.innerHTML;
+    saveButton.disabled = true;
+    saveButton.innerHTML = '<svg class="w-4 h-4 mr-2 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>Salvando...';
+    
+    // Upload sequencial dos logos
+    uploadLogosSequentially(logosToUpload, 0, saveButton, originalText);
+}
+
+// Upload logos sequencialmente
+function uploadLogosSequentially(logosToUpload, index, saveButton, originalText) {
+    if (index >= logosToUpload.length) {
+        // Todos os uploads concluídos
+        saveButton.disabled = false;
+        saveButton.innerHTML = originalText;
+        
+        // Mostrar mensagem de sucesso
+        showGlobalFeedback('Todas as logomarcas foram salvas com sucesso!', 'success');
+        
+        // Recarregar a página após 2 segundos para mostrar as imagens atualizadas
+        setTimeout(() => {
+            window.location.reload();
+        }, 2000);
+        return;
+    }
+    
+    const logoData = logosToUpload[index];
+    const formData = new FormData();
+    formData.append('logo', logoData.file);
+    formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+    
+    // Fazer upload via AJAX
+    fetch(logoData.form.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showUploadFeedback(logoData.type, `Logo ${logoData.type} salvo com sucesso!`);
+        } else {
+            showUploadFeedback(logoData.type, `Erro ao salvar logo ${logoData.type}: ${data.message}`);
+        }
+        
+        // Continuar com o próximo logo
+        uploadLogosSequentially(logosToUpload, index + 1, saveButton, originalText);
+    })
+    .catch(error => {
+        console.error('Erro no upload:', error);
+        showUploadFeedback(logoData.type, `Erro ao salvar logo ${logoData.type}`);
+        
+        // Continuar com o próximo logo mesmo em caso de erro
+        uploadLogosSequentially(logosToUpload, index + 1, saveButton, originalText);
+    });
+}
+
+// Mostrar feedback global
+function showGlobalFeedback(message, type) {
+    // Criar elemento de feedback global se não existir
+    let feedback = document.getElementById('global-feedback');
+    if (!feedback) {
+        feedback = document.createElement('div');
+        feedback.id = 'global-feedback';
+        feedback.className = 'fixed top-4 right-4 z-50 p-4 rounded-md shadow-lg max-w-sm';
+        document.body.appendChild(feedback);
+    }
+    
+    // Definir classes baseadas no tipo
+    if (type === 'success') {
+        feedback.className = 'fixed top-4 right-4 z-50 p-4 rounded-md shadow-lg max-w-sm bg-green-100 border border-green-400 text-green-700';
+    } else {
+        feedback.className = 'fixed top-4 right-4 z-50 p-4 rounded-md shadow-lg max-w-sm bg-red-100 border border-red-400 text-red-700';
+    }
+    
+    feedback.innerHTML = `
+        <div class="flex items-center">
+            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+            </svg>
+            ${message}
+        </div>
+    `;
+    
+    feedback.classList.remove('hidden');
+    
+    // Remover feedback após 5 segundos
+    setTimeout(() => {
+        feedback.classList.add('hidden');
+    }, 5000);
 }
 
 // Drag and Drop Functions for Logos

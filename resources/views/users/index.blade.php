@@ -12,7 +12,32 @@
                 <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Gestão de Usuários</h1>
                 <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Gerencie todos os usuários do sistema</p>
             </div>
-       
+            
+            <!-- Controle de Registro Público -->
+            <div class="mt-4 sm:mt-0">
+                <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
+                    <div class="flex items-center justify-between">
+                        <div class="mr-4">
+                            <h3 class="text-sm font-medium text-gray-900 dark:text-white">Registro Público</h3>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">Permitir novos cadastros</p>
+                        </div>
+                        <form id="toggle-registration-form" method="POST" action="{{ route('settings.toggle-registration') }}">
+                            @csrf
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" 
+                                       id="public-registration-toggle"
+                                       class="sr-only peer" 
+                                       {{ App\Models\Setting::isPublicRegistrationEnabled() ? 'checked' : '' }}
+                                       onchange="toggleRegistration()">
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                                <span class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                    {{ App\Models\Setting::isPublicRegistrationEnabled() ? 'Habilitado' : 'Desabilitado' }}
+                                </span>
+                            </label>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -418,6 +443,53 @@ document.addEventListener('DOMContentLoaded', function() {
         performSearch();
     }
 });
+
+// Toggle Registration function
+function toggleRegistration() {
+    const toggle = document.getElementById('public-registration-toggle');
+    const form = document.getElementById('toggle-registration-form');
+    const statusText = toggle.parentElement.querySelector('span');
+    
+    // Desabilitar toggle temporariamente
+    toggle.disabled = true;
+    
+    // Fazer requisição AJAX
+    fetch(form.action, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+            enabled: toggle.checked
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Atualizar texto do status
+            statusText.textContent = data.enabled ? 'Habilitado' : 'Desabilitado';
+            
+            // Mostrar toast de sucesso
+            showToast(data.message, 'success');
+        } else {
+            // Reverter o toggle em caso de erro
+            toggle.checked = !toggle.checked;
+            showToast(data.message || 'Erro ao alterar configuração', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Erro:', error);
+        // Reverter o toggle em caso de erro
+        toggle.checked = !toggle.checked;
+        showToast('Erro ao alterar configuração de registro', 'error');
+    })
+    .finally(() => {
+        // Reabilitar toggle
+        toggle.disabled = false;
+    });
+}
 
 // Confirm delete function
 function confirmDelete(userId, userName) {

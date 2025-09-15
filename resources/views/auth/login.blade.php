@@ -128,6 +128,7 @@
                     </div>
                 </div>
             
+            @if(\App\Models\Setting::isPublicRegistrationEnabled())
             <div class="text-center mt-6">
                 <p class="text-sm text-gray-600 dark:text-gray-400">
                     Não tem uma conta?
@@ -136,6 +137,7 @@
                     </a>
                 </p>
             </div>
+            @endif
             
             </form>
         </div>
