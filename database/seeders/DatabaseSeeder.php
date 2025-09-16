@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             ModeloPropostaSeeder::class,
             OrcamentoSeeder::class,
             PagamentoSeeder::class,
+            SettingsSeeder::class,
         ]);
     }
 }
