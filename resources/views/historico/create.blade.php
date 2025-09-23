@@ -50,6 +50,7 @@
                                     <option value="system" {{ old('type') == 'system' ? 'selected' : '' }}>Sistema</option>
                                     <option value="status_change" {{ old('type') == 'status_change' ? 'selected' : '' }}>Mudança de Status</option>
                                     <option value="payment" {{ old('type') == 'payment' ? 'selected' : '' }}>Pagamento</option>
+                                    <option value="project_start" {{ old('type') == 'project_start' ? 'selected' : '' }}>Início de Projeto</option>
                                 </select>
                                 @error('type')
                                     <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>

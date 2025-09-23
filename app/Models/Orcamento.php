@@ -150,6 +150,14 @@ class Orcamento extends Model
     }
 
     /**
+     * Relacionamento com Projetos
+     */
+    public function projetos(): HasMany
+    {
+        return $this->hasMany(Projeto::class);
+    }
+
+    /**
      * Scope para filtrar por status
      */
     public function scopeByStatus($query, $status)
@@ -181,6 +189,47 @@ class Orcamento extends Model
     public function getValorTotalFormattedAttribute()
     {
         return 'R$ ' . number_format($this->valor_total, 2, ',', '.');
+    }
+
+    /**
+     * Calcular valor total pago
+     */
+    public function getValorPagoAttribute()
+    {
+        return $this->pagamentos()->sum('valor');
+    }
+
+    /**
+     * Accessor para valor pago formatado
+     */
+    public function getValorPagoFormattedAttribute()
+    {
+        return 'R$ ' . number_format($this->valor_pago, 2, ',', '.');
+    }
+
+    /**
+     * Calcular saldo restante
+     */
+    public function getSaldoRestanteAttribute()
+    {
+        return $this->valor_total - $this->valor_pago;
+    }
+
+    /**
+     * Accessor para saldo restante formatado
+     */
+    public function getSaldoRestanteFormattedAttribute()
+    {
+        return 'R$ ' . number_format($this->saldo_restante, 2, ',', '.');
+    }
+
+    /**
+     * Calcular percentual pago
+     */
+    public function getPercentualPagoAttribute()
+    {
+        if ($this->valor_total == 0) return 0;
+        return round(($this->valor_pago / $this->valor_total) * 100, 1);
     }
 
     /**
@@ -224,6 +273,88 @@ class Orcamento extends Model
             'dados_anteriores' => ['status' => $statusAnterior],
             'dados_novos' => ['status' => self::STATUS_APROVADO]
         ]);
+        
+        // Criar projeto automaticamente no Kanban
+        $this->criarProjetoKanban();
+    }
+    
+    /**
+     * Criar projeto automaticamente no Kanban quando orçamento é aprovado
+     */
+    public function criarProjetoKanban()
+    {
+        try {
+            // Verificar se já existe projeto para este orçamento
+            $projetoExistente = \App\Models\Projeto::where('orcamento_id', $this->id)->first();
+            if ($projetoExistente) {
+                return $projetoExistente;
+            }
+            
+            // Buscar primeira etapa (Backlog)
+            $primeiraEtapa = \App\Models\EtapaKanban::where('user_id', $this->cliente->user_id)
+                                                    ->orderBy('ordem')
+                                                    ->first();
+            
+            if (!$primeiraEtapa) {
+                // Se não existir etapas, criar as padrão
+                $this->criarEtapasPadrao();
+                $primeiraEtapa = \App\Models\EtapaKanban::where('user_id', $this->cliente->user_id)
+                                                        ->orderBy('ordem')
+                                                        ->first();
+            }
+            
+            // Criar o projeto
+            $projeto = \App\Models\Projeto::create([
+                'orcamento_id' => $this->id,
+                'etapa_kanban_id' => $primeiraEtapa->id,
+                'titulo' => $this->titulo,
+                'descricao' => $this->descricao,
+                'valor' => $this->valor_total,
+                'data_inicio' => now(),
+                'data_prazo' => now()->addDays(30), // Prazo padrão de 30 dias
+                'status' => 'ativo',
+                'prioridade' => 'media',
+                'progresso' => 0
+            ]);
+            
+            \Log::info('Projeto criado automaticamente no Kanban', [
+                'projeto_id' => $projeto->id,
+                'orcamento_id' => $this->id
+            ]);
+            
+            return $projeto;
+            
+        } catch (\Exception $e) {
+            \Log::error('Erro ao criar projeto no Kanban: ' . $e->getMessage(), [
+                'orcamento_id' => $this->id,
+                'error' => $e->getMessage()
+            ]);
+            
+            // Não falha a aprovação do orçamento se houver erro na criação do projeto
+            return null;
+        }
+    }
+    
+    /**
+     * Criar etapas padrão do Kanban para o usuário
+     */
+    private function criarEtapasPadrao()
+    {
+        $etapasPadrao = [
+            ['nome' => 'Backlog', 'cor' => '#6B7280', 'ordem' => 1],
+            ['nome' => 'Em Andamento', 'cor' => '#3B82F6', 'ordem' => 2],
+            ['nome' => 'Revisão', 'cor' => '#F59E0B', 'ordem' => 3],
+            ['nome' => 'Concluído', 'cor' => '#10B981', 'ordem' => 4]
+        ];
+        
+        foreach ($etapasPadrao as $etapa) {
+            \App\Models\EtapaKanban::create([
+                'user_id' => $this->cliente->user_id,
+                'nome' => $etapa['nome'],
+                'cor' => $etapa['cor'],
+                'ordem' => $etapa['ordem']
+            ]);
+        }
     }
 
     /**

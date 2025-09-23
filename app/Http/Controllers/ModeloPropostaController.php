@@ -171,23 +171,47 @@ class ModeloPropostaController extends Controller
      */
     public function duplicate(ModeloProposta $modeloProposta)
     {
-        $modelo = $modeloProposta;
-        // Criar uma cópia do modelo
-        $novoModelo = ModeloProposta::create([
-            'nome' => 'Cópia de ' . $modelo->nome,
-            'conteudo' => $modelo->conteudo,
-            'categoria' => $modelo->categoria,
-            'status' => $modelo->status,
-            'descricao' => $modelo->descricao,
-            'observacoes' => $modelo->observacoes,
-            'valor_padrao' => $modelo->valor_padrao,
-            'prazo_padrao' => $modelo->prazo_padrao,
-            'autores_padrao' => $modelo->autores_padrao,
-            'ativo' => $modelo->ativo,
-            'user_id' => Auth::id()
-        ]);
+        try {
+            $modelo = $modeloProposta;
+            // Criar uma cópia do modelo
+            $novoModelo = ModeloProposta::create([
+                'nome' => 'Cópia de ' . $modelo->nome,
+                'conteudo' => $modelo->conteudo,
+                'categoria' => $modelo->categoria,
+                'status' => $modelo->status,
+                'descricao' => $modelo->descricao,
+                'observacoes' => $modelo->observacoes,
+                'valor_padrao' => $modelo->valor_padrao,
+                'prazo_padrao' => $modelo->prazo_padrao,
+                'autores_padrao' => $modelo->autores_padrao,
+                'ativo' => $modelo->ativo,
+                'user_id' => Auth::id()
+            ]);
 
-        return redirect()->route('modelos-propostas.show', $novoModelo)
-                       ->with('success', 'Modelo duplicado com sucesso!');
+            // Se for uma requisição AJAX, retornar JSON
+            if (request()->expectsJson() || request()->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'modelo_id' => $novoModelo->id,
+                    'message' => 'Modelo duplicado com sucesso!'
+                ]);
+            }
+
+            // Se for uma requisição normal, retornar redirect
+            return redirect()->route('modelos-propostas.show', $novoModelo)
+                           ->with('success', 'Modelo duplicado com sucesso!');
+        } catch (\Exception $e) {
+            // Se for uma requisição AJAX, retornar erro JSON
+            if (request()->expectsJson() || request()->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Erro ao duplicar modelo: ' . $e->getMessage()
+                ], 500);
+            }
+
+            // Se for uma requisição normal, retornar redirect com erro
+            return redirect()->back()
+                           ->with('error', 'Erro ao duplicar modelo: ' . $e->getMessage());
+        }
     }
 }

@@ -49,8 +49,8 @@ class OrcamentoFileUpload {
             <div class="orcamento-file-upload-wrapper">
                 <!-- Category Selector -->
                 <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Categoria do Arquivo</label>
-                    <select id="categoria-select" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Categoria do Arquivo</label>
+                    <select id="categoria-select" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
                         <option value="anexo" ${this.options.categoria === 'anexo' ? 'selected' : ''}>Anexo</option>
                         <option value="avatar" ${this.options.categoria === 'avatar' ? 'selected' : ''}>Avatar</option>
                         <option value="logo" ${this.options.categoria === 'logo' ? 'selected' : ''}>Logo</option>
@@ -64,16 +64,16 @@ class OrcamentoFileUpload {
                             <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                     </div>
-                    <p class="text-lg font-medium text-gray-900 mb-2">Clique para selecionar arquivos</p>
-                    <p class="text-sm text-gray-500 mb-4">ou arraste e solte aqui</p>
-                    <p class="text-xs text-gray-400">PDF, JPG, PNG, DOC, DOCX, XLS, XLSX até 10MB</p>
+                    <p class="text-lg font-medium text-gray-900 dark:text-white mb-2">Clique para selecionar arquivos</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">ou arraste e solte aqui</p>
+                    <p class="text-xs text-gray-400 dark:text-gray-500">PDF, JPG, PNG, DOC, DOCX, XLS, XLSX até 10MB</p>
                     <input type="file" id="file-input" class="hidden" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx">
                 </div>
                 
                 <!-- Description Input -->
                 <div class="mt-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Descrição (opcional)</label>
-                    <input type="text" id="file-description" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Descreva o arquivo...">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Descrição (opcional)</label>
+                    <input type="text" id="file-description" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400" placeholder="Descreva o arquivo...">
                 </div>
                 
                 <!-- Progress Bar -->
@@ -81,12 +81,12 @@ class OrcamentoFileUpload {
                     <div class="bg-gray-200 rounded-full h-2">
                         <div class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: 0%" id="progress-bar"></div>
                     </div>
-                    <p class="text-sm text-gray-600 mt-2" id="progress-text">Enviando arquivos...</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mt-2" id="progress-text">Enviando arquivos...</p>
                 </div>
                 
                 <!-- Files List -->
                 <div class="files-list mt-6" id="files-list">
-                    <h4 class="text-lg font-medium text-gray-900 mb-4">Arquivos Anexados</h4>
+                    <h4 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Arquivos Anexados</h4>
                     <div class="files-grid grid gap-4" id="files-grid">
                         <!-- Files will be loaded here -->
                     </div>
@@ -291,37 +291,40 @@ class OrcamentoFileUpload {
         filesList.classList.remove('hidden');
         
         filesGrid.innerHTML = files.map(file => `
-            <div class="file-item bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                <div class="flex items-start justify-between">
-                    <div class="flex items-start space-x-3 flex-1">
-                        <div class="file-icon">
+            <div class="file-item bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-md transition-shadow">
+                <!-- Layout responsivo: vertical em mobile, horizontal em desktop -->
+                <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between space-y-3 sm:space-y-0">
+                    <div class="flex items-start space-x-3 flex-1 min-w-0">
+                        <div class="file-icon flex-shrink-0">
                             ${this.getFileIcon(file.type)}
                         </div>
                         <div class="file-info flex-1 min-w-0">
-                            <h5 class="text-sm font-medium text-gray-900 truncate" title="${file.name}">${file.name}</h5>
-                            <p class="text-xs text-gray-500 mt-1">${file.size} • ${file.created_at}</p>
-                            ${file.descricao ? `<p class="text-xs text-gray-600 mt-1 italic">${file.descricao}</p>` : ''}
-                            <span class="inline-block px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full mt-2">${file.categoria}</span>
+                            <!-- Nome do arquivo truncado com extensão preservada -->
+                            <h5 class="text-sm font-medium text-gray-900 dark:text-white break-words sm:truncate" title="${file.name}">${this.truncateFileName(file.name, 35)}</h5>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">${file.size} • ${file.created_at}</p>
+                            ${file.descricao ? `<p class="text-xs text-gray-600 dark:text-gray-400 mt-1 italic break-words">${file.descricao}</p>` : ''}
+                            <span class="inline-block px-2 py-1 text-xs font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-300 rounded-full mt-2">${file.categoria}</span>
                         </div>
                     </div>
-                    <div class="file-actions flex items-center space-x-2 ml-4">
-                        ${file.is_image ? `<button onclick="orcamentoFileUpload.previewFile('${file.url}', '${file.name}')" class="text-blue-600 hover:text-blue-800" title="Visualizar">
+                    <!-- Botões de ação: stack vertical em mobile, horizontal em desktop -->
+                    <div class="file-actions flex flex-wrap gap-2 sm:flex-nowrap sm:items-center sm:space-x-2 sm:ml-4 justify-start sm:justify-end">
+                        ${file.is_image ? `<button onclick="orcamentoFileUpload.previewFile('${file.url}', '${file.name}')" class="flex items-center justify-center w-8 h-8 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors" title="Visualizar">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                             </svg>
                         </button>` : ''}
-                        <a href="${this.options.downloadUrl}${file.id}/download" class="text-green-600 hover:text-green-800" title="Download">
+                        <a href="${this.options.downloadUrl}${file.id}/download" class="flex items-center justify-center w-8 h-8 text-green-600 hover:text-green-800 hover:bg-green-50 rounded-lg transition-colors" title="Download">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                             </svg>
                         </a>
-                        <button onclick="orcamentoFileUpload.editDescription(${file.id}, '${file.descricao || ''}')" class="text-yellow-600 hover:text-yellow-800" title="Editar Descrição">
+                        <button onclick="orcamentoFileUpload.editDescription(${file.id}, '${file.descricao || ''}')" class="flex items-center justify-center w-8 h-8 text-yellow-600 hover:text-yellow-800 hover:bg-yellow-50 rounded-lg transition-colors" title="Editar Descrição">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                             </svg>
                         </button>
-                        <button onclick="orcamentoFileUpload.deleteFile(${file.id})" class="text-red-600 hover:text-red-800" title="Excluir">
+                        <button onclick="orcamentoFileUpload.deleteFile(${file.id})" class="flex items-center justify-center w-8 h-8 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors" title="Excluir">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                             </svg>
@@ -356,6 +359,45 @@ class OrcamentoFileUpload {
     
     getDefaultIcon() {
         return '<svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>';
+    }
+    
+    /**
+     * Trunca o nome do arquivo mantendo a extensão no final
+     * @param {string} fileName - Nome do arquivo
+     * @param {number} maxLength - Comprimento máximo (padrão: 35)
+     * @returns {string} Nome truncado
+     */
+    truncateFileName(fileName, maxLength = 35) {
+        if (!fileName || fileName.length <= maxLength) {
+            return fileName;
+        }
+        
+        // Encontra a última ocorrência do ponto para identificar a extensão
+        const lastDotIndex = fileName.lastIndexOf('.');
+        
+        // Se não há extensão, trunca normalmente
+        if (lastDotIndex === -1) {
+            return fileName.substring(0, maxLength - 3) + '...';
+        }
+        
+        const extension = fileName.substring(lastDotIndex);
+        const nameWithoutExtension = fileName.substring(0, lastDotIndex);
+        
+        // Se a extensão é muito longa, trunca normalmente
+        if (extension.length > 10) {
+            return fileName.substring(0, maxLength - 3) + '...';
+        }
+        
+        // Calcula quantos caracteres sobram para o nome (reservando espaço para '...' e extensão)
+        const availableLength = maxLength - extension.length - 3;
+        
+        // Se não há espaço suficiente, mostra apenas a extensão
+        if (availableLength <= 0) {
+            return '...' + extension;
+        }
+        
+        // Trunca o nome preservando a extensão
+        return nameWithoutExtension.substring(0, availableLength) + '...' + extension;
     }
     
     async deleteFile(fileId) {

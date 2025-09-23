@@ -170,14 +170,14 @@
 
                                         <!-- Informações do Cliente com Avatar -->
                         <div class="mb-4">
-                            <div class="flex items-center space-x-3">
+                            <div class="flex items-center">
                                 @if($budget->cliente)
                                     @if($budget->cliente->avatar)
                                         <img src="{{ Storage::url($budget->cliente->avatar) }}" 
                                              alt="{{ $budget->cliente->nome }}" 
-                                             class="w-10 h-10 rounded-full object-cover">
+                                             class="w-10 h-10 rounded-full object-cover mr-3">
                                     @else
-                                        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
+                                        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mr-3">
                                             <span class="text-white font-semibold text-sm">
                                                 {{ strtoupper(substr($budget->cliente->nome, 0, 1)) }}
                                             </span>
@@ -194,7 +194,7 @@
                                         @endif
                                     </div>
                                 @else
-                                    <div class="w-10 h-10 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center">
+                                    <div class="w-10 h-10 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center mr-3">
                                         <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                                         </svg>
@@ -210,15 +210,15 @@
 
                         <!-- Informações do Autor com Avatar -->
                         <div class="mb-4">
-                            <div class="flex items-center space-x-3">
+                            <div class="flex items-center">
                                 @if($budget->autores && $budget->autores->count() > 0)
                                     @php $autor = $budget->autores->first(); @endphp
                                     @if($autor->avatar)
                                         <img src="{{ Storage::url($autor->avatar) }}" 
                                              alt="{{ $autor->nome }}" 
-                                             class="w-10 h-10 rounded-full object-cover">
+                                             class="w-10 h-10 rounded-full object-cover mr-3">
                                     @else
-                                        <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center">
+                                        <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center mr-3">
                                             <span class="text-white font-semibold text-sm">
                                                 {{ strtoupper(substr($autor->nome, 0, 1)) }}
                                             </span>
@@ -236,7 +236,7 @@
                                         </p>
                                     </div>
                                 @else
-                                    <div class="w-10 h-10 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center">
+                                    <div class="w-10 h-10 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center mr-3">
                                         <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
                                         </svg>
@@ -394,6 +394,16 @@
         </div>
     </div>
 </div>
+<footer class="mt-8">
+    <div class="text-center py-6">
+        <p class="text-sm text-gray-600 dark:text-gray-400">
+            © {{ date('Y') }} Danilo Miguel. Todos os direitos reservados.
+        </p>
+        <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">
+            Sistema de Gestão Financeira - Desenvolvido com Laravel
+        </p>
+    </div>
+</footer>
 
 @push('scripts')
 <script>

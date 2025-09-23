@@ -9,7 +9,7 @@
     <div class="mb-6">
         <div class="flex flex-wrap gap-2">
             <a href="{{ route('financial.dashboard') }}" 
-               class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200">
+               class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200 dark:border-gray-600 dark:text-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 4l2 2 4-4"></path>
@@ -18,7 +18,7 @@
             </a>
             
             <a href="{{ route('financial.banks.index') }}" 
-               class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200">
+               class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200 dark:border-gray-600 dark:text-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
                 </svg>
@@ -26,14 +26,14 @@
             </a>
             
             <a href="{{ route('financial.credit-cards.index') }}" 
-               class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200">
+               class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200 dark:border-gray-600 dark:text-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
                 </svg>
                 Cartões
             </a>
             
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-600 text-white">
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-600 text-white dark:bg-blue-700">
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
                 </svg>
@@ -41,7 +41,7 @@
             </span>
             
             <a href="{{ route('financial.transactions.index') }}" 
-               class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200">
+               class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200 dark:border-gray-600 dark:text-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2-2v16a2 2 0 002 2z"></path>
                 </svg>
@@ -49,16 +49,14 @@
             </a>
         </div>
     </div>
-    <!-- Header -->
+
+  <!-- Header -->
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
-        <div class="flex items-center space-x-3">
+        <div>
             <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Categorias</h1>
             <p class="text-gray-600 dark:text-gray-400 mt-1">Gerencie as categorias de receitas e despesas</p>
         </div>
-
-        </div>
     </div>
-    
 
     <!-- Summary Cards -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -149,6 +147,16 @@
         <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">Nenhuma categoria encontrada</h3>
         <p class="text-gray-600 dark:text-gray-400 mb-8 max-w-md mx-auto">Não encontramos categorias que correspondam à sua pesquisa. Tente usar termos diferentes.</p>
     </div>
+    <footer class="mt-8">
+        <div class="text-center py-6">
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+                © {{ date('Y') }} Danilo Miguel. Todos os direitos reservados.
+            </p>
+            <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                Sistema de Gestão Financeira - Desenvolvido com Laravel
+            </p>
+        </div>
+    </footer>
 
     @if($categories->count() == 0)
         <!-- Empty State -->
@@ -836,7 +844,7 @@ document.addEventListener('DOMContentLoaded', function() {
 @endpush
 
 <!-- Delete Confirmation Modal -->
-<div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[10000] hidden">
+<div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[10003] hidden">
     <div class="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 transform transition-all">
         <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-100 dark:bg-red-900/20 rounded-full">
             <svg class="w-6 h-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -847,7 +855,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white text-center mb-2">Confirmar Exclusão</h3>
         <p class="text-gray-600 dark:text-gray-400 text-center mb-6">Tem certeza que deseja excluir esta categoria? Esta ação não pode ser desfeita.</p>
         
-        <div class="flex space-x-3">
+        <div class="flex gap-3 space-x-0">
             <button type="button" onclick="cancelDelete()" class="flex-1 px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
                 Cancelar
             </button>

@@ -46,7 +46,7 @@
             <p class="text-gray-600 dark:text-gray-400 mt-1">Visão geral das suas finanças</p>
         </div>
         <!-- Navegação de período -->
-        <div class="flex items-center space-x-4 mt-4 sm:mt-0">
+        <div class="flex items-center justify-between w-full sm:w-auto space-x-4 mt-4 sm:mt-0">
             <a href="<?php echo e(route('financial.dashboard', ['year' => $currentYear, 'month' => $currentMonth - 1])); ?>" 
                class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300 transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -340,6 +340,18 @@
         </div>
     </div>
 </div>
+
+<!-- Footer com informações legais -->
+<footer class="mt-8">
+    <div class="text-center py-6">
+        <p class="text-sm text-gray-600 dark:text-gray-400">
+            © <?php echo e(date('Y')); ?> Danilo Miguel. Todos os direitos reservados.
+        </p>
+        <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">
+            Sistema de Gestão Financeira - Desenvolvido com Laravel
+        </p>
+    </div>
+</footer>
 
 <?php $__env->startPush('scripts'); ?>
 <script>

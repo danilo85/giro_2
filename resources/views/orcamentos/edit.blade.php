@@ -324,7 +324,7 @@
                                 <input type="checkbox" name="autores[]" value="{{ $autor->id }}" checked class="hidden">
                                 
                                 <!-- Avatar -->
-                                <div class="flex items-center space-x-3">
+                                <div class="flex items-center space-x-4">
                                     <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-sm">
                                         {{ strtoupper(substr($autor->nome, 0, 2)) }}
                                     </div>

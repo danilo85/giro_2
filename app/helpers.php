@@ -1,5 +1,27 @@
 <?php
 
+if (!function_exists('mb_strimwidth')) {
+    /**
+     * Fallback function for mb_strimwidth when mbstring extension is not available
+     * 
+     * @param string $str
+     * @param int $start
+     * @param int $width
+     * @param string $trimmarker
+     * @param string $encoding
+     * @return string
+     */
+    function mb_strimwidth($str, $start, $width, $trimmarker = '', $encoding = 'UTF-8')
+    {
+        // Simple fallback implementation
+        $str = substr($str, $start);
+        if (strlen($str) <= $width) {
+            return $str;
+        }
+        return substr($str, 0, $width - strlen($trimmarker)) . $trimmarker;
+    }
+}
+
 if (!function_exists('formatarDataExtenso')) {
     /**
      * Formatar data por extenso em português

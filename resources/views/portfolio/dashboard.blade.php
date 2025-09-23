@@ -210,4 +210,15 @@
         </div>
     </div>
 </div>
+<footer class="mt-8">
+    <div class="text-center py-6">
+        <p class="text-sm text-gray-600 dark:text-gray-400">
+            © {{ date('Y') }} Danilo Miguel. Todos os direitos reservados.
+        </p>
+        <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">
+            Sistema de Gestão Financeira - Desenvolvido com Laravel
+        </p>
+    </div>
+</footer>
+
 @endsection

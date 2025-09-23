@@ -7,17 +7,17 @@
 
     <!-- Header -->
     <div class="mb-8">
-        <div class="flex items-center">
-            <a href="{{ route('users.index') }}" 
-               class="mr-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                </svg>
-            </a>
-            <div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Novo Usuário</h1>
-                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Adicione um novo usuário ao sistema</p>
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Novo Usuário</h1>
+                    <p class="mt-2 text-gray-600 dark:text-gray-400">Adicione um novo usuário ao sistema</p>
+                </div>
             </div>
+            <a href="{{ route('users.index') }}" 
+               class="inline-flex items-center px-4 py-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i>
+            </a>
         </div>
     </div>
 
@@ -167,13 +167,13 @@
             </div>
 
             <!-- Actions -->
-            <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
+            <div class="flex flex-col sm:flex-row justify-end gap-3 pt-6 border-t border-gray-200 dark:border-gray-700">
                 <a href="{{ route('users.index') }}" 
-                   class="px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white font-medium rounded-md transition-colors">
+                   class="w-full sm:w-auto px-6 py-2 text-center bg-gray-500 hover:bg-gray-600 text-white font-medium rounded-md transition-colors">
                     Cancelar
                 </a>
                 <button type="submit" 
-                        class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition-colors">
+                        class="w-full sm:w-auto px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition-colors">
                     Criar Usuário
                 </button>
             </div>

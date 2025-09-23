@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bank;
+use App\Models\Pagamento;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -222,6 +224,26 @@ class BankController extends Controller
             return response()->json(['error' => 'Acesso negado.'], 403);
         }
         
+        // Verificar se há pagamentos associados a este banco
+        $pagamentosCount = Pagamento::where('bank_id', $bank->id)->count();
+        
+        // Verificar se há transações associadas a este banco
+        $transactionsCount = $bank->transactions()->count();
+        
+        if ($pagamentosCount > 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Não é possível excluir esta conta bancária pois existem ' . $pagamentosCount . ' pagamento(s) associado(s) a ela. Remova ou transfira os pagamentos antes de excluir a conta.'
+            ], 422);
+        }
+        
+        if ($transactionsCount > 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Não é possível excluir esta conta bancária pois existem ' . $transactionsCount . ' transação(ões) associada(s) a ela. Remova ou transfira as transações antes de excluir a conta.'
+            ], 422);
+        }
+        
         try {
             // Hard delete - exclusão física do banco de dados
             $bank->delete();
@@ -233,7 +255,7 @@ class BankController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Erro ao remover conta bancária.'
+                'message' => 'Erro ao remover conta bancária: ' . $e->getMessage()
             ], 500);
         }
     }

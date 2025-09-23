@@ -4,41 +4,6 @@
 
 @section('content')
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <!-- Breadcrumb -->
-    <nav class="flex mb-8" aria-label="Breadcrumb">
-        <ol class="inline-flex items-center space-x-1 md:space-x-3">
-            <li class="inline-flex items-center">
-                <a href="{{ route('dashboard') }}" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
-                
-                    Home
-                </a>
-            </li>
-            <li>
-                <div class="flex items-center">
-                    <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
-                    </svg>
-                    <a href="{{ route('orcamentos.index') }}" class="ml-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ml-2 dark:text-gray-400 dark:hover:text-white">Orçamentos</a>
-                </div>
-            </li>
-            <li>
-                <div class="flex items-center">
-                    <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
-                    </svg>
-                    <a href="{{ route('orcamentos.show', $orcamento) }}" class="ml-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ml-2 dark:text-gray-400 dark:hover:text-white">{{ Str::limit($orcamento->titulo, 30) }}</a>
-                </div>
-            </li>
-            <li aria-current="page">
-                <div class="flex items-center">
-                    <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
-                    </svg>
-                    <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400">Histórico</span>
-                </div>
-            </li>
-        </ol>
-    </nav>
 
     <!-- Header -->
     <div class="mb-6">
@@ -57,6 +22,84 @@
         </div>
     </div>
 
+    <!-- Cards de Resumo -->
+    @php
+        $totalEntries = $entries->total();
+        $projectStartEntries = $entries->where('type', 'project_start');
+        $projectStartCount = $projectStartEntries->count();
+        $firstProjectStart = $projectStartEntries->sortBy('entry_date')->first();
+        $daysSinceStart = $firstProjectStart ? $firstProjectStart->entry_date->diffInDays(now()) : 0;
+        $completedEntries = $entries->where('completed', true)->count();
+    @endphp
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <!-- Total de Entradas -->
+        <div class="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 p-6 text-white">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-blue-100">Total de Entradas</p>
+                    <p class="text-2xl font-bold text-white">{{ $totalEntries }}</p>
+                </div>
+                <div class="p-3 bg-white bg-opacity-20 rounded-lg backdrop-blur-sm">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Início de Projeto -->
+        <div class="bg-gradient-to-br from-emerald-500 to-green-600 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 p-6 text-white">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-emerald-100">Início de Projeto</p>
+                    <p class="text-2xl font-bold text-white">{{ $projectStartCount }}</p>
+                </div>
+                <div class="p-3 bg-white bg-opacity-20 rounded-lg backdrop-blur-sm">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contador de Dias -->
+        <div class="bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 p-6 text-white">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-amber-100">Dias do Projeto</p>
+                    <p class="text-2xl font-bold text-white">{{ $daysSinceStart }}</p>
+                    @if($firstProjectStart)
+                        <p class="text-xs text-amber-200 mt-1">Desde {{ $firstProjectStart->entry_date->format('d/m/Y') }}</p>
+                    @endif
+                </div>
+                <div class="p-3 bg-white bg-opacity-20 rounded-lg backdrop-blur-sm">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Entradas Concluídas -->
+        <div class="bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 p-6 text-white">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-purple-100">Concluídas</p>
+                    <p class="text-2xl font-bold text-white">{{ $completedEntries }}</p>
+                    @if($totalEntries > 0)
+                        <p class="text-xs text-purple-200 mt-1">{{ round(($completedEntries / $totalEntries) * 100) }}% do total</p>
+                    @endif
+                </div>
+                <div class="p-3 bg-white bg-opacity-20 rounded-lg backdrop-blur-sm">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
  
     <!-- Timeline -->
     <div>
@@ -64,29 +107,53 @@
             <div class="max-w-4xl mx-auto mt-10 px-4 sm:px-6">
                 <!-- Timeline Container -->
                 <div class="relative">
-                    <!-- Vertical Line -->
-                    <div class="absolute left-36 top-0 bottom-0 w-0.5 bg-gray-300 dark:bg-gray-600"></div>
+                    <!-- Vertical Line - Responsive positioning -->
+                    <div class="absolute left-4 sm:left-4 top-0 bottom-0 w-0.5 bg-gray-300 dark:bg-gray-600"></div>
                     
                     @foreach($entries as $entry)
-                        <div class="relative flex items-start mb-8 group">
-                            <!-- Date/Time Column -->
-                            <div class="w-32 flex-shrink-0 text-right pr-6">
-                                <div class="text-lg font-bold text-gray-900 dark:text-white">
-                                    {{ $entry->entry_date->locale('pt_BR')->isoFormat('DD [de] MMMM [de] YYYY') }}
+                        <div class="relative mb-8 group">
+                            <!-- Mobile Layout -->
+                            <div class="block sm:hidden">
+                                <!-- Timeline Dot for Mobile -->
+                                <div class="absolute left-3 top-2">
+                                    <div class="w-3 h-3 bg-gray-800 dark:bg-gray-200 rounded-full border-2 border-white dark:border-gray-800 shadow-sm z-10 relative"></div>
                                 </div>
-                                <div class="text-sm text-gray-500 dark:text-gray-400">
-                                    {{ $entry->entry_date->format('H:i') }}
+                                
+                                <!-- Content for Mobile -->
+                                <div class="ml-10">
+                                    <!-- Date/Time for Mobile -->
+                                    <div class="mb-3">
+                                        <div class="text-sm font-bold text-gray-900 dark:text-white">
+                                            {{ $entry->entry_date->locale('pt_BR')->isoFormat('DD [de] MMMM [de] YYYY') }}
+                                        </div>
+                                        <div class="text-xs text-gray-500 dark:text-gray-400">
+                                            {{ $entry->entry_date->format('H:i') }}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             
-                            <!-- Timeline Dot -->
-                            <div class="relative flex-shrink-0">
-                                <div class="w-3 h-3 bg-gray-800 dark:bg-gray-200 rounded-full border-2 border-white dark:border-gray-800 shadow-sm z-10 relative"></div>
+                            <!-- Desktop Layout -->
+                            <div class="hidden sm:block">
+                                <!-- Timeline Dot for Desktop -->
+                                <div class="absolute left-3 top-2">
+                                    <div class="w-3 h-3 bg-gray-800 dark:bg-gray-200 rounded-full border-2 border-white dark:border-gray-800 shadow-sm z-10 relative"></div>
+                                </div>
+                                
+                                <!-- Date/Time for Desktop -->
+                                <div class="ml-10 mb-3">
+                                    <div class="text-lg font-bold text-gray-900 dark:text-white">
+                                        {{ $entry->entry_date->locale('pt_BR')->isoFormat('DD [de] MMMM [de] YYYY') }}
+                                    </div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">
+                                        {{ $entry->entry_date->format('H:i') }}
+                                    </div>
+                                </div>
                             </div>
                             
                             <!-- Content Column -->
-                            <div class="flex-1 ml-6">
-                                <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 shadow-sm hover:shadow-md transition-shadow duration-200" data-entry-id="{{ $entry->id }}">
+                            <div class="flex-1 ml-10 sm:ml-10">
+                                <div class="bg-white dark:bg-gray-800 rounded-lg border {{ $entry->type === 'project_start' ? 'border-emerald-400 dark:border-emerald-500 ring-2 ring-emerald-200 dark:ring-emerald-800 bg-gradient-to-r from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/20' : 'border-gray-200 dark:border-gray-700' }} p-4 shadow-sm hover:shadow-md transition-all duration-200" data-entry-id="{{ $entry->id }}">
                                     <!-- Header with Title, Type, Checkbox and Actions -->
                                     <div class="flex items-start justify-between mb-2">
                                         <div class="flex items-start gap-3 flex-1">
@@ -100,105 +167,9 @@
                                             
                                             <!-- Title -->
                             <div class="entry-content flex-1" data-entry-id="{{ $entry->id }}">
-                                <h3 id="title-{{ $entry->id }}" class="text-lg font-semibold text-gray-900 dark:text-white editable-title {{ $entry->completed ? 'line-through' : '' }}" 
-                                    contenteditable="false" 
-                                    data-original="{{ $entry->title }}">
+                                <h3 id="title-{{ $entry->id }}" class="editable-title text-lg font-semibold text-gray-900 dark:text-white {{ $entry->completed ? 'line-through' : '' }}">
                                     {{ $entry->title }}
                                 </h3>
-                                
-                                <!-- Seção de gerenciamento de arquivos (visível apenas no modo de edição) -->
-                                <div class="file-management-section hidden mt-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600">
-                                    <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3 flex items-center">
-                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-                                        </svg>
-                                        Gerenciar Arquivos
-                                    </h4>
-                                    
-                                    <!-- Área de upload -->
-                                    <div id="upload-area-{{ $entry->id }}" class="upload-area mb-3 p-3 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-center hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors cursor-pointer" 
-                                         data-entry-id="{{ $entry->id }}">
-                                        <svg class="w-6 h-6 mx-auto mb-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                                        </svg>
-                                        <p class="text-xs text-gray-600 dark:text-gray-400 mb-1">Clique para selecionar arquivos ou arraste aqui</p>
-                                        <p class="text-xs text-gray-400">Máximo 10MB por arquivo</p>
-                                        <input type="file" id="file-input-{{ $entry->id }}" class="file-input hidden" multiple accept="image/*,.pdf,.doc,.docx,.txt,.xlsx,.xls" data-entry-id="{{ $entry->id }}">
-                                    </div>
-                                    
-                                    <!-- Lista de arquivos para upload -->
-                                    <div id="file-preview-{{ $entry->id }}" class="upload-preview hidden mb-4">
-                                        <h5 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Arquivos selecionados:</h5>
-                                        <div class="upload-files-list space-y-2"></div>
-                                        <div class="mt-3 flex gap-2">
-                                            <button type="button" id="upload-files-{{ $entry->id }}" class="upload-files-btn px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors hidden">
-                                                <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                                                </svg>
-                                                Fazer Upload
-                                            </button>
-                                            <button type="button" id="cancel-upload-{{ $entry->id }}" class="cancel-upload-btn px-3 py-1 bg-gray-500 text-white text-sm rounded hover:bg-gray-600 transition-colors hidden">
-                                                Cancelar
-                                            </button>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Arquivos existentes -->
-                                    <div class="existing-files">
-                                        <h5 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Arquivos existentes:</h5>
-                                        <div class="files-grid grid grid-cols-2 md:grid-cols-3 gap-3" data-entry-id="{{ $entry->id }}">
-                                            @if($entry->files && count($entry->files) > 0)
-                                                @foreach($entry->files as $file)
-                                                    <div class="file-item bg-white dark:bg-gray-800 rounded-lg p-3 border border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500 transition-colors relative group" data-file-id="{{ $file->id }}">
-                                                        <!-- Botão de exclusão -->
-                                                        <button type="button" class="delete-file-btn absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 flex items-center justify-center" 
-                                                                data-file-id="{{ $file->id }}" data-file-name="{{ $file->original_name }}">
-                                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                                            </svg>
-                                                        </button>
-                                                        
-                                                        @if($file->isImage())
-                                                            <!-- Imagem -->
-                                                            <div class="aspect-square bg-gray-200 rounded-md mb-2 overflow-hidden cursor-pointer" 
-                                                                 onclick="openImageModal('{{ $file->download_url }}', '{{ addslashes($file->original_name) }}')">
-                                                                <img src="{{ $file->download_url }}" 
-                                                                     alt="{{ $file->original_name }}" 
-                                                                     class="w-full h-full object-cover hover:scale-105 transition-transform">
-                                                            </div>
-                                                        @else
-                                                            <!-- Outros arquivos -->
-                                                            <div class="aspect-square bg-blue-100 rounded-md mb-2 flex items-center justify-center">
-                                                                @php
-                                                                    $extension = strtolower(pathinfo($file->original_name, PATHINFO_EXTENSION));
-                                                                @endphp
-                                                                @if($extension === 'pdf')
-                                                                    <svg class="w-8 h-8 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                                                                        <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"></path>
-                                                                    </svg>
-                                                                @elseif(in_array($extension, ['doc', 'docx']))
-                                                                    <svg class="w-8 h-8 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
-                                                                        <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"></path>
-                                                                    </svg>
-                                                                @else
-                                                                    <svg class="w-8 h-8 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
-                                                                        <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"></path>
-                                                                    </svg>
-                                                                @endif
-                                                            </div>
-                                                        @endif
-                                                        <p class="text-xs text-gray-600 dark:text-gray-400 truncate" title="{{ $file->original_name }}">{{ $file->original_name }}</p>
-                                                        <p class="text-xs text-gray-400">{{ number_format($file->file_size / 1024, 1) }} KB</p>
-                                                    </div>
-                                                @endforeach
-                                            @else
-                                                <div class="col-span-full text-center py-4 text-gray-500 dark:text-gray-400 text-sm">
-                                                    Nenhum arquivo anexado
-                                                </div>
-                                            @endif
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                                         </div>
                                         
@@ -206,6 +177,7 @@
                                             <!-- Type Badge -->
                                             <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
                                                 @switch($entry->type)
+                                                    @case('project_start') bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200 ring-1 ring-emerald-300 dark:ring-emerald-700 @break
                                                     @case('milestone') bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 @break
                                                     @case('issue') bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 @break
                                                     @case('resolution') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 @break
@@ -213,31 +185,31 @@
                                                     @case('note') bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 @break
                                                     @case('meeting') bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200 @break
                                                     @case('decision') bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200 @break
+                                                    @case('manual') bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200 @break
+                                                    @case('system') bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-200 @break
+                                                    @case('status_change') bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200 @break
+                                                    @case('payment') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 @break
                                                     @default bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200
                                                 @endswitch">
-                                                {{ ucfirst($entry->type) }}
+                                                @if($entry->type === 'project_start')
+                                                    <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path>
+                                                    </svg>
+                                                    Início de Projeto
+                                                @else
+                                                    {{ ucfirst(str_replace('_', ' ', $entry->type)) }}
+                                                @endif
                                             </span>
                                             
                                             <!-- Action Buttons -->
                                             <div class="flex items-center gap-1 transition-opacity duration-200">
-                                                <!-- Edit/Save Buttons -->
+                                                <!-- Edit Button -->
                                                 <button type="button" 
-                                                        class="edit-toggle-btn p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition-colors" 
+                                                        class="edit-modal-btn p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition-colors" 
                                                         data-entry-id="{{ $entry->id }}"
                                                         title="Editar entrada">
-                                                    <svg class="w-4 h-4 edit-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                                    </svg>
-                                                    <svg class="w-4 h-4 save-icon hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                                    </svg>
-                                                </button>
-                                                <button type="button" 
-                                                        class="cancel-edit-btn p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors hidden" 
-                                                        data-entry-id="{{ $entry->id }}"
-                                                        title="Cancelar edição">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                                     </svg>
                                                 </button>
                                                 
@@ -255,11 +227,9 @@
                                     </div>
                                     
                                     <!-- Description -->
-                    <p id="description-{{ $entry->id }}" class="text-gray-700 dark:text-gray-300 text-sm leading-relaxed mb-3 editable-description {{ $entry->completed ? 'line-through' : '' }}" 
-                       contenteditable="false" 
-                       data-original="{{ $entry->description }}">
-                        {{ $entry->description }}
-                    </p>
+                                    <p class="editable-description text-gray-700 dark:text-gray-300 text-sm leading-relaxed mb-3 {{ $entry->completed ? 'line-through' : '' }}">
+                                        {{ $entry->description }}
+                                    </p>
                                     
                                     <!-- User Info with Avatar -->
                                     <div class="flex items-center text-xs text-gray-500 dark:text-gray-400 mb-3">
@@ -374,8 +344,81 @@
     </a>
 </div>
 
+<!-- Edit Entry Modal -->
+<div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-[10003] flex items-center justify-center">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Editar Entrada do Histórico</h3>
+            <button type="button" id="editModalCancel" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="p-6">
+            <form id="editEntryForm">
+                <input type="hidden" id="editEntryId" name="entry_id">
+                
+                <!-- Title Field -->
+                <div class="mb-4">
+                    <label for="editModalTitle" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Título</label>
+                    <input type="text" id="editModalTitle" name="title" 
+                           class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
+                </div>
+
+                <!-- Description Field -->
+                <div class="mb-4">
+                    <label for="editModalDescription" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Descrição</label>
+                    <textarea id="editModalDescription" name="description" rows="4"
+                              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"></textarea>
+                </div>
+
+                <!-- File Upload Section -->
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Arquivos</label>
+                    
+                    <!-- Upload Area -->
+                    <div class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center hover:border-gray-400 dark:hover:border-gray-500 transition-colors">
+                        <input type="file" id="editModalFileInput" name="files[]" multiple accept="image/*,.pdf,.doc,.docx" class="hidden">
+                        <div class="cursor-pointer" onclick="document.getElementById('editModalFileInput').click()">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                            <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                                <span class="font-medium">Clique para fazer upload</span> ou arraste arquivos aqui
+                            </p>
+                            <p class="text-xs text-gray-500 dark:text-gray-500">PNG, JPG, PDF, DOC até 10MB</p>
+                        </div>
+                    </div>
+
+                    <!-- File Preview Area -->
+                    <div id="editModalFilePreview" class="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-4 hidden"></div>
+
+                    <!-- Existing Files -->
+                    <div id="editExistingFiles" class="mt-4"></div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="flex items-center justify-end gap-3 p-6 border-t border-gray-200 dark:border-gray-700">
+            <button type="button" id="editModalCancel" 
+                    class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                Cancelar
+            </button>
+            <button type="button" id="editModalSave" 
+                    class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                Salvar Alterações
+            </button>
+        </div>
+    </div>
+</div>
+
 <!-- Modal para confirmação de exclusão -->
-<div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+<div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 z-[10003] hidden flex items-center justify-center p-4">
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full mx-4">
         <div class="p-6">
             <div class="flex items-center mb-4">
@@ -804,13 +847,13 @@ document.addEventListener('DOMContentLoaded', function() {
             let show = true;
 
             // Filtro por tipo
-            if (typeFilter && item.dataset.type !== typeFilter) {
+            if (typeFilter && item.getAttribute('data-type') !== typeFilter) {
                 show = false;
             }
 
             // Filtro por data
             if (startDate || endDate) {
-                const itemDate = item.dataset.date;
+                const itemDate = item.getAttribute('data-date');
                 if (startDate && itemDate < startDate) show = false;
                 if (endDate && itemDate > endDate) show = false;
             }
@@ -851,7 +894,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Função para mostrar loading
     function showLoading() {
         const overlay = document.getElementById('loadingOverlay');
-        if (overlay) {
+        if (overlay && overlay.classList) {
             overlay.classList.remove('hidden');
             overlay.classList.add('flex');
         }
@@ -860,7 +903,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Função para esconder loading
     function hideLoading() {
         const overlay = document.getElementById('loadingOverlay');
-        if (overlay) {
+        if (overlay && overlay.classList) {
             overlay.classList.add('hidden');
             overlay.classList.remove('flex');
         }
@@ -894,7 +937,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Event listeners para checkboxes de status
     document.addEventListener('change', async function(e) {
         if (e.target.classList.contains('status-checkbox')) {
-            const entryId = e.target.dataset.entryId;
+            const entryId = e.target.getAttribute('data-entry-id');
             const isCompleted = e.target.checked;
             
             showLoading();
@@ -922,12 +965,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     const title = document.getElementById(`title-${entryId}`);
                     const description = document.getElementById(`description-${entryId}`);
                     
-                    if (isCompleted) {
-                        title.classList.add('line-through');
-                        description.classList.add('line-through');
-                    } else {
-                        title.classList.remove('line-through');
-                        description.classList.remove('line-through');
+                    if (title && title.classList && description && description.classList) {
+                        if (isCompleted) {
+                            title.classList.add('line-through');
+                            description.classList.add('line-through');
+                        } else {
+                            title.classList.remove('line-through');
+                            description.classList.remove('line-through');
+                        }
                     }
                     
                     showNotification(data.message);
@@ -950,7 +995,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Botão de editar/salvar
         if (e.target.closest('.edit-toggle-btn')) {
             const button = e.target.closest('.edit-toggle-btn');
-            const entryId = button.dataset.entryId;
+            const entryId = button.getAttribute('data-entry-id');
             const entryContent = document.querySelector(`[data-entry-id="${entryId}"]`);
             const titleElement = entryContent.querySelector('.editable-title');
             const descriptionElement = entryContent.querySelector('.editable-description');
@@ -970,7 +1015,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Botão de cancelar edição
         if (e.target.closest('.cancel-edit-btn')) {
             const button = e.target.closest('.cancel-edit-btn');
-            const entryId = button.dataset.entryId;
+            const entryId = button.getAttribute('data-entry-id');
             const entryContent = document.querySelector(`[data-entry-id="${entryId}"]`);
             const titleElement = entryContent.querySelector('.editable-title');
             const descriptionElement = entryContent.querySelector('.editable-description');
@@ -984,27 +1029,29 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function startInlineEdit(titleElement, descriptionElement, editButton, editIcon, saveIcon, cancelButton, entryContent) {
         // Salvar valores originais
-        titleElement.dataset.original = titleElement.textContent.trim();
-        descriptionElement.dataset.original = descriptionElement.textContent.trim();
+        titleElement.setAttribute('data-original', titleElement.textContent.trim());
+        descriptionElement.setAttribute('data-original', descriptionElement.textContent.trim());
         
         // Ativar edição
         titleElement.contentEditable = 'true';
         descriptionElement.contentEditable = 'true';
         
         // Adicionar classe de edição
-        entryContent.classList.add('editing-mode');
+        if (entryContent && entryContent.classList) {
+            entryContent.classList.add('editing-mode');
+        }
         
         // Trocar ícones
-        editIcon.classList.add('hidden');
-        saveIcon.classList.remove('hidden');
-        cancelButton.classList.remove('hidden');
+        if (editIcon && editIcon.classList) editIcon.classList.add('hidden');
+        if (saveIcon && saveIcon.classList) saveIcon.classList.remove('hidden');
+        if (cancelButton && cancelButton.classList) cancelButton.classList.remove('hidden');
         
         // Mostrar seção de gerenciamento de arquivos
         const fileManagement = entryContent.querySelector('.file-management-section');
         if (fileManagement) {
             fileManagement.classList.remove('hidden');
             // Inicializar gerenciamento de arquivos
-            const entryId = editButton.dataset.entryId;
+            const entryId = editButton.getAttribute('data-entry-id');
             initFileManagement(entryId);
         }
         
@@ -1021,19 +1068,21 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function cancelInlineEdit(titleElement, descriptionElement, editButton, editIcon, saveIcon, cancelButton, entryContent) {
         // Restaurar valores originais
-        titleElement.textContent = titleElement.dataset.original;
-        descriptionElement.textContent = descriptionElement.dataset.original;
+        titleElement.textContent = titleElement.getAttribute('data-original');
+        descriptionElement.textContent = descriptionElement.getAttribute('data-original');
         
         // Desativar edição
         titleElement.contentEditable = 'false';
         descriptionElement.contentEditable = 'false';
         
         // Remover classe de edição
-        entryContent.classList.remove('editing-mode');
+        if (entryContent && entryContent.classList) {
+            entryContent.classList.remove('editing-mode');
+        }
         
         // Ocultar seção de gerenciamento de arquivos
         const fileManagement = entryContent.querySelector('.file-management-section');
-        if (fileManagement) {
+        if (fileManagement && fileManagement.classList) {
             fileManagement.classList.add('hidden');
         }
         
@@ -1042,9 +1091,9 @@ document.addEventListener('DOMContentLoaded', function() {
         currentEditingId = null;
         
         // Trocar ícones
-        editIcon.classList.remove('hidden');
-        saveIcon.classList.add('hidden');
-        cancelButton.classList.add('hidden');
+        if (editIcon && editIcon.classList) editIcon.classList.remove('hidden');
+        if (saveIcon && saveIcon.classList) saveIcon.classList.add('hidden');
+        if (cancelButton && cancelButton.classList) cancelButton.classList.add('hidden');
     }
     
     async function saveInlineEdit(entryId, titleElement, descriptionElement, editButton, editIcon, saveIcon, cancelButton) {
@@ -1088,30 +1137,31 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (data.success) {
                 // Desativar edição
-                    titleElement.contentEditable = 'false';
-                    descriptionElement.contentEditable = 'false';
-                    
-                    // Remover classe de edição
-                    entryContent.classList.remove('editing-mode');
-                    
-                    // Ocultar seção de gerenciamento de arquivos
-                    const fileManagement = entryContent.querySelector('.file-management-section');
-                    if (fileManagement) {
-                        fileManagement.classList.add('hidden');
-                    }
-                    
-                    // Limpar arquivos selecionados
-                    selectedFiles = [];
-                    currentEditingId = null;
-                    
-                    // Trocar ícones
-                    editIcon.classList.remove('hidden');
-                    saveIcon.classList.add('hidden');
-                    cancelButton.classList.add('hidden');
+                titleElement.contentEditable = 'false';
+                descriptionElement.contentEditable = 'false';
                 
-                // Atualizar valores originais
-                titleElement.dataset.original = title;
-                descriptionElement.dataset.original = description;
+                // Remover classe de edição
+                if (entryContent && entryContent.classList) {
+                    entryContent.classList.remove('editing-mode');
+                }
+                
+                // Ocultar seção de gerenciamento de arquivos
+                const fileManagement = entryContent.querySelector('.file-management-section');
+                if (fileManagement && fileManagement.classList) {
+                    fileManagement.classList.add('hidden');
+                }
+                
+                // Limpar arquivos selecionados
+                selectedFiles = [];
+                currentEditingId = null;
+                
+                // Trocar ícones
+                if (editIcon && editIcon.classList) editIcon.classList.remove('hidden');
+                if (saveIcon && saveIcon.classList) saveIcon.classList.add('hidden');
+                if (cancelButton && cancelButton.classList) cancelButton.classList.add('hidden');
+                
+                // Atualizar conteúdo dinamicamente
+                await updateCardContent(entryId, title, description, false);
                 
                 showNotification(data.message);
             } else {
@@ -1179,7 +1229,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Encontrar o container da entrada usando closest (busca no elemento pai)
             const entryElement = deleteBtn.closest('[data-entry-id]');
             console.log('Container da entrada encontrado:', entryElement);
-            console.log('data-entry-id do container:', entryElement ? entryElement.dataset.entryId : 'não encontrado');
+            console.log('data-entry-id do container:', entryElement ? entryElement.getAttribute('data-entry-id') : 'não encontrado');
             
             // Verificar se entryElement existe
             if (!entryElement) {
@@ -1191,10 +1241,10 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             // Verificar se o ID do container corresponde ao ID do botão
-            if (entryElement.dataset.entryId !== entryId) {
-                console.error('ID do container não corresponde ao ID do botão');
-                console.error('ID do botão:', entryId);
-                console.error('ID do container:', entryElement.dataset.entryId);
+        if (entryElement.getAttribute('data-entry-id') !== entryId) {
+            console.error('ID do container não corresponde ao ID do botão');
+            console.error('ID do botão:', entryId);
+            console.error('ID do container:', entryElement.getAttribute('data-entry-id'));
                 showNotification('Erro: Inconsistência nos IDs', 'error');
                 return;
             }
@@ -1262,8 +1312,8 @@ document.addEventListener('DOMContentLoaded', function() {
         deleteButtons.forEach(btn => {
             btn.addEventListener('click', function(e) {
                 e.preventDefault();
-                const fileId = this.dataset.fileId;
-                const fileName = this.dataset.fileName;
+                const fileId = this.getAttribute('data-file-id');
+                const fileName = this.getAttribute('data-file-name');
                 deleteExistingFile(fileId, fileName);
             });
         });
@@ -1492,7 +1542,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('TitleElement encontrado:', titleElement);
         console.log('CancelButton encontrado:', cancelButton);
         
-        if (modal && titleElement) {
+        if (modal && modal.classList && titleElement) {
             titleElement.textContent = itemTitle;
             modal.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
@@ -1506,7 +1556,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function hideDeleteModal() {
         const modal = document.getElementById('deleteModal');
-        if (modal) {
+        if (modal && modal.classList) {
             modal.classList.add('hidden');
             document.body.style.overflow = 'auto';
             entryToDelete = null;
@@ -1604,12 +1654,21 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (data.success) {
                 // Remover item da timeline com animação suave
-                if (entryElementToDelete && entryElementToDelete.parentNode) {
-                    // Buscar o elemento pai completo da timeline
-                    const timelineItem = entryElementToDelete.closest('.relative.flex.items-start.mb-8.group');
+                console.log('🎯 Iniciando remoção do item da timeline');
+                console.log('entryIdToDelete:', entryIdToDelete);
+                
+                // Buscar o elemento da entrada pelo data-entry-id
+                const entryContainer = document.querySelector(`[data-entry-id="${entryIdToDelete}"]`);
+                console.log('entryContainer encontrado:', entryContainer);
+                
+                if (entryContainer) {
+                    // Buscar o elemento pai completo da timeline (div com classes específicas)
+                    const timelineItem = entryContainer.closest('.relative');
+                    console.log('timelineItem encontrado:', timelineItem);
                     
                     if (timelineItem) {
                         console.log('🎯 Removendo entrada completa da timeline:', timelineItem);
+                        
                         // Adicionar animação de fade out e slide
                         timelineItem.style.transition = 'all 0.4s ease-out';
                         timelineItem.style.opacity = '0';
@@ -1635,55 +1694,21 @@ document.addEventListener('DOMContentLoaded', function() {
                             }
                         }, 200);
                     } else {
-                        console.log('⚠️ Elemento pai da timeline não encontrado, removendo elemento direto');
-                        // Fallback para o comportamento anterior
-                        entryElementToDelete.style.transition = 'all 0.4s ease-out';
-                        entryElementToDelete.style.opacity = '0';
-                        entryElementToDelete.style.transform = 'translateX(-30px) scale(0.95)';
+                        console.log('⚠️ Elemento pai da timeline não encontrado, removendo container direto');
+                        entryContainer.style.transition = 'all 0.4s ease-out';
+                        entryContainer.style.opacity = '0';
+                        entryContainer.style.transform = 'translateX(-30px) scale(0.95)';
                         
                         setTimeout(() => {
-                            if (entryElementToDelete && entryElementToDelete.parentNode) {
-                                entryElementToDelete.remove();
+                            if (entryContainer && entryContainer.parentNode) {
+                                entryContainer.remove();
+                                console.log('✅ Container removido diretamente');
                             }
                         }, 400);
                     }
                 } else {
-                    // Fallback: tentar encontrar o elemento pelo ID se não tiver referência
-                    const fallbackElement = document.querySelector(`[data-entry-id="${entryIdToDelete}"]`);
-                    if (fallbackElement) {
-                        // Buscar o elemento pai completo da timeline (div com classes 'relative flex items-start mb-8 group')
-                        const timelineItem = fallbackElement.closest('.relative.flex.items-start.mb-8.group');
-                        if (timelineItem) {
-                            console.log('🎯 Removendo entrada completa da timeline (fallback):', timelineItem);
-                            timelineItem.style.transition = 'all 0.4s ease-out';
-                            timelineItem.style.opacity = '0';
-                            timelineItem.style.transform = 'translateX(-30px) scale(0.95)';
-                            timelineItem.style.maxHeight = timelineItem.offsetHeight + 'px';
-                            
-                            setTimeout(() => {
-                                timelineItem.style.maxHeight = '0';
-                                timelineItem.style.marginBottom = '0';
-                                timelineItem.style.paddingTop = '0';
-                                timelineItem.style.paddingBottom = '0';
-                                
-                                setTimeout(() => {
-                                    if (timelineItem && timelineItem.parentNode) {
-                                        timelineItem.remove();
-                                        console.log('✅ Entrada completa removida (fallback)');
-                                    }
-                                }, 300);
-                            }, 200);
-                        } else {
-                            console.log('⚠️ Elemento pai da timeline não encontrado, removendo elemento direto');
-                            fallbackElement.style.transition = 'all 0.4s ease-out';
-                            fallbackElement.style.opacity = '0';
-                            setTimeout(() => {
-                                if (fallbackElement && fallbackElement.parentNode) {
-                                    fallbackElement.remove();
-                                }
-                            }, 400);
-                        }
-                    }
+                    console.error('❌ Elemento da entrada não encontrado para ID:', entryIdToDelete);
+                    showNotification('Erro: Elemento da entrada não encontrado na interface', 'error');
                 }
                 
                 showNotification(data.message || 'Item excluído com sucesso');
@@ -1728,7 +1753,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e.key === 'Escape') {
             // Verificar se o modal de exclusão está aberto
             const deleteModal = document.getElementById('deleteModal');
-            if (deleteModal && !deleteModal.classList.contains('hidden')) {
+            if (deleteModal && deleteModal.classList && !deleteModal.classList.contains('hidden')) {
                 hideDeleteModal();
                 return;
             }
@@ -1738,7 +1763,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (editingElements.length > 0) {
                 const titleElement = editingElements[0];
                 const entryContent = titleElement.closest('.entry-content');
-                const entryId = entryContent.dataset.entryId;
+                const entryId = entryContent.getAttribute('data-entry-id');
                 const cancelButton = document.querySelector(`[data-entry-id="${entryId}"].cancel-edit-btn`);
                 
                 if (cancelButton) {
@@ -1753,7 +1778,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (editingElements.length > 0) {
                 const titleElement = editingElements[0];
                 const entryContent = titleElement.closest('.entry-content');
-                const entryId = entryContent.dataset.entryId;
+                const entryId = entryContent.getAttribute('data-entry-id');
                 const saveButton = document.querySelector(`[data-entry-id="${entryId}"].edit-toggle-btn`);
                 
                 if (saveButton) {
@@ -1769,7 +1794,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const modalImage = document.getElementById('modalImage');
         const modalImageName = document.getElementById('modalImageName');
         
-        if (modal && modalImage && modalImageName) {
+        if (modal && modal.classList && modalImage && modalImageName) {
             modalImage.src = imageUrl;
             modalImage.alt = imageName;
             modalImageName.textContent = imageName;
@@ -1780,7 +1805,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     window.closeImageModal = function() {
         const modal = document.getElementById('imageModal');
-        if (modal) {
+        if (modal && modal.classList) {
             modal.classList.add('hidden');
             document.body.style.overflow = 'auto';
         }
@@ -1798,8 +1823,580 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             const imageModal = document.getElementById('imageModal');
-            if (imageModal && !imageModal.classList.contains('hidden')) {
+            if (imageModal && imageModal.classList && !imageModal.classList.contains('hidden')) {
                 closeImageModal();
+            }
+        }
+    });
+    
+    // ===== CONTROLE DO MODAL DE EDIÇÃO =====
+    let currentEditingEntryId = null;
+    let editModalSelectedFiles = [];
+    
+    // Função para abrir o modal de edição
+    window.openEditModal = function(entryId) {
+        currentEditingEntryId = entryId;
+        editModalSelectedFiles = [];
+        
+        // Buscar dados da entrada
+        const entryElement = document.querySelector(`[data-entry-id="${entryId}"]`);
+        if (!entryElement) {
+            showNotification('Entrada não encontrada', 'error');
+            return;
+        }
+        
+        const titleElement = entryElement.querySelector('.editable-title');
+        const descriptionElement = entryElement.querySelector('.editable-description');
+        
+        const currentTitle = titleElement ? titleElement.textContent.trim() : '';
+        const currentDescription = descriptionElement ? descriptionElement.textContent.trim() : '';
+        
+        // Preencher campos do modal
+        const modalTitle = document.getElementById('editModalTitle');
+        const modalDescription = document.getElementById('editModalDescription');
+        
+        if (modalTitle) modalTitle.value = currentTitle;
+        if (modalDescription) modalDescription.value = currentDescription;
+        
+        // Limpar preview de arquivos
+        updateEditModalFilePreview();
+        
+        // Mostrar modal
+        const modal = document.getElementById('editModal');
+        if (modal && modal.classList) {
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            
+            // Focar no campo título
+            setTimeout(() => {
+                if (modalTitle) modalTitle.focus();
+            }, 100);
+        }
+    };
+    
+    // Função para fechar o modal de edição
+    window.closeEditModal = function() {
+        const modal = document.getElementById('editModal');
+        if (modal && modal.classList) {
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Limpar dados
+        currentEditingEntryId = null;
+        editModalSelectedFiles = [];
+        
+        // Limpar campos
+        const modalTitle = document.getElementById('editModalTitle');
+        const modalDescription = document.getElementById('editModalDescription');
+        const fileInput = document.getElementById('editModalFileInput');
+        
+        if (modalTitle) modalTitle.value = '';
+        if (modalDescription) modalDescription.value = '';
+        if (fileInput) fileInput.value = '';
+        
+        updateEditModalFilePreview();
+    };
+    
+    // Função para salvar alterações do modal
+    window.saveEditModal = async function() {
+        if (!currentEditingEntryId) {
+            showNotification('Erro: ID da entrada não encontrado', 'error');
+            return;
+        }
+        
+        const modalTitle = document.getElementById('editModalTitle');
+        const modalDescription = document.getElementById('editModalDescription');
+        
+        const title = modalTitle ? modalTitle.value.trim() : '';
+        const description = modalDescription ? modalDescription.value.trim() : '';
+        
+        if (!title || !description) {
+            showNotification('Título e descrição são obrigatórios', 'error');
+            return;
+        }
+        
+        showLoading();
+        
+        try {
+            // Salvar texto
+            const response = await fetch(`{{ route('orcamentos.historico.update', [$orcamento, '__ID__']) }}`.replace('__ID__', currentEditingEntryId), {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    title: title,
+                    description: description
+                })
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            
+            if (!data.success) {
+                throw new Error(data.message || 'Erro ao atualizar entrada');
+            }
+            
+            // Upload de arquivos se houver
+            if (editModalSelectedFiles.length > 0) {
+                for (let i = 0; i < editModalSelectedFiles.length; i++) {
+                    const file = editModalSelectedFiles[i];
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    formData.append('entry_id', currentEditingEntryId);
+                    
+                    const uploadResponse = await fetch(`{{ route('orcamentos.historico.upload', $orcamento) }}`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            'Accept': 'application/json'
+                        },
+                        body: formData
+                    });
+                    
+                    if (!uploadResponse.ok) {
+                        throw new Error(`Erro no upload do arquivo: ${file.name}`);
+                    }
+                    
+                    const uploadData = await uploadResponse.json();
+                    if (!uploadData.success) {
+                        throw new Error(uploadData.message || `Erro ao fazer upload do arquivo: ${file.name}`);
+                    }
+                }
+            }
+            
+            showNotification('Entrada atualizada com sucesso!');
+            closeEditModal();
+            
+            // Reload automático da página para mostrar as alterações
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000); // Aguarda 1 segundo para mostrar a notificação
+            
+        } catch (error) {
+            showNotification(error.message || 'Erro de conexão', 'error');
+            console.error('Error:', error);
+        } finally {
+            hideLoading();
+        }
+    };
+    
+    // Função para gerenciar arquivos do modal
+    function handleEditModalFileSelect(e) {
+        const files = Array.from(e.target.files);
+        addFilesToEditModal(files);
+    }
+    
+    function addFilesToEditModal(files) {
+        const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+        const maxSize = 10 * 1024 * 1024; // 10MB
+        
+        files.forEach(file => {
+            if (!validTypes.includes(file.type)) {
+                showNotification(`Tipo de arquivo não suportado: ${file.name}`, 'error');
+                return;
+            }
+            
+            if (file.size > maxSize) {
+                showNotification(`Arquivo muito grande: ${file.name}`, 'error');
+                return;
+            }
+            
+            // Verificar se o arquivo já existe
+            const existingFile = editModalSelectedFiles.find(f => f.name === file.name && f.size === file.size);
+            if (existingFile) {
+                showNotification(`Arquivo já foi selecionado: ${file.name}`, 'warning');
+                return;
+            }
+            
+            editModalSelectedFiles.push(file);
+        });
+        
+        updateEditModalFilePreview();
+        
+        // Limpar o input para permitir selecionar o mesmo arquivo novamente se necessário
+        const fileInput = document.getElementById('editModalFileInput');
+        if (fileInput) {
+            fileInput.value = '';
+        }
+    }
+    
+    function updateEditModalFilePreview() {
+        const filePreview = document.getElementById('editModalFilePreview');
+        if (!filePreview) return;
+        
+        filePreview.innerHTML = '';
+        
+        if (editModalSelectedFiles.length === 0) {
+            filePreview.classList.add('hidden');
+            return;
+        }
+        
+        filePreview.classList.remove('hidden');
+        
+        editModalSelectedFiles.forEach((file, index) => {
+            const fileItem = document.createElement('div');
+            fileItem.className = 'relative bg-white dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 p-3 shadow-sm';
+            
+            const isImage = file.type.startsWith('image/');
+            const fileSize = formatFileSize(file.size);
+            
+            if (isImage) {
+                // Preview para imagens
+                fileItem.innerHTML = `
+                    <div class="relative">
+                        <img src="${URL.createObjectURL(file)}" alt="${file.name}" 
+                             class="w-full h-24 object-cover rounded-md mb-2">
+                        <button type="button" 
+                                class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 transition-colors" 
+                                onclick="removeFileFromEditModal(${index})">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="text-xs font-medium text-gray-900 dark:text-white truncate" title="${file.name}">${file.name}</div>
+                    <div class="text-xs text-gray-500 dark:text-gray-400">${fileSize}</div>
+                `;
+            } else {
+                // Preview para outros tipos de arquivo
+                fileItem.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center flex-1 min-w-0">
+                            <div class="w-10 h-10 mr-3 flex-shrink-0 flex items-center justify-center bg-gray-100 dark:bg-gray-600 rounded">
+                                ${getFileIcon(file.type)}
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <div class="text-sm font-medium text-gray-900 dark:text-white truncate" title="${file.name}">${file.name}</div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">${fileSize}</div>
+                            </div>
+                        </div>
+                        <button type="button" 
+                                class="ml-2 text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors" 
+                                onclick="removeFileFromEditModal(${index})">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                `;
+            }
+            
+            filePreview.appendChild(fileItem);
+        });
+    }
+    
+    window.removeFileFromEditModal = function(index) {
+        editModalSelectedFiles.splice(index, 1);
+        updateEditModalFilePreview();
+    };
+    
+    // Função para atualizar a seção de arquivos dinamicamente
+    async function updateFilesSection(entryId) {
+        try {
+            const response = await fetch(`{{ route('orcamentos.historico.files', [$orcamento, '__ID__']) }}`.replace('__ID__', entryId), {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                const entryElement = document.querySelector(`[data-entry-id="${entryId}"]`);
+                
+                if (entryElement && data.files) {
+                    let filesSection = entryElement.querySelector('.files-section');
+                    
+                    // Se não encontrar, buscar por uma div que contenha arquivos
+                    if (!filesSection) {
+                        // Procurar por uma div que contenha a palavra "Arquivos"
+                        const allDivs = entryElement.querySelectorAll('div');
+                        for (let div of allDivs) {
+                            if (div.textContent.includes('Arquivos')) {
+                                filesSection = div.parentElement;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    if (filesSection) {
+                        // Atualizar o HTML da seção de arquivos
+                        filesSection.innerHTML = data.files;
+                    } else {
+                        // Se não encontrar, adicionar ao final do card
+                        const newFilesSection = document.createElement('div');
+                        newFilesSection.className = 'files-section border-t border-gray-100 dark:border-gray-700 pt-3 mt-3';
+                        newFilesSection.innerHTML = data.files;
+                        entryElement.appendChild(newFilesSection);
+                    }
+                }
+            } else {
+                console.error('Erro na resposta:', response.status, response.statusText);
+            }
+        } catch (error) {
+            console.error('Erro ao atualizar seção de arquivos:', error);
+        }
+    }
+    
+    // Função para atualizar todo o conteúdo do card dinamicamente
+    async function updateCardContent(entryId, title, description, hasNewFiles = false) {
+        try {
+            console.log('Atualizando card:', entryId, title, description);
+            
+            // Buscar o elemento do card usando múltiplos seletores
+            let entryElement = document.querySelector(`[data-entry-id="${entryId}"]`);
+            
+            // Se não encontrar, tentar outros seletores
+            if (!entryElement) {
+                entryElement = document.querySelector(`#entry-${entryId}`);
+            }
+            
+            if (!entryElement) {
+                // Buscar por qualquer elemento que contenha o ID
+                const allElements = document.querySelectorAll('[data-entry-id]');
+                for (let element of allElements) {
+                    if (element.getAttribute('data-entry-id') === entryId.toString()) {
+                        entryElement = element;
+                        break;
+                    }
+                }
+            }
+            
+            if (!entryElement) {
+                console.error('Elemento do card não encontrado para ID:', entryId);
+                console.log('Elementos disponíveis:', document.querySelectorAll('[data-entry-id]'));
+                return;
+            }
+            
+            console.log('Card encontrado:', entryElement);
+            
+            // Buscar título com múltiplos seletores
+            let titleElement = entryElement.querySelector('.editable-title');
+            if (!titleElement) {
+                titleElement = entryElement.querySelector('h3');
+            }
+            if (!titleElement) {
+                titleElement = entryElement.querySelector('.font-semibold');
+            }
+            if (!titleElement) {
+                titleElement = entryElement.querySelector('[data-field="title"]');
+            }
+            
+            // Buscar descrição com múltiplos seletores
+            let descriptionElement = entryElement.querySelector('.editable-description');
+            if (!descriptionElement) {
+                descriptionElement = entryElement.querySelector('p');
+            }
+            if (!descriptionElement) {
+                descriptionElement = entryElement.querySelector('.text-gray-600');
+            }
+            if (!descriptionElement) {
+                descriptionElement = entryElement.querySelector('[data-field="description"]');
+            }
+            
+            console.log('Título encontrado:', titleElement);
+            console.log('Descrição encontrada:', descriptionElement);
+            
+            // Atualizar título
+            if (titleElement) {
+                titleElement.textContent = title;
+                titleElement.setAttribute('data-original', title);
+                
+                // Adicionar feedback visual
+                const originalBg = titleElement.style.backgroundColor;
+                titleElement.style.backgroundColor = '#dcfce7';
+                titleElement.style.transition = 'background-color 0.3s ease';
+                
+                setTimeout(() => {
+                    titleElement.style.backgroundColor = originalBg;
+                }, 1500);
+                
+                console.log('Título atualizado para:', title);
+            } else {
+                console.warn('Elemento de título não encontrado');
+            }
+            
+            // Atualizar descrição
+            if (descriptionElement) {
+                descriptionElement.textContent = description;
+                descriptionElement.setAttribute('data-original', description);
+                
+                // Adicionar feedback visual
+                const originalBg = descriptionElement.style.backgroundColor;
+                descriptionElement.style.backgroundColor = '#dcfce7';
+                descriptionElement.style.transition = 'background-color 0.3s ease';
+                
+                setTimeout(() => {
+                    descriptionElement.style.backgroundColor = originalBg;
+                }, 1500);
+                
+                console.log('Descrição atualizada para:', description);
+            } else {
+                console.warn('Elemento de descrição não encontrado');
+            }
+            
+            // Se houve upload de arquivos, atualizar a seção de arquivos
+            if (hasNewFiles) {
+                console.log('Atualizando seção de arquivos...');
+                await updateFilesSection(entryId);
+            }
+            
+            // Adicionar efeito visual para indicar que foi atualizado
+            entryElement.style.transition = 'all 0.3s ease';
+            entryElement.style.transform = 'scale(1.02)';
+            entryElement.style.boxShadow = '0 4px 20px rgba(59, 130, 246, 0.3)';
+            
+            // Remover efeito após um tempo
+            setTimeout(() => {
+                entryElement.style.transform = 'scale(1)';
+                entryElement.style.boxShadow = '';
+            }, 500);
+            
+            console.log('Card atualizado com sucesso!');
+            
+        } catch (error) {
+            console.error('Erro ao atualizar conteúdo do card:', error);
+        }
+    }
+    
+    // Event listeners para modal de edição
+    document.addEventListener('click', function(e) {
+        // Botão de editar no card
+        if (e.target.closest('.edit-modal-btn')) {
+            const button = e.target.closest('.edit-modal-btn');
+            const entryId = button.getAttribute('data-entry-id');
+            if (entryId) {
+                openEditModal(entryId);
+            }
+        }
+        
+        // Botões do modal
+        if (e.target.id === 'editModalCancel' || e.target.closest('#editModalCancel')) {
+            closeEditModal();
+        }
+        
+        if (e.target.id === 'editModalSave' || e.target.closest('#editModalSave')) {
+            saveEditModal();
+        }
+        
+        // Fechar modal ao clicar no overlay
+        if (e.target.id === 'editModal') {
+            closeEditModal();
+        }
+    });
+    
+    // Input de arquivo do modal
+    document.addEventListener('change', function(e) {
+        if (e.target.id === 'editModalFileInput') {
+            handleEditModalFileSelect(e);
+        }
+    });
+    
+    // Drag and drop para o modal de edição
+    document.addEventListener('DOMContentLoaded', function() {
+        const editModal = document.getElementById('editModal');
+        if (editModal) {
+            const uploadArea = editModal.querySelector('.border-dashed');
+            
+            if (uploadArea) {
+                // Prevenir comportamento padrão
+                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                    uploadArea.addEventListener(eventName, preventDefaults, false);
+                });
+                
+                function preventDefaults(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+                
+                // Destacar área quando arrastar sobre ela
+                ['dragenter', 'dragover'].forEach(eventName => {
+                    uploadArea.addEventListener(eventName, highlight, false);
+                });
+                
+                ['dragleave', 'drop'].forEach(eventName => {
+                    uploadArea.addEventListener(eventName, unhighlight, false);
+                });
+                
+                function highlight(e) {
+                    uploadArea.classList.add('border-blue-400', 'bg-blue-50', 'dark:bg-blue-900/20');
+                }
+                
+                function unhighlight(e) {
+                    uploadArea.classList.remove('border-blue-400', 'bg-blue-50', 'dark:bg-blue-900/20');
+                }
+                
+                // Lidar com arquivos soltos
+                uploadArea.addEventListener('drop', handleDrop, false);
+                
+                function handleDrop(e) {
+                    const dt = e.dataTransfer;
+                    const files = dt.files;
+                    
+                    addFilesToEditModal(Array.from(files));
+                }
+            }
+        }
+    });
+    
+    // Fechar modal com ESC (atualizar o listener existente)
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            // Verificar se o modal de edição está aberto
+            const editModal = document.getElementById('editModal');
+            if (editModal && editModal.classList && !editModal.classList.contains('hidden')) {
+                closeEditModal();
+                return;
+            }
+            
+            // Verificar se o modal de exclusão está aberto
+            const deleteModal = document.getElementById('deleteModal');
+            if (deleteModal && deleteModal.classList && !deleteModal.classList.contains('hidden')) {
+                hideDeleteModal();
+                return;
+            }
+            
+            // Verificar se o modal de imagem está aberto
+            const imageModal = document.getElementById('imageModal');
+            if (imageModal && imageModal.classList && !imageModal.classList.contains('hidden')) {
+                closeImageModal();
+                return;
+            }
+            
+            // Verificar se há edição inline ativa
+            const editingElements = document.querySelectorAll('[contenteditable="true"]');
+            if (editingElements.length > 0) {
+                const titleElement = editingElements[0];
+                const entryContent = titleElement.closest('.entry-content');
+                const entryId = entryContent.getAttribute('data-entry-id');
+                const cancelButton = document.querySelector(`[data-entry-id="${entryId}"].cancel-edit-btn`);
+                
+                if (cancelButton) {
+                    cancelButton.click();
+                }
+            }
+        }
+        
+        // Salvar com Ctrl+Enter
+        if (e.ctrlKey && e.key === 'Enter') {
+            const editingElements = document.querySelectorAll('[contenteditable="true"]');
+            if (editingElements.length > 0) {
+                const titleElement = editingElements[0];
+                const entryContent = titleElement.closest('.entry-content');
+                const entryId = entryContent.getAttribute('data-entry-id');
+                const saveButton = document.querySelector(`[data-entry-id="${entryId}"].edit-toggle-btn`);
+                
+                if (saveButton) {
+                    saveButton.click();
+                }
             }
         }
     });

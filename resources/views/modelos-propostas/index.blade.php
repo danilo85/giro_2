@@ -3,45 +3,52 @@
 @section('title', 'Modelos de Propostas - Giro')
 
 @section('content')
-<div class="max-w-7xl mx-auto">
+<div class="max-w-7xl mx-auto  px-4 py-6">
     <!-- Tags de Navegação Rápida -->
     <div class="flex flex-wrap gap-2 mb-6">
-        <a href="{{ route('dashboard') }}" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200">
+        <a href="{{ route('dashboard') }}" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600">
             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
             </svg>
             Dashboard
         </a>
-        <a href="{{ route('orcamentos.index') }}" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200">
+        <a href="{{ route('orcamentos.index') }}" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600">
             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
             </svg>
             Orçamentos
         </a>
-        <a href="{{ route('clientes.index') }}" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200">
+        <a href="{{ route('clientes.index') }}" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600">
             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
             </svg>
             Clientes
         </a>
-        <a href="{{ route('autores.index') }}" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200">
+        <a href="{{ route('autores.index') }}" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600">
             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
             </svg>
             Autores
         </a>
-        <a href="{{ route('pagamentos.index') }}" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200">
+        <a href="{{ route('pagamentos.index') }}" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600">
             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
             </svg>
             Pagamentos
         </a>
-        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
             </svg>
             Modelos de Propostas
         </span>
+                <a href="{{ route('kanban.index') }}" 
+           class="inline-flex items-center px-3 py-1 text-sm font-medium rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
+            <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"></path>
+            </svg>
+            Kanban
+        </a>
     </div>
     
     <!-- Header -->
@@ -50,65 +57,10 @@
             <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Modelos de Propostas</h1>
             <p class="text-gray-600 dark:text-gray-400 mt-1">Gerenciamento de modelos de propostas</p>
         </div>
-        <div class="flex items-center space-x-3">
-            <button id="search-toggle" class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors duration-200" title="Buscar">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                </svg>
-                Buscar
-            </button>
-        </div>
+
     </div>
 
-    <!-- Search Container (Hidden by default) -->
-    <div id="search-container" class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 mb-6 hidden">
-        <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-medium text-gray-900 dark:text-white">Buscar Modelos</h3>
-            <button id="close-search" class="p-2 rounded-lg text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-300 transition-all duration-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-            </button>
-        </div>
-        <form method="GET" action="{{ route('modelos-propostas.index') }}" class="space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div>
-                    <label for="search" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Buscar</label>
-                    <input type="text" id="search" name="search" value="{{ request('search') }}" 
-                           placeholder="Nome do modelo..." 
-                           class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
-                </div>
-                <div>
-                    <label for="categoria" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Categoria</label>
-                    <select id="categoria" name="categoria" 
-                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
-                        <option value="">Todas as categorias</option>
-                        <option value="servicos" {{ request('categoria') == 'servicos' ? 'selected' : '' }}>Serviços</option>
-                        <option value="produtos" {{ request('categoria') == 'produtos' ? 'selected' : '' }}>Produtos</option>
-                        <option value="consultoria" {{ request('categoria') == 'consultoria' ? 'selected' : '' }}>Consultoria</option>
-                        <option value="manutencao" {{ request('categoria') == 'manutencao' ? 'selected' : '' }}>Manutenção</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Status</label>
-                    <select id="status" name="status" 
-                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
-                        <option value="">Todos os status</option>
-                        <option value="ativo" {{ request('status') == 'ativo' ? 'selected' : '' }}>Ativo</option>
-                        <option value="inativo" {{ request('status') == 'inativo' ? 'selected' : '' }}>Inativo</option>
-                        <option value="rascunho" {{ request('status') == 'rascunho' ? 'selected' : '' }}>Rascunho</option>
-                        <option value="arquivado" {{ request('status') == 'arquivado' ? 'selected' : '' }}>Arquivado</option>
-                    </select>
-                </div>
-                <div class="flex items-end">
-                    <button type="submit" class="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors">
-                        Filtrar
-                    </button>
-                </div>
-            </div>
-        </form>
-    </div>
-    
+
     <!-- Summary Cards -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div class="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 p-6 text-white">
@@ -319,7 +271,17 @@
                 </div>
             @endforeach
         </div>
-        
+        <footer class="mt-8">
+    <div class="text-center py-6">
+        <p class="text-sm text-gray-600 dark:text-gray-400">
+            © {{ date('Y') }} Danilo Miguel. Todos os direitos reservados.
+        </p>
+        <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">
+            Sistema de Gestão Financeira - Desenvolvido com Laravel
+        </p>
+    </div>
+</footer>
+
         <!-- Paginação -->
         @if($modelos->hasPages())
             <div class="mt-6">
@@ -362,8 +324,8 @@
 </div>
 
 <!-- Delete Modal -->
-<div id="deleteModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-[10000]">
-    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800">
+<div id="deleteModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-[10003] flex items-center justify-center">
+    <div class="relative mx-4 sm:mx-auto p-5  w-full sm:w-96 max-w-md shadow-lg rounded-md bg-white dark:bg-gray-800">
         <div class="mt-3 text-center">
             <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900">
                 <svg class="h-6 w-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -377,10 +339,12 @@
                 </p>
             </div>
             <div class="items-center px-4 py-3">
-                <form id="deleteForm" method="POST" class="inline">
+                <form id="deleteForm" method="POST" class="inline" onsubmit="return confirmDelete(event)">
                     @csrf
                     @method('DELETE')
+                    <input type="hidden" id="deleteConfirmed" value="false">
                     <button type="submit" 
+                            onclick="document.getElementById('deleteConfirmed').value='true'"
                             class="px-4 py-2 bg-red-600 text-white text-base font-medium rounded-md w-24 mr-2 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-300">
                         Excluir
                     </button>
@@ -395,8 +359,8 @@
 </div>
 
 <!-- Duplicate Modal -->
-<div id="duplicateModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-[10000]">
-    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800">
+<div id="duplicateModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-[10003] flex items-center justify-center">
+    <div class="relative mx-4 sm:mx-auto p-5 w-full sm:w-96 max-w-md shadow-lg rounded-md bg-white dark:bg-gray-800">
         <div class="mt-3 text-center">
             <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-purple-100 dark:bg-purple-900">
                 <svg class="h-6 w-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -475,16 +439,54 @@ function duplicateModel(id) {
 }
 
 function deleteModel(id) {
+    // Prevent any console execution by adding validation
+    if (!id || typeof id !== 'number' && typeof id !== 'string') {
+        console.error('ID inválido para exclusão');
+        return false;
+    }
+    
     // Set the form action for delete
     const deleteForm = document.getElementById('deleteForm');
+    if (!deleteForm) {
+        console.error('Formulário de exclusão não encontrado');
+        return false;
+    }
+    
     deleteForm.action = `/modelos-propostas/${id}`;
     
     // Show the delete modal
-    document.getElementById('deleteModal').classList.remove('hidden');
+    const deleteModal = document.getElementById('deleteModal');
+    if (!deleteModal) {
+        console.error('Modal de exclusão não encontrado');
+        return false;
+    }
+    
+    deleteModal.classList.remove('hidden');
+    
+    // Prevent default action and force modal confirmation
+    return false;
 }
 
 function closeDeleteModal() {
     document.getElementById('deleteModal').classList.add('hidden');
+    // Reset confirmation flag when modal is closed
+    document.getElementById('deleteConfirmed').value = 'false';
+}
+
+function confirmDelete(event) {
+    // Check if deletion was confirmed through modal
+    const deleteConfirmed = document.getElementById('deleteConfirmed');
+    
+    if (!deleteConfirmed || deleteConfirmed.value !== 'true') {
+        event.preventDefault();
+        console.warn('Exclusão deve ser confirmada através do modal');
+        alert('Por favor, use o botão de exclusão para confirmar a ação.');
+        return false;
+    }
+    
+    // Reset flag after successful confirmation
+    deleteConfirmed.value = 'false';
+    return true;
 }
 
 function closeDuplicateModal() {
@@ -492,7 +494,7 @@ function closeDuplicateModal() {
 }
 
 // Close modals when clicking outside
-window.onclick = function(event) {
+window.addEventListener('click', function(event) {
     const deleteModal = document.getElementById('deleteModal');
     const duplicateModal = document.getElementById('duplicateModal');
     
@@ -502,7 +504,7 @@ window.onclick = function(event) {
     if (event.target === duplicateModal) {
         closeDuplicateModal();
     }
-}
+});
 
 // Close modals with Escape key
 document.addEventListener('keydown', function(event) {

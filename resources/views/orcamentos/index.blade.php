@@ -3,12 +3,12 @@
 @section('title', 'Orçamentos')
 
 @section('content')
-<div class="max-w-7xl mx-auto">
+<div class="max-w-7xl mx-auto  px-4 py-6">
 
     <!-- Tags de Navegação Rápida -->
     <div class="flex flex-wrap gap-2 mb-6">
         <a href="{{ route('dashboard') }}" 
-           class="px-3 py-1 text-sm font-medium rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors">
+           class="px-3 py-1 text-sm font-medium rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors dark:border-gray-600 dark:text-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
             <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5a2 2 0 012-2h4a2 2 0 012 2v3H8V5z"></path>
@@ -16,39 +16,46 @@
             Dashboard
         </a>
         <a href="{{ route('orcamentos.index') }}" 
-           class="px-3 py-1 text-sm font-medium rounded-full bg-blue-600 text-white">
+           class="px-3 py-1 text-sm font-medium rounded-full bg-blue-600 text-white dark:bg-blue-700 dark:text-blue-200">
             <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
             </svg>
             Orçamentos
         </a>
         <a href="{{ route('clientes.index') }}" 
-           class="px-3 py-1 text-sm font-medium rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors">
+           class="px-3 py-1 text-sm font-medium rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors dark:border-gray-600 dark:text-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
             <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
             </svg>
             Clientes
         </a>
         <a href="{{ route('autores.index') }}" 
-           class="px-3 py-1 text-sm font-medium rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors">
+           class="px-3 py-1 text-sm font-medium rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors dark:border-gray-600 dark:text-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
             <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
             </svg>
             Autores
         </a>
         <a href="{{ route('pagamentos.index') }}" 
-           class="px-3 py-1 text-sm font-medium rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors">
+           class="px-3 py-1 text-sm font-medium rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors dark:border-gray-600 dark:text-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
             <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
             </svg>
             Pagamentos
         </a>
         <a href="{{ route('modelos-propostas.index') }}" 
-           class="px-3 py-1 text-sm font-medium rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors">
+           class="px-3 py-1 text-sm font-medium rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors dark:border-gray-600 dark:text-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
             <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
             </svg>
             Modelos de Propostas
+        </a>
+            <a href="{{ route('kanban.index') }}" 
+           class="inline-flex items-center px-3 py-1 text-sm font-medium rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
+            <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"></path>
+            </svg>
+            Kanban
         </a>
     </div>
 
@@ -64,7 +71,7 @@
     </div>
 
     <!-- Summary Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
         <div class="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 p-6 text-white">
             <div class="flex items-center justify-between">
                 <div>
@@ -107,17 +114,24 @@
             </div>
         </div>
 
-        <div class="bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 p-6 text-white">
+        <div class="bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 p-6 text-white" id="valorReceberCard">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm font-medium text-purple-100">Valor Total</p>
-                    <p class="text-2xl font-bold text-white">R$ {{ number_format($orcamentos->sum('valor_total'), 2, ',', '.') }}</p>
+                    <p class="text-sm font-medium text-purple-100">Valor a Receber</p>
+                    <p class="text-2xl font-bold text-white" id="valorReceberAmount">R$ {{ number_format($valorRestanteReceber ?? 0, 2, ',', '.') }}</p>
+                    <p class="text-xs text-purple-200 mt-1" id="valorReceberDescription">Orçamentos válidos menos pagamentos</p>
                 </div>
                 <div class="p-3 bg-white bg-opacity-20 rounded-lg backdrop-blur-sm">
                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
                     </svg>
                 </div>
+            </div>
+            <!-- Botão para limpar seleção (inicialmente oculto) -->
+            <div id="clearSelectionButton" class="mt-4 hidden">
+                <button onclick="clearSelection()" class="w-full px-3 py-2 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg text-white text-sm font-medium transition-all duration-200">
+                    Limpar Seleção
+                </button>
             </div>
         </div>
     </div>
@@ -154,8 +168,13 @@
         <div class="p-4">
             <div class="flex flex-wrap gap-2">
                 <a href="{{ route('orcamentos.index') }}" 
-                   class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-full transition-colors duration-200 {{ !request('status') ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600' }}">
+                   class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-full transition-colors duration-200 {{ !request('status') && !request('incluir_finalizados') ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600' }}">
                     Todos
+                </a>
+                <a href="{{ route('orcamentos.index', ['incluir_finalizados' => '1']) }}" 
+                   class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-full transition-colors duration-200 {{ request('incluir_finalizados') ? 'bg-indigo-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600' }}">
+                    <span class="w-2 h-2 bg-indigo-400 rounded-full mr-1.5"></span>
+                    Incluir Finalizados
                 </a>
                 <a href="{{ route('orcamentos.index', ['status' => 'rascunho'] + request()->except('status')) }}" 
                    class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-full transition-colors duration-200 {{ request('status') == 'rascunho' ? 'bg-gray-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600' }}">
@@ -246,7 +265,7 @@
                         ];
                         $currentColors = $cardColors[$orcamento->status] ?? $cardColors['rascunho'];
                     @endphp
-                    <div class="{{ $currentColors['bg'] }} rounded-lg shadow-sm border {{ $currentColors['border'] }} {{ $currentColors['hover'] }} transition-all duration-200 flex flex-col h-full relative hover:shadow-md">
+                    <div class="{{ $currentColors['bg'] }} rounded-lg shadow-sm border {{ $currentColors['border'] }} {{ $currentColors['hover'] }} transition-all duration-200 flex flex-col h-full relative hover:shadow-md orcamento-card" data-orcamento-id="{{ $orcamento->id }}" data-valor-total="{{ $orcamento->valor_total }}" data-saldo-restante="{{ $orcamento->saldo_restante }}">
                         
 
                         
@@ -257,9 +276,9 @@
                                     @if($orcamento->cliente->avatar)
                                         <img src="{{ Storage::url($orcamento->cliente->avatar) }}" 
                                              alt="{{ $orcamento->cliente->nome }}" 
-                                             class="w-12 h-12 rounded-full object-cover flex-shrink-0">
+                                             class="w-12 h-12 rounded-full object-cover flex-shrink-0 mr-3">
                                     @else
-                                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mr-3">
                                             <span class="text-white font-semibold text-lg">
                                                 {{ strtoupper(substr($orcamento->cliente->nome, 0, 2)) }}
                                             </span>
@@ -343,12 +362,46 @@
                             <div class="space-y-3">
                                 
                                 <!-- Valor e Data -->
-                                <div class="text-center {{ $currentColors['section'] }} rounded-lg p-4 border {{ $currentColors['border'] }}">
-                                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Valor Total</p>
-                                    <p class="text-2xl font-bold text-green-600 dark:text-green-400">
-                                        R$ {{ number_format($orcamento->valor_total, 2, ',', '.') }}
-                                    </p>
-
+                                <div class="{{ $currentColors['section'] }} rounded-lg p-4 border {{ $currentColors['border'] }}">
+                                    <!-- Valor Total -->
+                                    <div class="text-center mb-3">
+                                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Valor Total</p>
+                                        <p class="text-2xl font-bold text-green-600 dark:text-green-400">
+                                            R$ {{ number_format($orcamento->valor_total, 2, ',', '.') }}
+                                        </p>
+                                    </div>
+                                    
+                                    <!-- Informações de Pagamento -->
+                                    @if($orcamento->valor_pago > 0)
+                                        <div class="flex justify-between items-center text-xs space-y-1">
+                                            <div class="flex flex-col items-start">
+                                                <span class="text-gray-500 dark:text-gray-400">Pago:</span>
+                                                <span class="font-medium text-blue-600 dark:text-blue-400">
+                                                    R$ {{ number_format($orcamento->valor_pago, 2, ',', '.') }}
+                                                </span>
+                                            </div>
+                                            <div class="flex flex-col items-end">
+                                                <span class="text-gray-500 dark:text-gray-400">Restante:</span>
+                                                <span class="font-medium {{ $orcamento->saldo_restante > 0 ? 'text-orange-600 dark:text-orange-400' : 'text-green-600 dark:text-green-400' }}">
+                                                    R$ {{ number_format($orcamento->saldo_restante, 2, ',', '.') }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Barra de Progresso -->
+                                        @php
+                                            $percentualPago = $orcamento->valor_total > 0 ? ($orcamento->valor_pago / $orcamento->valor_total) * 100 : 0;
+                                        @endphp
+                                        <div class="mt-2">
+                                            <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                <div class="bg-blue-600 dark:bg-blue-500 h-2 rounded-full transition-all duration-300" 
+                                                     style="width: {{ min($percentualPago, 100) }}%"></div>
+                                            </div>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 text-center">
+                                                {{ number_format($percentualPago, 1) }}% pago
+                                            </p>
+                                        </div>
+                                    @endif
                                 </div>
                                 
                                 <!-- Data de Criação -->
@@ -523,6 +576,16 @@
         @endif
     </div>
 </div>
+<footer class="mt-8">
+    <div class="text-center py-6">
+        <p class="text-sm text-gray-600 dark:text-gray-400">
+            © {{ date('Y') }} Danilo Miguel. Todos os direitos reservados.
+        </p>
+        <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">
+            Sistema de Gestão Financeira - Desenvolvido com Laravel
+        </p>
+    </div>
+</footer>
 
 <!-- Botão Flutuante -->
 <div class="fixed bottom-6 right-6 z-50">
@@ -535,8 +598,8 @@
 </div>
 
 <!-- Delete Modal -->
-<div id="deleteModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden z-[10000]">
-    <div class="mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800">
+<div id="deleteModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden z-[10003]">
+    <div class="mx-4 sm:mx-auto p-5  w-full sm:w-96 max-w-md shadow-lg rounded-md bg-white dark:bg-gray-800">
         <div class="mt-3 text-center">
             <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900">
                 <svg class="h-6 w-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -722,6 +785,14 @@ function updateOrcamentoStatus(orcamentoId, newStatus, dropdownElement) {
             
             // Show success feedback
             showStatusUpdateFeedback(dropdownElement, 'success');
+            
+            // Atualizar card financeiro se o status mudou para/de aprovado ou quitado
+            const statusesFinanceiros = ['aprovado', 'quitado'];
+            const statusAnterior = dropdownElement.dataset.originalStatus || dropdownElement.closest('.status-dropdown').querySelector('span').textContent.toLowerCase().trim();
+            
+            if (statusesFinanceiros.includes(newStatus) || statusesFinanceiros.includes(statusAnterior)) {
+                atualizarValorFinanceiro();
+            }
         } else {
             throw new Error(data.message || 'Erro ao atualizar status');
         }
@@ -913,6 +984,42 @@ function showStatusUpdateFeedback(dropdownElement, type, message = '') {
     }
 }
 
+// Function to update financial card value
+function atualizarValorFinanceiro() {
+    const valorCard = document.querySelector('[data-financial-card]');
+    if (!valorCard) return;
+    
+    // Show loading state
+    const valorElement = valorCard.querySelector('.text-2xl');
+    const originalValue = valorElement.textContent;
+    valorElement.innerHTML = '<div class="flex items-center justify-center"><div class="animate-spin rounded-full h-5 w-5 border-b-2 border-green-600 mr-2"></div>Atualizando...</div>';
+    
+    fetch('/orcamentos/valor-financeiro', {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            valorElement.textContent = data.valor_formatado;
+        } else {
+            throw new Error(data.message || 'Erro ao buscar valor financeiro');
+        }
+    })
+    .catch(error => {
+        console.error('Erro ao atualizar valor financeiro:', error);
+        valorElement.textContent = originalValue;
+    });
+}
+
 // Auto search functionality with debounce
 let searchTimeout;
 const searchInput = document.getElementById('search');
@@ -945,6 +1052,157 @@ if (clearButton) {
         window.location.href = currentUrl.toString();
     });
 }
+
+// Variáveis para seleção múltipla de orçamentos
+let selectedOrcamentos = new Set();
+let originalValorReceber = {{ $valorRestanteReceber ?? 0 }};
+let isSelectionMode = false;
+
+// Inicializar seleção múltipla
+function initializeOrcamentoSelection() {
+    const cards = document.querySelectorAll('.orcamento-card');
+    
+    cards.forEach(card => {
+        // Duplo clique para selecionar/deselecionar
+        card.addEventListener('dblclick', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleOrcamentoSelection(this);
+        });
+    });
+
+    // Duplo clique fora dos cards para limpar seleção
+    document.addEventListener('dblclick', function(e) {
+        if (!e.target.closest('.orcamento-card') && !e.target.closest('#valorReceberCard')) {
+            clearSelection();
+        }
+    });
+}
+
+// Alternar seleção de orçamento
+function toggleOrcamentoSelection(card) {
+    const orcamentoId = card.dataset.orcamentoId;
+    const valorTotal = parseFloat(card.dataset.valorTotal || 0);
+    const saldoRestante = parseFloat(card.dataset.saldoRestante || 0);
+
+    if (selectedOrcamentos.has(orcamentoId)) {
+        // Deselecionar
+        selectedOrcamentos.delete(orcamentoId);
+        card.classList.remove('orcamento-selected');
+    } else {
+        // Selecionar
+        selectedOrcamentos.add(orcamentoId);
+        card.classList.add('orcamento-selected');
+    }
+
+    updateValorReceberCard();
+}
+
+// Atualizar card "Valor a Receber"
+function updateValorReceberCard() {
+    const valorReceberAmount = document.getElementById('valorReceberAmount');
+    const valorReceberDescription = document.getElementById('valorReceberDescription');
+    const clearButton = document.getElementById('clearSelectionButton');
+
+    if (selectedOrcamentos.size > 0) {
+        // Calcular soma dos orçamentos selecionados
+        let somaTotal = 0;
+        let somaSaldoRestante = 0;
+
+        selectedOrcamentos.forEach(orcamentoId => {
+            const card = document.querySelector(`[data-orcamento-id="${orcamentoId}"]`);
+            if (card) {
+                somaTotal += parseFloat(card.dataset.valorTotal || 0);
+                somaSaldoRestante += parseFloat(card.dataset.saldoRestante || 0);
+            }
+        });
+
+        // Atualizar valores
+        valorReceberAmount.textContent = `R$ ${somaSaldoRestante.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        valorReceberDescription.textContent = `${selectedOrcamentos.size} orçamento(s) selecionado(s)`;
+        clearButton.classList.remove('hidden');
+        isSelectionMode = true;
+    } else {
+        // Restaurar valores originais
+        valorReceberAmount.textContent = `R$ ${originalValorReceber.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        valorReceberDescription.textContent = 'Orçamentos válidos menos pagamentos';
+        clearButton.classList.add('hidden');
+        isSelectionMode = false;
+    }
+}
+
+// Limpar seleção
+function clearSelection() {
+    selectedOrcamentos.clear();
+    
+    // Remover classe de seleção de todos os cards
+    document.querySelectorAll('.orcamento-selected').forEach(card => {
+        card.classList.remove('orcamento-selected');
+    });
+
+    updateValorReceberCard();
+}
+
+// Inicializar quando o DOM estiver carregado
+document.addEventListener('DOMContentLoaded', function() {
+    initializeOrcamentoSelection();
+});
 </script>
+
+<style>
+/* Estilos para cards selecionados */
+.orcamento-selected {
+    border: 3px solid #8b5cf6 !important;
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.4) !important;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(168, 85, 247, 0.1)) !important;
+    transform: scale(1.02);
+    position: relative;
+}
+
+.orcamento-selected::before {
+    content: '✓';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #8b5cf6;
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: bold;
+    z-index: 10;
+    animation: checkmarkPulse 0.3s ease-out;
+}
+
+@keyframes checkmarkPulse {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Transição suave para cards */
+.orcamento-card {
+    transition: all 0.3s ease;
+}
+
+/* Estilo para o botão de limpar seleção */
+#clearSelectionButton button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+</style>
+
 @endpush
 @endsection

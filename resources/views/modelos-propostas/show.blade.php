@@ -12,7 +12,7 @@
             <p class="text-gray-600 dark:text-gray-400 mt-1">Detalhes do modelo de proposta</p>
         </div>
         
-        <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3 mt-4 sm:mt-0">
+        <div class="flex flex-row space-x-3 mt-4 sm:mt-0">
             <a href="{{ route('modelos-propostas.edit', $modelo->id) }}" 
                class="inline-flex items-center p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-700 rounded-lg transition-all duration-200" 
                title="Editar">
@@ -145,7 +145,7 @@
                 
                     </div>
                     <div class="space-y-3">
-                        <button onclick="duplicateModel({{ $modelo->id }})" 
+                        <button onclick="showDuplicateModal({{ $modelo->id }})" 
                                 class="w-full inline-flex items-center justify-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
@@ -153,11 +153,12 @@
                             Duplicar Modelo
                         </button>
                         
-                        <form action="{{ route('modelos-propostas.destroy', $modelo->id) }}" method="POST" 
-                            onsubmit="return confirm('Tem certeza que deseja excluir este modelo?')">
+                        <form id="deleteModelForm" action="{{ route('modelos-propostas.destroy', $modelo->id) }}" method="POST" 
+                            onsubmit="return confirmDelete()">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" 
+                            <input type="hidden" id="deleteConfirmed" name="delete_confirmed" value="false">
+                            <button type="button" onclick="showDeleteModal()" 
                                     class="w-full inline-flex items-center justify-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors">
                                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
@@ -273,32 +274,150 @@
 
 
 </div>
+
+<!-- Modal de Confirmação de Exclusão -->
+<div id="deleteModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50 flex items-center justify-center">
+    <div class="relative mx-auto p-5 border max-w-md w-full mx-4 shadow-lg rounded-md bg-white dark:bg-gray-800">
+        <div class="mt-3 text-center">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900">
+                <svg class="h-6 w-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16c-.77.833.192 2.5 1.732 2.5z"></path>
+                </svg>
+            </div>
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white mt-2">Confirmar Exclusão</h3>
+            <div class="mt-2 px-7 py-3">
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                    Tem certeza que deseja excluir este modelo de proposta? Esta ação não pode ser desfeita.
+                </p>
+            </div>
+            <div class="flex justify-center space-x-3 px-4 py-3">
+                <button onclick="hideDeleteModal()" 
+                        class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 text-sm font-medium rounded-md">
+                    Cancelar
+                </button>
+                <button onclick="executeDelete()" 
+                        class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-md">
+                    Excluir
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Confirmação de Duplicação -->
+<div id="duplicateModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50 flex items-center justify-center">
+    <div class="relative mx-auto p-5 border max-w-md w-full mx-4 shadow-lg rounded-md bg-white dark:bg-gray-800">
+        <div class="mt-3 text-center">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 dark:bg-green-900">
+                <svg class="h-6 w-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                </svg>
+            </div>
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white mt-2">Confirmar Duplicação</h3>
+            <div class="mt-2 px-7 py-3">
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                    Deseja duplicar este modelo de proposta? Uma cópia será criada e você será redirecionado para editá-la.
+                </p>
+            </div>
+            <div class="flex justify-center space-x-3 px-4 py-3">
+                <button onclick="hideDuplicateModal()" 
+                        class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 text-sm font-medium rounded-md">
+                    Cancelar
+                </button>
+                <button onclick="executeDuplicate()" 
+                        class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-md">
+                    Duplicar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('scripts')
 <script>
-    function duplicateModel(modelId) {
-        if (confirm('Deseja duplicar este modelo?')) {
-            fetch(`/modelos-propostas/${modelId}/duplicate`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                    'Content-Type': 'application/json',
-                },
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    window.location.href = `/modelos-propostas/${data.modelo_id}/edit`;
-                } else {
-                    alert('Erro ao duplicar modelo');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Erro ao duplicar modelo');
-            });
+    let currentModelId = null;
+
+    function showDuplicateModal(modelId) {
+        currentModelId = modelId;
+        document.getElementById('duplicateModal').classList.remove('hidden');
+    }
+
+    function hideDuplicateModal() {
+        document.getElementById('duplicateModal').classList.add('hidden');
+        currentModelId = null;
+    }
+
+    function executeDuplicate() {
+        if (!currentModelId) {
+            alert('Erro: ID do modelo não encontrado');
+            return;
         }
+
+        // Desabilitar botão para evitar cliques múltiplos
+        const button = event.target;
+        button.disabled = true;
+        button.textContent = 'Duplicando...';
+
+        fetch(`/modelos-propostas/${currentModelId}/duplicate`, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                hideDuplicateModal();
+                // Redirecionar para editar o novo modelo
+                window.location.href = `/modelos-propostas/${data.modelo_id}/edit`;
+            } else {
+                throw new Error(data.message || 'Erro ao duplicar modelo');
+            }
+        })
+        .catch(error => {
+            alert('Erro ao duplicar modelo: ' + error.message);
+            // Reabilitar botão
+            button.disabled = false;
+            button.textContent = 'Duplicar';
+        });
+    }
+
+    function showDeleteModal() {
+        document.getElementById('deleteModal').classList.remove('hidden');
+    }
+
+    function hideDeleteModal() {
+        document.getElementById('deleteModal').classList.add('hidden');
+        // Reset confirmation flag
+        document.getElementById('deleteConfirmed').value = 'false';
+    }
+
+    function executeDelete() {
+        // Set confirmation flag
+        document.getElementById('deleteConfirmed').value = 'true';
+        // Submit the form
+        document.getElementById('deleteModelForm').submit();
+    }
+
+    function confirmDelete() {
+        // Only allow form submission if confirmed through modal
+        const confirmed = document.getElementById('deleteConfirmed').value === 'true';
+        if (!confirmed) {
+            console.warn('Tentativa de exclusão sem confirmação detectada');
+            return false;
+        }
+        // Reset flag after validation
+        document.getElementById('deleteConfirmed').value = 'false';
+        return true;
     }
 </script>
 @endpush

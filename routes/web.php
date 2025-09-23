@@ -255,6 +255,7 @@ Route::post('/debug-form', function (\Illuminate\Http\Request $request) {
 
     // Budget Management Module (Módulo de Orçamentos)
     Route::resource('orcamentos', OrcamentoController::class);
+    Route::get('/orcamentos/{orcamento}/internal-view', [OrcamentoController::class, 'showInternal'])->name('orcamentos.internal-view');
     Route::patch('/orcamentos/{orcamento}/quitar', [OrcamentoController::class, 'quitar'])->name('orcamentos.quitar');
     Route::patch('/orcamentos/{orcamento}/update-status', [OrcamentoController::class, 'atualizarStatus'])->name('orcamentos.update-status');
     
@@ -277,6 +278,7 @@ Route::post('/debug-form', function (\Illuminate\Http\Request $request) {
         Route::delete('/files/{file}', [HistoricoController::class, 'deleteFile'])->name('files.delete');
         Route::get('/api', [HistoricoController::class, 'api'])->name('api');
         Route::get('/files/{file}/download', [HistoricoController::class, 'download'])->name('files.download');
+        Route::get('/{historico}/files', [HistoricoController::class, 'files'])->name('files');
     });
 
     // Clientes
@@ -295,6 +297,46 @@ Route::post('/debug-form', function (\Illuminate\Http\Request $request) {
     // Modelos de Propostas
     Route::resource('modelos-propostas', ModeloPropostaController::class)->parameters(['modelos-propostas' => 'modeloProposta']);
     Route::post('modelos-propostas/{modeloProposta}/duplicate', [ModeloPropostaController::class, 'duplicate'])->name('modelos-propostas.duplicate');
+
+    // Social Posts Module (Módulo de Redes Sociais)
+    Route::prefix('social-posts')->name('social-posts.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\SocialPostController::class, 'index'])->name('index');
+        Route::get('/calendar', [\App\Http\Controllers\SocialPostController::class, 'calendar'])->name('calendar');
+        Route::get('/create', [\App\Http\Controllers\SocialPostController::class, 'create'])->name('create');
+        Route::post('/', [\App\Http\Controllers\SocialPostController::class, 'store'])->name('store');
+        Route::get('/{socialPost}', [\App\Http\Controllers\SocialPostController::class, 'show'])->name('show');
+        Route::get('/{socialPost}/edit', [\App\Http\Controllers\SocialPostController::class, 'edit'])->name('edit');
+        Route::put('/{socialPost}', [\App\Http\Controllers\SocialPostController::class, 'update'])->name('update');
+        Route::delete('/{socialPost}', [\App\Http\Controllers\SocialPostController::class, 'destroy'])->name('destroy');
+        Route::get('/{socialPost}/generate-images', [\App\Http\Controllers\SocialPostController::class, 'generateImages'])->name('generate-images');
+        Route::post('/{socialPost}/duplicate', [\App\Http\Controllers\SocialPostController::class, 'duplicate'])->name('duplicate');
+        
+        // Background Colors Routes
+        Route::post('/background-colors', [\App\Http\Controllers\SocialPostController::class, 'saveBackgroundColor'])->name('background-colors.store');
+        Route::post('/background-colors/set-default', [\App\Http\Controllers\SocialPostController::class, 'setDefaultColorFromPicker'])->name('background-colors.set-default-picker');
+        Route::patch('/background-colors/{colorId}/default', [\App\Http\Controllers\SocialPostController::class, 'setDefaultColor'])->name('background-colors.set-default');
+        Route::delete('/background-colors/{colorId}', [\App\Http\Controllers\SocialPostController::class, 'deleteBackgroundColor'])->name('background-colors.destroy');
+    });
+
+    // Kanban Module (Módulo Kanban)
+    Route::prefix('kanban')->name('kanban.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\KanbanController::class, 'index'])->name('index');
+        Route::get('/api', [\App\Http\Controllers\KanbanController::class, 'apiIndex'])->name('api.index');
+        Route::get('/api/projetos', [\App\Http\Controllers\KanbanController::class, 'apiIndex'])->name('api.projetos.index');
+        Route::post('/mover-projeto', [\App\Http\Controllers\KanbanController::class, 'moverProjeto'])->name('mover-projeto');
+        Route::post('/api/projetos/mover', [\App\Http\Controllers\KanbanController::class, 'moverProjeto'])->name('api.projetos.mover');
+        Route::post('/criar-projeto-automatico', [\App\Http\Controllers\KanbanController::class, 'criarProjetoAutomatico'])->name('criar-projeto-automatico');
+        
+        // Etapas Routes
+        Route::get('/etapas', [\App\Http\Controllers\KanbanController::class, 'etapas'])->name('etapas.index');
+        Route::post('/etapas', [\App\Http\Controllers\KanbanController::class, 'criarEtapa'])->name('etapas.store');
+        Route::put('/etapas/{id}', [\App\Http\Controllers\KanbanController::class, 'atualizarEtapa'])->name('etapas.update');
+        Route::delete('/etapas/{id}', [\App\Http\Controllers\KanbanController::class, 'excluirEtapa'])->name('etapas.destroy');
+        Route::patch('/etapas/{etapa}/toggle-status', [\App\Http\Controllers\KanbanController::class, 'toggleEtapaStatus'])->name('etapas.toggle-status');
+        Route::put('/api/etapas/{etapa}', [\App\Http\Controllers\KanbanController::class, 'atualizarEtapa'])->name('api.etapas.update');
+        Route::post('/api/etapas', [\App\Http\Controllers\KanbanController::class, 'criarEtapa'])->name('api.etapas.store');
+        Route::delete('/api/etapas/{etapa}', [\App\Http\Controllers\KanbanController::class, 'excluirEtapa'])->name('api.etapas.destroy');
+    });
 
     // Portfolio Module (Módulo de Portfólio)
     Route::prefix('portfolio')->name('portfolio.')->group(function () {

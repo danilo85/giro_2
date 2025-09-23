@@ -143,7 +143,7 @@
             <!-- Ações Rápidas -->
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Ações Rápidas</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <a href="{{ route('clientes.edit', $cliente) }}" 
                        class="inline-flex items-center justify-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -151,20 +151,58 @@
                         </svg>
                         Editar Cliente
                     </a>
-                    <button type="button" 
-                            class="inline-flex items-center justify-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors">
+                    @if($cliente->telefone)
+                    <a href="tel:{{ $cliente->telefone }}" 
+                       class="inline-flex items-center justify-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                        </svg>
+                        Ligar
+                    </a>
+                    @else
+                    <button type="button" disabled
+                            class="inline-flex items-center justify-center px-4 py-2 bg-gray-400 text-white font-medium rounded-lg cursor-not-allowed opacity-50">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
                         </svg>
                         Ligar
                     </button>
-                    <button type="button" 
-                            class="inline-flex items-center justify-center px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-medium rounded-lg transition-colors">
+                    @endif
+                    @if($cliente->whatsapp)
+                    <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $cliente->whatsapp) }}" 
+                       target="_blank"
+                       class="inline-flex items-center justify-center px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-medium rounded-lg transition-colors">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                        </svg>
+                        WhatsApp
+                    </a>
+                    @else
+                    <button type="button" disabled
+                            class="inline-flex items-center justify-center px-4 py-2 bg-gray-400 text-white font-medium rounded-lg cursor-not-allowed opacity-50">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
                         </svg>
                         WhatsApp
                     </button>
+                    @endif
+                    @if($cliente->email)
+                    <a href="mailto:{{ $cliente->email }}" 
+                       class="inline-flex items-center justify-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg transition-colors">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                        Email
+                    </a>
+                    @else
+                    <button type="button" disabled
+                            class="inline-flex items-center justify-center px-4 py-2 bg-gray-400 text-white font-medium rounded-lg cursor-not-allowed opacity-50">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                        Email
+                    </button>
+                    @endif
                 </div>
             </div>
             
@@ -371,75 +409,179 @@
     <div class="mt-8">
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
             <div class="p-6">
-                <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Timeline de Orçamentos</h2>
-                    <div class="flex items-center space-x-3">
+                <!-- Header responsivo -->
+                <div class="mb-6">
+                    <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Timeline de Orçamentos</h2>
+                    
+                    <!-- Botões de ação - Layout responsivo -->
+                    <div class="flex flex-wrap items-center justify-end gap-2">
                         <!-- Botão Gerar Link -->
                         <button id="generateLinkBtn" 
-                                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors flex items-center space-x-2"
-                                onclick="generateExtractLink({{ $cliente->id }})">
+                                class="w-10 h-10 sm:w-auto sm:h-auto sm:px-4 sm:py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center sm:space-x-2 text-sm"
+                                onclick="generateExtractLink({{ $cliente->id }})"
+                                title="Gerar Link">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
                             </svg>
-                            <span>Gerar Link</span>
+                            <span class="hidden sm:inline ml-2">Gerar Link</span>
                         </button>
                         
                         <!-- Botão Desativar Link -->
                         <button id="deactivateLinkBtn" 
-                                class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors flex items-center space-x-2 hidden"
-                                onclick="deactivateExtractLink({{ $cliente->id }})">
+                                class="w-10 h-10 sm:w-auto sm:h-auto sm:px-4 sm:py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center sm:space-x-2 text-sm hidden"
+                                onclick="deactivateExtractLink({{ $cliente->id }})"
+                                title="Desativar Link">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L18.364 5.636M5.636 18.364l12.728-12.728"></path>
                             </svg>
-                            <span>Desativar Link</span>
+                            <span class="hidden sm:inline ml-2">Desativar Link</span>
                         </button>
                         
                         <!-- Botão Ver Extrato -->
                         <button id="viewExtractBtn" 
-                                class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors flex items-center space-x-2 hidden"
-                                onclick="viewExtract()">
+                                class="w-10 h-10 sm:w-auto sm:h-auto sm:px-4 sm:py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center sm:space-x-2 text-sm hidden"
+                                onclick="viewExtract()"
+                                title="Ver Extrato">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                             </svg>
-                            <span>Ver Extrato</span>
+                            <span class="hidden sm:inline ml-2">Ver Extrato</span>
                         </button>
                         
+                        <!-- Botão Novo Orçamento -->
                         <a href="{{ route('orcamentos.create', ['cliente_id' => $cliente->id]) }}" 
-                           class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg transition-colors">
-                            Novo Orçamento
+                           class="w-10 h-10 sm:w-auto sm:h-auto sm:px-4 sm:py-2 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center sm:space-x-2 text-sm"
+                           title="Novo Orçamento">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                            <span class="hidden sm:inline ml-2">Novo Orçamento</span>
                         </a>
                     </div>
                 </div>
                 
-                <!-- Timeline Container -->
+                <!-- Timeline Container - Responsivo -->
                 <div class="relative">
-                    <!-- Timeline Line -->
-                    <div class="absolute left-36 top-0 bottom-0 w-0.5 bg-gray-300"></div>
+                    <!-- Timeline Line - Corrigida para mobile -->
+                    <div class="absolute left-4 sm:left-36 top-0 bottom-0 w-0.5 bg-gray-300"></div>
                     
                     <!-- Timeline Items -->
                     <div class="space-y-6">
                         @foreach($cliente->orcamentos->sortByDesc('created_at') as $index => $orcamento)
-                        <div class="relative flex items-start">
-                            <!-- Data/Hora Column -->
-                            <div class="w-32 flex-shrink-0 text-right pr-6">
-                                <div class="text-sm font-medium text-gray-900 dark:text-white">
-                                    {{ $orcamento->created_at->format('d/m/Y') }}
-                                </div>
-                                <div class="text-xs text-gray-500 dark:text-gray-400">
-                                    {{ $orcamento->created_at->format('H:i') }}
+                        <div class="relative">
+                            <!-- Layout Mobile: Vertical Stack -->
+                            <div class="block sm:hidden">
+                                <!-- Timeline Marker - Corrigido para mobile -->
+                                <div class="absolute left-3.5 top-2 w-3 h-3 bg-gray-800 rounded-full border-2 border-white shadow-sm z-10"></div>
+                                
+                                <!-- Content Container -->
+                                <div class="ml-10">
+                                    <!-- Data/Hora -->
+                                    <div class="mb-2">
+                                        <div class="text-sm font-medium text-gray-900 dark:text-white">
+                                            {{ $orcamento->created_at->format('d/m/Y') }}
+                                        </div>
+                                        <div class="text-xs text-gray-500 dark:text-gray-400">
+                                            {{ $orcamento->created_at->format('H:i') }}
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Timeline Card -->
+                                    <a href="{{ route('orcamentos.show', $orcamento) }}" class="block">
+                                        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 hover:border-gray-300 dark:hover:border-gray-500 transition-all duration-200 hover:shadow-md">
+                                            <!-- Header -->
+                                            <div class="mb-3">
+                                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">
+                                                    {{ $orcamento->titulo }}
+                                                </h3>
+                                                <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+                                                    Orçamento #{{ $orcamento->id }}
+                                                </p>
+                                                
+                                                <!-- Status Badge -->
+                                                @php
+                                                    $statusColors = [
+                                                        'rascunho' => 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300',
+                                                        'enviado' => 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
+                                                        'aprovado' => 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
+                                                        'rejeitado' => 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
+                                                        'cancelado' => 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300',
+                                                        'quitado' => 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300'
+                                                    ];
+                                                @endphp
+                                                <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full {{ $statusColors[$orcamento->status] ?? 'bg-gray-100 text-gray-800' }}">
+                                                    {{ ucfirst($orcamento->status) }}
+                                                </span>
+                                            </div>
+                                            
+                                            <!-- Content - Stack Vertical -->
+                                            <div class="space-y-3">
+                                                <!-- Valor -->
+                                                <div class="flex items-center">
+                                                    <svg class="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                                                    </svg>
+                                                    <span class="text-lg font-bold text-green-600 dark:text-green-400">
+                                                        R$ {{ number_format($orcamento->valor_total, 2, ',', '.') }}
+                                                    </span>
+                                                </div>
+                                                
+                                                <!-- Autor/Responsável -->
+                                                <div class="flex items-center">
+                                                    <svg class="w-4 h-4 text-gray-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                                    </svg>
+                                                    <span class="text-sm text-gray-600 dark:text-gray-400">
+                                                        @if($orcamento->user)
+                                                            {{ $orcamento->user->name }}
+                                                        @else
+                                                            Sistema
+                                                        @endif
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Actions -->
+                                            <div class="mt-4 pt-3 border-t border-gray-200 dark:border-gray-600">
+                                                <div class="flex items-center justify-between">
+                                                    <span class="text-xs text-gray-500 dark:text-gray-400">
+                                                        Criado em {{ $orcamento->created_at->format('d/m/Y H:i') }}
+                                                    </span>
+                                                    <div class="flex items-center space-x-2">
+                                                        <span class="text-xs text-blue-600 dark:text-blue-400 font-medium">
+                                                            Ver detalhes
+                                                        </span>
+                                                        <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
                                 </div>
                             </div>
                             
-                            <!-- Timeline Marker -->
-                            <div class="relative z-10 flex items-center justify-center">
-                                <div class="w-3 h-3 bg-gray-800 rounded-full border-2 border-white shadow-sm"></div>
-                            </div>
-                            
-                            <!-- Timeline Content -->
-                            <div class="flex-1 ml-6">
-                                <!-- Timeline Card -->
-                                <a href="{{ route('orcamentos.show', $orcamento) }}" class="block">
+                            <!-- Layout Desktop: Horizontal -->
+                            <div class="hidden sm:flex sm:items-start">
+                                <!-- Data/Hora Column -->
+                                <div class="w-32 flex-shrink-0 text-right pr-6">
+                                    <div class="text-sm font-medium text-gray-900 dark:text-white">
+                                        {{ $orcamento->created_at->format('d/m/Y') }}
+                                    </div>
+                                    <div class="text-xs text-gray-500 dark:text-gray-400">
+                                        {{ $orcamento->created_at->format('H:i') }}
+                                    </div>
+                                </div>
+                                
+                                <!-- Timeline Marker -->
+                                <div class="absolute left-34 top-2 w-3 h-3 bg-gray-800 rounded-full border-2 border-white shadow-sm z-10"></div>
+                                
+                                <!-- Timeline Content -->
+                                <div class="flex-1 ml-6">
+                                    <!-- Timeline Card -->
+                                    <a href="{{ route('orcamentos.show', $orcamento) }}" class="block">
                                     <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 hover:border-gray-300 dark:hover:border-gray-500 transition-all duration-200 hover:shadow-md">
                                         <!-- Header -->
                                         <div class="flex items-start justify-between mb-3">
@@ -468,14 +610,14 @@
                                             </span>
                                         </div>
                                         
-                                        <!-- Content -->
-                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <!-- Content - Responsivo -->
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                             <!-- Valor -->
                                             <div class="flex items-center">
                                                 <svg class="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
                                                 </svg>
-                                                <span class="text-lg font-bold text-green-600 dark:text-green-400">
+                                                <span class="text-base sm:text-lg font-bold text-green-600 dark:text-green-400">
                                                     R$ {{ number_format($orcamento->valor_total, 2, ',', '.') }}
                                                 </span>
                                             </div>
@@ -485,7 +627,7 @@
                                                 <svg class="w-4 h-4 text-gray-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                                                 </svg>
-                                                <span class="text-sm text-gray-600 dark:text-gray-400">
+                                                <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                                                     @if($orcamento->user)
                                                         {{ $orcamento->user->name }}
                                                     @else
@@ -515,6 +657,7 @@
                                         </div>
                                     </div>
                                 </a>
+                                </div>
                             </div>
                         </div>
                         @endforeach
@@ -750,15 +893,23 @@ function viewExtract() {
 }
 
 function showGenerateButton() {
-    document.getElementById('generateLinkBtn').classList.remove('hidden');
-    document.getElementById('deactivateLinkBtn').classList.add('hidden');
-    document.getElementById('viewExtractBtn').classList.add('hidden');
+    const generateBtn = document.getElementById('generateLinkBtn');
+    const deactivateBtn = document.getElementById('deactivateLinkBtn');
+    const viewBtn = document.getElementById('viewExtractBtn');
+    
+    if (generateBtn) generateBtn.classList.remove('hidden');
+    if (deactivateBtn) deactivateBtn.classList.add('hidden');
+    if (viewBtn) viewBtn.classList.add('hidden');
 }
 
 function showActiveButtons() {
-    document.getElementById('generateLinkBtn').classList.add('hidden');
-    document.getElementById('deactivateLinkBtn').classList.remove('hidden');
-    document.getElementById('viewExtractBtn').classList.remove('hidden');
+    const generateBtn = document.getElementById('generateLinkBtn');
+    const deactivateBtn = document.getElementById('deactivateLinkBtn');
+    const viewBtn = document.getElementById('viewExtractBtn');
+    
+    if (generateBtn) generateBtn.classList.add('hidden');
+    if (deactivateBtn) deactivateBtn.classList.remove('hidden');
+    if (viewBtn) viewBtn.classList.remove('hidden');
 }
 
 function closeExtractModal() {

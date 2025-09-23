@@ -1,42 +1,49 @@
 <?php $__env->startSection('content'); ?>
-<div class="max-w-7xl mx-auto ">
+<div class="max-w-7xl mx-auto  px-4 py-6">
     <!-- Tags de Navegação Rápida -->
     <div class="flex flex-wrap gap-2 mb-8">
-        <a href="<?php echo e(route('dashboard')); ?>" class="inline-flex items-center px-3 py-1 text-sm font-medium rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+        <a href="<?php echo e(route('dashboard')); ?>" class="inline-flex items-center px-3 py-1 text-sm font-medium rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors duration-200 dark:border-gray-600 dark:text-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
             </svg>
             Dashboard
         </a>
-        <a href="<?php echo e(route('orcamentos.index')); ?>" class="inline-flex items-center px-3 py-1 text-sm font-medium rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+        <a href="<?php echo e(route('orcamentos.index')); ?>" class="inline-flex items-center px-3 py-1 text-sm font-medium rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors duration-200 dark:border-gray-600 dark:text-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
             </svg>
             Orçamentos
         </a>
-        <a href="<?php echo e(route('clientes.index')); ?>" class="inline-flex items-center px-3 py-1 text-sm font-medium rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+        <a href="<?php echo e(route('clientes.index')); ?>" class="inline-flex items-center px-3 py-1 text-sm font-medium rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors duration-200 dark:border-gray-600 dark:text-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
             </svg>
             Clientes
         </a>
-        <a href="<?php echo e(route('autores.index')); ?>" class="inline-flex items-center px-3 py-1 text-sm font-medium rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+        <a href="<?php echo e(route('autores.index')); ?>" class="inline-flex items-center px-3 py-1 text-sm font-medium rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors duration-200 dark:border-gray-600 dark:text-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
             </svg>
             Autores
         </a>
-        <span class="inline-flex items-center px-3 py-1 text-sm font-medium rounded-full bg-blue-600 text-white">
+        <span class="inline-flex items-center px-3 py-1 text-sm font-medium rounded-full bg-blue-600 text-white dark:bg-blue-700 dark:text-blue-200">
             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
             </svg>
             Pagamentos
         </span>
-        <a href="<?php echo e(route('modelos-propostas.index')); ?>" class="inline-flex items-center px-3 py-1 text-sm font-medium rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+        <a href="<?php echo e(route('modelos-propostas.index')); ?>" class="inline-flex items-center px-3 py-1 text-sm font-medium rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors duration-200 dark:border-gray-600 dark:text-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
             </svg>
             Modelos de Propostas
+        </a>
+                <a href="<?php echo e(route('kanban.index')); ?>" 
+           class="inline-flex items-center px-3 py-1 text-sm font-medium rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
+            <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"></path>
+            </svg>
+            Kanban
         </a>
     </div>
     <!-- Header -->
@@ -118,6 +125,40 @@
             </div>
         </div>
      </div>
+
+    <!-- Navegação de Período -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 mb-6">
+        <div class="px-6 py-4">
+            <div class="flex items-center justify-center">
+                <div class="flex items-center space-x-2 sm:space-x-4">
+                    <!-- Botão Mês Anterior -->
+                    <button type="button" id="prev-month" class="inline-flex items-center px-2 sm:px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors duration-200">
+                        <svg class="w-4 h-4 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                        <span class="hidden sm:inline">Anterior</span>
+                    </button>
+                    
+                    <!-- Display do Período Atual -->
+                    <button type="button" id="current-period" class="inline-flex items-center px-3 sm:px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-200">
+                        <svg class="w-4 h-4 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                        <span id="period-display" class="hidden sm:inline"><?php echo e(\Carbon\Carbon::now()->locale('pt_BR')->isoFormat('MMMM YYYY')); ?></span>
+                        <span id="period-display-mobile" class="sm:hidden"><?php echo e(\Carbon\Carbon::now()->locale('pt_BR')->isoFormat('MMM YY')); ?></span>
+                    </button>
+                    
+                    <!-- Botão Próximo Mês -->
+                    <button type="button" id="next-month" class="inline-flex items-center px-2 sm:px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors duration-200">
+                        <span class="hidden sm:inline">Próximo</span>
+                        <svg class="w-4 h-4 sm:ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Filtros Expandíveis -->
     <div id="filters-container" class="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 mb-8" style="display: none;">
@@ -228,9 +269,9 @@
                                     <?php if($pagamento->orcamento->cliente->avatar): ?>
                                         <img src="<?php echo e(Storage::url($pagamento->orcamento->cliente->avatar)); ?>" 
                                              alt="<?php echo e($pagamento->orcamento->cliente->nome); ?>" 
-                                             class="w-12 h-12 rounded-full object-cover">
+                                             class="w-12 h-12 rounded-full object-cover mr-3">
                                     <?php else: ?>
-                                        <div class="w-12 h-12 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
+                                        <div class="w-12 h-12 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center mr-3">
                                             <span class="text-sm font-medium text-gray-600 dark:text-gray-300"><?php echo e(substr($pagamento->orcamento->cliente->nome, 0, 1)); ?></span>
                                         </div>
                                     <?php endif; ?>
@@ -345,9 +386,9 @@
                             </div>
                         <?php endif; ?>
                         
-                        <!-- Barra Deslizante Vertical -->
+                        <!-- Barra Deslizante Vertical (Desktop) / Horizontal (Mobile) -->
                         <?php if($grupo['count'] > 1): ?>
-                            <div class="vertical-slider-container absolute -right-3 top-1/2 transform -translate-y-1/2 z-30">
+                            <div class="vertical-slider-container absolute -right-3 top-1/2 transform -translate-y-1/2 z-30 md:block hidden">
                                 <div class="vertical-slider bg-gray-300 dark:bg-gray-600 rounded-full w-2 h-32 relative cursor-pointer" 
                                      data-total-cards="<?php echo e($grupo['count']); ?>" 
                                      data-current-card="0">
@@ -358,11 +399,34 @@
 
                                 </div>
                             </div>
+                            
+                            <!-- Barra Deslizante Horizontal (Mobile) -->
+                            <div class="horizontal-slider-container absolute -bottom-8 left-1/2 transform -translate-x-1/2 z-30 md:hidden block">
+                                <div class="horizontal-slider bg-gray-300 dark:bg-gray-600 rounded-full h-2 w-32 relative cursor-pointer" 
+                                     data-total-cards="<?php echo e($grupo['count']); ?>" 
+                                     data-current-card="0">
+                                    <div class="slider-thumb bg-blue-600 w-4 h-4 rounded-full absolute -top-1 left-0 transform -translate-x-1/2 transition-all duration-300 shadow-lg hover:bg-blue-700 cursor-grab active:cursor-grabbing"></div>
+                                </div>
+                                <div class="slider-tooltip absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 transition-opacity duration-200 pointer-events-none">
+                                    1/<?php echo e($grupo['count']); ?>
+
+                                </div>
+                            </div>
                         <?php endif; ?>
                     </div>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </div>
             
+<footer class="mt-8">
+    <div class="text-center py-6">
+        <p class="text-sm text-gray-600 dark:text-gray-400">
+            © <?php echo e(date('Y')); ?> Danilo Miguel. Todos os direitos reservados.
+        </p>
+        <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">
+            Sistema de Gestão Financeira - Desenvolvido com Laravel
+        </p>
+    </div>
+</footer>
 
             
             <!-- Pagination -->
@@ -523,8 +587,8 @@
         </a>
     </div>
 <!-- Delete Modal -->
-<div id="deleteModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden z-[10000]">
-    <div class="mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800">
+<div id="deleteModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden z-[10003]">
+    <div class="mx-4 sm:mx-auto p-5 w-full sm:w-96 max-w-md shadow-lg rounded-md bg-white dark:bg-gray-800">
         <div class="mt-3 text-center">
             <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900">
                 <svg class="h-6 w-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -721,6 +785,35 @@
         opacity: 1;
     }
     
+    /* Barra deslizante horizontal (mobile) */
+    .horizontal-slider-container {
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    .payment-stack-container:hover .horizontal-slider-container {
+        opacity: 1;
+    }
+    
+    .horizontal-slider {
+        position: relative;
+        background: linear-gradient(to right, #e5e7eb, #9ca3af);
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    .horizontal-slider .slider-thumb {
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        border: 2px solid white;
+    }
+    
+    .horizontal-slider .slider-thumb:hover {
+        transform: translateX(-50%) translateY(-1px) scale(1.1);
+    }
+    
+    .horizontal-slider-container:hover .slider-tooltip {
+        opacity: 1;
+    }
+    
     /* Hover effects */
     .payment-stack-container:not(.expanded):hover .payment-card:first-child {
         transform: translateY(-2px);
@@ -787,6 +880,10 @@
         .slider-thumb {
             width: 12px;
             height: 12px;
+        }
+        
+        .payment-stack-container {
+            margin-bottom: 2.5rem; /* Espaço para o slider horizontal */
         }
         
         .payment-stack-container:not(.expanded) .payment-card:nth-child(2) {
@@ -895,6 +992,88 @@
                 thumb.style.top = `${thumbPosition}%`;
             });
         });
+        
+        // Inicializar sliders horizontais (mobile)
+        const horizontalSliders = document.querySelectorAll('.horizontal-slider');
+        horizontalSliders.forEach(slider => {
+            initHorizontalSlider(slider);
+        });
+    }
+    
+    function initHorizontalSlider(slider) {
+        const thumb = slider.querySelector('.slider-thumb');
+        const container = slider.closest('.payment-stack-container');
+        const cards = container.querySelectorAll('.payment-card');
+        const tooltip = slider.parentElement.querySelector('.slider-tooltip');
+        const totalCards = parseInt(slider.dataset.totalCards);
+        
+        let isDragging = false;
+        let currentCardIndex = 0;
+        
+        // Configurar posição inicial
+        updateCardStack(container, cards, currentCardIndex);
+        updateTooltip(tooltip, currentCardIndex + 1, totalCards);
+        
+        // Event listeners para mouse
+        thumb.addEventListener('mousedown', startDrag);
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('mouseup', stopDrag);
+        
+        // Event listeners para touch (mobile)
+        thumb.addEventListener('touchstart', startDrag, { passive: false });
+        document.addEventListener('touchmove', drag, { passive: false });
+        document.addEventListener('touchend', stopDrag);
+        
+        function startDrag(e) {
+            isDragging = true;
+            thumb.classList.add('active:cursor-grabbing');
+            e.preventDefault();
+        }
+        
+        function drag(e) {
+            if (!isDragging) return;
+            
+            e.preventDefault();
+            const rect = slider.getBoundingClientRect();
+            const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+            const relativeX = clientX - rect.left;
+            const percentage = Math.max(0, Math.min(1, relativeX / rect.width));
+            
+            // Calcular índice do card baseado na posição
+            const newCardIndex = Math.round(percentage * (totalCards - 1));
+            
+            if (newCardIndex !== currentCardIndex) {
+                currentCardIndex = newCardIndex;
+                updateCardStack(container, cards, currentCardIndex);
+                updateTooltip(tooltip, currentCardIndex + 1, totalCards);
+            }
+            
+            // Atualizar posição do thumb
+            const thumbPosition = (currentCardIndex / (totalCards - 1)) * 100;
+            thumb.style.left = `${thumbPosition}%`;
+        }
+        
+        function stopDrag() {
+            isDragging = false;
+            thumb.classList.remove('active:cursor-grabbing');
+        }
+        
+        // Click direto na barra
+        slider.addEventListener('click', function(e) {
+            if (e.target === thumb) return;
+            
+            const rect = slider.getBoundingClientRect();
+            const relativeX = e.clientX - rect.left;
+            const percentage = Math.max(0, Math.min(1, relativeX / rect.width));
+            const newCardIndex = Math.round(percentage * (totalCards - 1));
+            
+            currentCardIndex = newCardIndex;
+            updateCardStack(container, cards, currentCardIndex);
+            updateTooltip(tooltip, currentCardIndex + 1, totalCards);
+            
+            const thumbPosition = (currentCardIndex / (totalCards - 1)) * 100;
+            thumb.style.left = `${thumbPosition}%`;
+        });
     }
     
     function updateCardStack(container, cards, activeIndex) {
@@ -948,6 +1127,110 @@
         if (e.target === this) {
             closeDeleteModal();
         }
+    });
+    
+    // Navegação de Período
+    let currentMonth = new Date().getMonth() + 1;
+    let currentYear = new Date().getFullYear();
+    
+    // Carregar período salvo do localStorage
+    function loadSavedPeriod() {
+        const saved = localStorage.getItem('pagamentos_current_period');
+        if (saved) {
+            const period = JSON.parse(saved);
+            currentMonth = period.month;
+            currentYear = period.year;
+        }
+        updatePeriodDisplay();
+    }
+    
+    // Salvar período atual no localStorage
+    function saveCurrentPeriod() {
+        localStorage.setItem('pagamentos_current_period', JSON.stringify({
+            month: currentMonth,
+            year: currentYear
+        }));
+    }
+    
+    // Atualizar display do período
+    function updatePeriodDisplay() {
+        const months = [
+            'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+            'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+        ];
+        
+        const monthsShort = [
+            'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun',
+            'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'
+        ];
+        
+        const periodDisplay = document.getElementById('period-display');
+        const periodDisplayMobile = document.getElementById('period-display-mobile');
+        
+        if (periodDisplay) {
+            periodDisplay.textContent = `${months[currentMonth - 1]} ${currentYear}`;
+        }
+        
+        if (periodDisplayMobile) {
+            const shortYear = currentYear.toString().slice(-2);
+            periodDisplayMobile.textContent = `${monthsShort[currentMonth - 1]} ${shortYear}`;
+        }
+    }
+    
+    // Carregar dados dos pagamentos para o período atual
+    function loadPagamentosData() {
+        const url = new URL(window.location.href);
+        url.searchParams.set('mes', currentMonth);
+        url.searchParams.set('ano', currentYear);
+        
+        // Manter outros filtros existentes
+        const currentParams = new URLSearchParams(window.location.search);
+        ['orcamento_id', 'forma_pagamento', 'data_inicio', 'data_fim', 'busca'].forEach(param => {
+            if (currentParams.has(param)) {
+                url.searchParams.set(param, currentParams.get(param));
+            }
+        });
+        
+        window.location.href = url.toString();
+    }
+    
+    // Event listeners para os botões de navegação
+    document.addEventListener('DOMContentLoaded', function() {
+        loadSavedPeriod();
+        
+        // Botão mês anterior
+        document.getElementById('prev-month').addEventListener('click', function() {
+            currentMonth--;
+            if (currentMonth < 1) {
+                currentMonth = 12;
+                currentYear--;
+            }
+            updatePeriodDisplay();
+            saveCurrentPeriod();
+            loadPagamentosData();
+        });
+        
+        // Botão próximo mês
+        document.getElementById('next-month').addEventListener('click', function() {
+            currentMonth++;
+            if (currentMonth > 12) {
+                currentMonth = 1;
+                currentYear++;
+            }
+            updatePeriodDisplay();
+            saveCurrentPeriod();
+            loadPagamentosData();
+        });
+        
+        // Botão voltar ao mês atual
+        document.getElementById('current-period').addEventListener('click', function() {
+            const now = new Date();
+            currentMonth = now.getMonth() + 1;
+            currentYear = now.getFullYear();
+            updatePeriodDisplay();
+            saveCurrentPeriod();
+            loadPagamentosData();
+        });
     });
 </script>
 <?php $__env->stopPush(); ?>

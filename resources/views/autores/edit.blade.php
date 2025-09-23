@@ -9,16 +9,24 @@
     <div class="mb-8">
         <div class="flex items-center justify-between">
             <div class="flex items-center space-x-4">
-                <a href="{{ route('autores.index') }}" 
-                   class="inline-flex items-center justify-center w-10 h-10 text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                    </svg>
-                </a>
                 <div>
                     <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Editar Autor</h1>
                     <p class="mt-2 text-gray-600 dark:text-gray-400">Atualize as informações do autor</p>
                 </div>
+            </div>
+            
+            <div class="flex items-center space-x-3">
+                <a href="{{ route('autores.show', $autor) }}" 
+                   class="inline-flex items-center justify-center w-10 h-10 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    </svg>
+                </a>
+                <a href="{{ route('autores.index') }}" 
+                   class="inline-flex items-center px-4 py-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                </a>
             </div>
         </div>
     </div>
@@ -149,14 +157,16 @@
                         </div>
 
                         <!-- Actions -->
-                        <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
+                        <div class="flex flex-col sm:flex-row gap-3 pt-6 border-t border-gray-200 dark:border-gray-700">
                             <a href="{{ route('autores.index') }}" 
-                               class="px-4 py-2 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
+                               class="w-full sm:w-auto px-4 py-2 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors text-center inline-flex items-center justify-center">
+                                <i class="fas fa-times mr-2"></i>
                                 Cancelar
                             </a>
                             <button type="submit" 
-                                    class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors">
-                                Atualizar Autor
+                                    class="w-full sm:w-auto px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors inline-flex items-center justify-center">
+                                <i class="fas fa-save mr-2"></i>
+                                Salvar Alterações
                             </button>
                         </div>
                     </form>

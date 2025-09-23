@@ -85,7 +85,7 @@
     </div>
 
     <!-- Summary Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
         <div class="bg-gradient-to-br from-emerald-500 to-green-600 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 p-6 text-white">
             <div class="flex items-center justify-between">
                 <div>
@@ -142,34 +142,42 @@
             </div>
         </div>
     </div>
-
-    <!-- Period Navigation -->
-    <div class="bg-white dark:bg-gray-800 rounded-lg p-4 mb-8">
-        <div class="flex items-center justify-center space-x-3">
-            <button id="prev-month" title="Mês anterior" class="group flex items-center justify-center w-8 h-8 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                </svg>
-            </button>
-            
-            <h3 id="current-period" class="text-xl font-semibold text-gray-800 dark:text-white px-4">Janeiro 2024</h3>
-            
-            <button id="current-month-btn" title="Voltar ao mês atual" class="group flex items-center justify-center w-6 h-6 text-gray-600 dark:text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors duration-200">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-                </svg>
-            </button>
-            
-            <button id="next-month" title="Próximo mês" class="group flex items-center justify-center w-8 h-8 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                </svg>
-            </button>
+    <!-- Navegação de Período -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 mb-6">
+        <div class="px-6 py-4">
+            <div class="flex items-center justify-center">
+                <div class="flex items-center space-x-2 sm:space-x-4">
+                    <!-- Botão Mês Anterior -->
+                    <button type="button" id="prev-month" class="inline-flex items-center px-2 sm:px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors duration-200">
+                        <svg class="w-4 h-4 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                        <span class="hidden sm:inline">Anterior</span>
+                    </button>
+                    
+                    <!-- Display do Período Atual -->
+                    <button type="button" id="current-period" class="inline-flex items-center px-3 sm:px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-200">
+                        <svg class="w-4 h-4 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                        <span id="period-display" class="hidden sm:inline">{{ \Carbon\Carbon::now()->locale('pt_BR')->isoFormat('MMMM YYYY') }}</span>
+                        <span id="period-display-mobile" class="sm:hidden">{{ \Carbon\Carbon::now()->locale('pt_BR')->isoFormat('MMM YY') }}</span>
+                    </button>
+                    
+                    <!-- Botão Próximo Mês -->
+                    <button type="button" id="next-month" class="inline-flex items-center px-2 sm:px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors duration-200">
+                        <span class="hidden sm:inline">Próximo</span>
+                        <svg class="w-4 h-4 sm:ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- Modal de Filtros -->
-    <div id="filter-modal" class="fixed inset-0 bg-black bg-opacity-50 z-[9999] hidden flex items-center justify-center p-4">
+    <div id="filter-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center p-4" style="z-index: 10003;">
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95 opacity-0" id="filter-modal-content">
             <!-- Header do Modal -->
             <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
@@ -201,11 +209,14 @@
                             </div>
                             <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Tipo de Transação</label>
                         </div>
-                        <select id="filter-type" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                            <option value="">Todos os tipos</option>
-                            <option value="income">💰 Receitas</option>
-                            <option value="expense">💸 Despesas</option>
-                        </select>
+                        <div class="flex flex-wrap gap-2">
+                            <button type="button" onclick="toggleTypeFilter('income')" id="type-income-tag" class="inline-flex items-center px-3 py-2 rounded-full text-sm font-medium border transition-all duration-200 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-green-50 dark:hover:bg-green-900 hover:border-green-300 dark:hover:border-green-600">
+                                💰 Receitas
+                            </button>
+                            <button type="button" onclick="toggleTypeFilter('expense')" id="type-expense-tag" class="inline-flex items-center px-3 py-2 rounded-full text-sm font-medium border transition-all duration-200 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-red-50 dark:hover:bg-red-900 hover:border-red-300 dark:hover:border-red-600">
+                                💸 Despesas
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Filtro de Status -->
@@ -218,11 +229,14 @@
                             </div>
                             <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Status</label>
                         </div>
-                        <select id="filter-status" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                            <option value="">Todos os status</option>
-                            <option value="paid">✅ Pago</option>
-                            <option value="pending">⏳ Pendente</option>
-                        </select>
+                        <div class="flex flex-wrap gap-2">
+                            <button type="button" onclick="toggleStatusFilter('paid')" id="status-paid-tag" class="inline-flex items-center px-3 py-2 rounded-full text-sm font-medium border transition-all duration-200 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-green-50 dark:hover:bg-green-900 hover:border-green-300 dark:hover:border-green-600">
+                                ✅ Pago
+                            </button>
+                            <button type="button" onclick="toggleStatusFilter('pending')" id="status-pending-tag" class="inline-flex items-center px-3 py-2 rounded-full text-sm font-medium border transition-all duration-200 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-yellow-50 dark:hover:bg-yellow-900 hover:border-yellow-300 dark:hover:border-yellow-600">
+                                ⏳ Pendente
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Filtro de Categoria -->
@@ -258,23 +272,44 @@
             </div>
 
             <!-- Footer do Modal -->
-            <div class="flex items-center justify-between p-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
-                <button onclick="clearFilters()" class="inline-flex items-center px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white text-sm font-medium rounded-lg transition-all duration-200 hover:shadow-md">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                    </svg>
-                    Limpar Filtros
-                </button>
-                <div class="flex space-x-3">
-                    <button onclick="closeFilterModal()" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-lg transition-all duration-200">
+            <div class="p-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
+                <!-- Botões Mobile - Full Width -->
+                <div class="block md:hidden space-y-3">
+                    <button onclick="clearFilters()" class="w-full inline-flex items-center justify-center px-4 py-3 bg-gray-500 hover:bg-gray-600 text-white text-sm font-medium rounded-lg transition-all duration-200 hover:shadow-md">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                        Limpar Filtros
+                    </button>
+                    <button onclick="closeFilterModal()" class="w-full px-4 py-3 bg-gray-200 hover:bg-gray-300 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-lg transition-all duration-200">
                         Cancelar
                     </button>
-                    <button onclick="applyFilters()" class="inline-flex items-center px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-all duration-200 hover:shadow-md">
+                    <button onclick="applyFilters()" class="w-full inline-flex items-center justify-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-all duration-200 hover:shadow-md">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                         </svg>
                         Aplicar Filtros
                     </button>
+                </div>
+                <!-- Botões Desktop - Layout Original -->
+                <div class="hidden md:flex items-center justify-between">
+                    <button onclick="clearFilters()" class="inline-flex items-center px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white text-sm font-medium rounded-lg transition-all duration-200 hover:shadow-md">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                        Limpar Filtros
+                    </button>
+                    <div class="flex space-x-3">
+                        <button onclick="closeFilterModal()" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-lg transition-all duration-200">
+                            Cancelar
+                        </button>
+                        <button onclick="applyFilters()" class="inline-flex items-center px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-all duration-200 hover:shadow-md">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Aplicar Filtros
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -330,6 +365,16 @@
         <!-- Paginação será carregada aqui via JavaScript -->
     </div>
 </div>
+<footer class="mt-8">
+    <div class="text-center py-6">
+        <p class="text-sm text-gray-600 dark:text-gray-400">
+            © {{ date('Y') }} Danilo Miguel. Todos os direitos reservados.
+        </p>
+        <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">
+            Sistema de Gestão Financeira - Desenvolvido com Laravel
+        </p>
+    </div>
+</footer>
 
 <!-- Botão Flutuante -->
 <div class="fixed bottom-6 right-6 z-50">
@@ -356,7 +401,7 @@
 
 <!-- Transaction Card Template -->
 <template id="transaction-card-template">
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-all duration-200 hover:border-gray-300 dark:hover:border-gray-600 flex flex-col min-h-[200px] relative">
+    <div class="transaction-card bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-all duration-200 hover:border-gray-300 dark:hover:border-gray-600 flex flex-col min-h-[200px] relative">
         <!-- Selo de PAGO -->
         <div class="paid-stamp hidden absolute top-3 right-3 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold transform -rotate-12 shadow-lg border-2 border-green-600 z-10">
             <i class="fas fa-check mr-1"></i>
@@ -377,7 +422,7 @@
         <div class="flex items-center gap-2 mb-4 ml-16">
             <span class="transaction-category-badge inline-flex items-center px-2 py-1 text-xs font-medium rounded-full"></span>
             <span class="transaction-status-badge px-3 py-1 text-xs font-medium rounded-full"></span>
-            <span class="transaction-account-badge hidden px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300"></span>
+            <span class="transaction-account-type-badge hidden px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-700 dark:bg-blue-800 dark:text-blue-200"></span>
         </div>
         
         <div class="flex items-center justify-between mb-4">
@@ -537,44 +582,53 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Period navigation event listeners
-document.getElementById('prev-month').addEventListener('click', function() {
-    currentMonth--;
-    if (currentMonth < 1) {
-        currentMonth = 12;
-        currentYear--;
-    }
-    updatePeriodDisplay();
-    saveCurrentPeriod();
-    loadTransactions();
-});
+const prevMonthBtn = document.getElementById('prev-month');
+if (prevMonthBtn) {
+    prevMonthBtn.addEventListener('click', function() {
+        currentMonth--;
+        if (currentMonth < 1) {
+            currentMonth = 12;
+            currentYear--;
+        }
+        updatePeriodDisplay();
+        saveCurrentPeriod();
+        loadTransactions();
+    });
+}
 
-document.getElementById('next-month').addEventListener('click', function() {
-    currentMonth++;
-    if (currentMonth > 12) {
-        currentMonth = 1;
-        currentYear++;
-    }
-    updatePeriodDisplay();
-    saveCurrentPeriod();
-    loadTransactions();
-});
+const nextMonthBtn = document.getElementById('next-month');
+if (nextMonthBtn) {
+    nextMonthBtn.addEventListener('click', function() {
+        currentMonth++;
+        if (currentMonth > 12) {
+            currentMonth = 1;
+            currentYear++;
+        }
+        updatePeriodDisplay();
+        saveCurrentPeriod();
+        loadTransactions();
+    });
+}
 
 // Botão para voltar ao mês atual
-document.getElementById('current-month-btn').addEventListener('click', function() {
-    const now = new Date();
-    currentMonth = now.getMonth() + 1;
-    currentYear = now.getFullYear();
-    updatePeriodDisplay();
-    saveCurrentPeriod();
-    loadTransactions();
-    
-    // Animação de feedback visual
-    const btn = this;
-    btn.classList.add('animate-pulse');
-    setTimeout(() => {
-        btn.classList.remove('animate-pulse');
-    }, 600);
-});
+const currentMonthBtn = document.getElementById('current-period');
+if (currentMonthBtn) {
+    currentMonthBtn.addEventListener('click', function() {
+        const now = new Date();
+        currentMonth = now.getMonth() + 1;
+        currentYear = now.getFullYear();
+        updatePeriodDisplay();
+        saveCurrentPeriod();
+        loadTransactions();
+        
+        // Animação de feedback visual
+        const btn = this;
+        btn.classList.add('animate-pulse');
+        setTimeout(() => {
+            btn.classList.remove('animate-pulse');
+        }, 600);
+    });
+}
 
 // Funções de persistência do período
 function saveCurrentPeriod() {
@@ -628,11 +682,26 @@ function updatePeriodDisplay() {
         'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
         'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
     ];
+    const monthsShort = [
+        'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun',
+        'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'
+    ];
+    
+    const periodDisplay = document.getElementById('period-display');
+    const periodDisplayMobile = document.getElementById('period-display-mobile');
+    
+    if (periodDisplay) {
+        periodDisplay.textContent = `${months[currentMonth - 1]} ${currentYear}`;
+    }
+    
+    if (periodDisplayMobile) {
+        const shortYear = currentYear.toString().slice(-2);
+        periodDisplayMobile.textContent = `${monthsShort[currentMonth - 1]} ${shortYear}`;
+    }
+    
+    // Animação suave na mudança de período
     const periodElement = document.getElementById('current-period');
     if (periodElement) {
-        periodElement.textContent = `${months[currentMonth - 1]} ${currentYear}`;
-        
-        // Animação suave na mudança de período
         periodElement.style.transform = 'scale(1.05)';
         setTimeout(() => {
             periodElement.style.transform = 'scale(1)';
@@ -684,11 +753,125 @@ function updateFilterCount() {
     }
 }
 
+// Funções para controlar tags
+function toggleTypeTag(type) {
+    const tags = document.querySelectorAll('.type-tag');
+    tags.forEach(tag => {
+        if (tag.dataset.type === type) {
+            tag.classList.toggle('bg-blue-500');
+            tag.classList.toggle('text-white');
+            tag.classList.toggle('bg-gray-200');
+            tag.classList.toggle('text-gray-700');
+        } else {
+            tag.classList.remove('bg-blue-500', 'text-white');
+            tag.classList.add('bg-gray-200', 'text-gray-700');
+        }
+    });
+}
+
+function toggleStatusTag(status) {
+    const tags = document.querySelectorAll('.status-tag');
+    tags.forEach(tag => {
+        if (tag.dataset.status === status) {
+            tag.classList.toggle('bg-green-500');
+            tag.classList.toggle('text-white');
+            tag.classList.toggle('bg-gray-200');
+            tag.classList.toggle('text-gray-700');
+        } else {
+            tag.classList.remove('bg-green-500', 'text-white');
+            tag.classList.add('bg-gray-200', 'text-gray-700');
+        }
+    });
+}
+
+// Funções para os botões de filtro do modal
+function toggleTypeFilter(type) {
+    const button = document.getElementById(`type-${type}-tag`);
+    if (!button) return;
+    
+    // Remove seleção de outros botões de tipo
+    const allTypeButtons = document.querySelectorAll('[id^="type-"][id$="-tag"]');
+    allTypeButtons.forEach(btn => {
+        if (btn !== button) {
+            btn.classList.remove('bg-blue-500', 'text-white', 'border-blue-500');
+            btn.classList.add('bg-white', 'dark:bg-gray-700', 'border-gray-300', 'dark:border-gray-600', 'text-gray-700', 'dark:text-gray-300');
+        }
+    });
+    
+    // Toggle do botão clicado
+    const isSelected = button.classList.contains('bg-blue-500');
+    if (isSelected) {
+        // Desselecionar
+        button.classList.remove('bg-blue-500', 'text-white', 'border-blue-500');
+        button.classList.add('bg-white', 'dark:bg-gray-700', 'border-gray-300', 'dark:border-gray-600', 'text-gray-700', 'dark:text-gray-300');
+    } else {
+        // Selecionar
+        button.classList.remove('bg-white', 'dark:bg-gray-700', 'border-gray-300', 'dark:border-gray-600', 'text-gray-700', 'dark:text-gray-300');
+        button.classList.add('bg-blue-500', 'text-white', 'border-blue-500');
+    }
+}
+
+function toggleStatusFilter(status) {
+    const button = document.getElementById(`status-${status}-tag`);
+    if (!button) return;
+    
+    // Remove seleção de outros botões de status
+    const allStatusButtons = document.querySelectorAll('[id^="status-"][id$="-tag"]');
+    allStatusButtons.forEach(btn => {
+        if (btn !== button) {
+            btn.classList.remove('bg-green-500', 'text-white', 'border-green-500');
+            btn.classList.add('bg-white', 'dark:bg-gray-700', 'border-gray-300', 'dark:border-gray-600', 'text-gray-700', 'dark:text-gray-300');
+        }
+    });
+    
+    // Toggle do botão clicado
+    const isSelected = button.classList.contains('bg-green-500');
+    if (isSelected) {
+        // Desselecionar
+        button.classList.remove('bg-green-500', 'text-white', 'border-green-500');
+        button.classList.add('bg-white', 'dark:bg-gray-700', 'border-gray-300', 'dark:border-gray-600', 'text-gray-700', 'dark:text-gray-300');
+    } else {
+        // Selecionar
+        button.classList.remove('bg-white', 'dark:bg-gray-700', 'border-gray-300', 'dark:border-gray-600', 'text-gray-700', 'dark:text-gray-300');
+        button.classList.add('bg-green-500', 'text-white', 'border-green-500');
+    }
+}
+
 function clearFilters() {
-    document.getElementById('filter-type').value = '';
-    document.getElementById('filter-status').value = '';
-    document.getElementById('filter-category').value = '';
-    document.getElementById('filter-account').value = '';
+    // Limpar botões de tipo
+    const typeButtons = document.querySelectorAll('[id^="type-"][id$="-tag"]');
+    typeButtons.forEach(button => {
+        button.classList.remove('bg-blue-500', 'text-white', 'border-blue-500');
+        button.classList.add('bg-white', 'dark:bg-gray-700', 'border-gray-300', 'dark:border-gray-600', 'text-gray-700', 'dark:text-gray-300');
+    });
+    
+    // Limpar botões de status
+    const statusButtons = document.querySelectorAll('[id^="status-"][id$="-tag"]');
+    statusButtons.forEach(button => {
+        button.classList.remove('bg-green-500', 'text-white', 'border-green-500');
+        button.classList.add('bg-white', 'dark:bg-gray-700', 'border-gray-300', 'dark:border-gray-600', 'text-gray-700', 'dark:text-gray-300');
+    });
+    
+    // Limpar tags antigas (compatibilidade)
+    const typeTags = document.querySelectorAll('.type-tag');
+    typeTags.forEach(tag => {
+        tag.classList.remove('bg-blue-500', 'text-white');
+        tag.classList.add('bg-gray-200', 'text-gray-700');
+    });
+    
+    const statusTags = document.querySelectorAll('.status-tag');
+    statusTags.forEach(tag => {
+        tag.classList.remove('bg-green-500', 'text-white');
+        tag.classList.add('bg-gray-200', 'text-gray-700');
+    });
+    
+    // Limpar selects restantes
+    const filterCategory = document.getElementById('filter-category');
+    const filterAccount = document.getElementById('filter-account');
+    
+    if (filterCategory) filterCategory.value = '';
+    if (filterAccount) filterAccount.value = '';
+    
     currentFilters = {};
     updateFilterCount();
     loadTransactions();
@@ -696,10 +879,34 @@ function clearFilters() {
 }
 
 function applyFilters() {
-    const type = document.getElementById('filter-type').value;
-    const status = document.getElementById('filter-status').value;
-    const category = document.getElementById('filter-category').value;
-    const account = document.getElementById('filter-account').value;
+    // Obter tipo selecionado dos botões de filtro
+    let type = '';
+    const incomeButton = document.getElementById('type-income-tag');
+    const expenseButton = document.getElementById('type-expense-tag');
+    
+    if (incomeButton && incomeButton.classList.contains('bg-blue-500')) {
+        type = 'income';
+    } else if (expenseButton && expenseButton.classList.contains('bg-blue-500')) {
+        type = 'expense';
+    }
+    
+    // Obter status selecionado dos botões de filtro
+    let status = '';
+    const paidButton = document.getElementById('status-paid-tag');
+    const pendingButton = document.getElementById('status-pending-tag');
+    
+    if (paidButton && paidButton.classList.contains('bg-green-500')) {
+        status = 'paid';
+    } else if (pendingButton && pendingButton.classList.contains('bg-green-500')) {
+        status = 'pending';
+    }
+    
+    // Obter valores dos selects restantes
+    const filterCategory = document.getElementById('filter-category');
+    const filterAccount = document.getElementById('filter-account');
+    
+    const category = filterCategory ? filterCategory.value : '';
+    const account = filterAccount ? filterAccount.value : '';
     
     currentFilters = {};
     if (type) currentFilters.tipo = type;
@@ -1334,15 +1541,22 @@ function renderTransactions(transactions) {
             }
         }
         
-        // Badge de conta/cartão - só mostrar quando não há filtro ativo
-        const accountBadgeEl = card.querySelector('.transaction-account-badge');
-        if (accountBadgeEl) {
+        // Badge de tipo de conta - só mostrar quando não há filtro ativo
+        const accountTypeBadgeEl = card.querySelector('.transaction-account-type-badge');
+        
+        if (accountTypeBadgeEl) {
             const hasActiveFilter = currentFilters.credit_card_id;
             if (!hasActiveFilter && (transaction.bank || transaction.credit_card)) {
-                accountBadgeEl.textContent = getAccountName(transaction);
-                accountBadgeEl.classList.remove('hidden');
+                if (transaction.bank) {
+                    // Mostrar o tipo de conta específico (corrente, poupança, etc.)
+                    const tipoContaTexto = transaction.bank.tipo_conta || 'Conta';
+                    accountTypeBadgeEl.textContent = tipoContaTexto.charAt(0).toUpperCase() + tipoContaTexto.slice(1);
+                } else if (transaction.credit_card) {
+                    accountTypeBadgeEl.textContent = 'Cartão';
+                }
+                accountTypeBadgeEl.classList.remove('hidden');
             } else {
-                accountBadgeEl.classList.add('hidden');
+                accountTypeBadgeEl.classList.add('hidden');
             }
         }
         
@@ -1482,6 +1696,17 @@ function renderTransactions(transactions) {
         const cardElement = card.querySelector('div');
         if (cardElement) {
             cardElement.dataset.transactionId = transaction.id;
+            
+            // Aplicar cores de fundo baseadas no tipo de transação
+            if (transaction.tipo === 'receita') {
+                // Verde para receitas (mesmo tom dos cards de orçamento)
+                cardElement.classList.remove('bg-white', 'dark:bg-gray-800');
+                cardElement.classList.add('bg-gradient-to-br', 'from-green-50', 'to-emerald-50', 'dark:from-green-900/20', 'dark:to-emerald-900/20', 'border-green-200', 'dark:border-green-700');
+            } else if (transaction.tipo === 'despesa') {
+                // Vermelho para despesas (mesmo tom dos cards de orçamento)
+                cardElement.classList.remove('bg-white', 'dark:bg-gray-800');
+                cardElement.classList.add('bg-gradient-to-br', 'from-red-50', 'to-rose-50', 'dark:from-red-900/20', 'dark:to-rose-900/20', 'border-red-200', 'dark:border-red-700');
+            }
         }
         
         container.appendChild(card);
@@ -2732,8 +2957,8 @@ document.addEventListener('click', function(event) {
 </style>
 
 <!-- Modal de Confirmação de Exclusão -->
-<div id="deleteModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-[10000] hidden">
-    <div class="relative top-10 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800">
+<div id="deleteModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-[10003] hidden flex items-center justify-center">
+    <div class="relative mx-4 sm:mx-auto p-5 w-full sm:w-96 max-w-md shadow-lg rounded-md bg-white dark:bg-gray-800">
         <div class="mt-3 text-center">
             <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900">
                 <svg class="h-6 w-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -2750,7 +2975,7 @@ document.addEventListener('click', function(event) {
             </div>
             
             <div class="items-center px-4 py-3">
-                <div class="flex space-x-3">
+                <div class="flex gap-3">
                     <button onclick="hideDeleteModal()" 
                             class="px-4 py-2 bg-gray-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300">
                         Cancelar
@@ -2771,8 +2996,8 @@ document.addEventListener('click', function(event) {
 </div>
 
 <!-- Modal de Seleção de Parcelas para Exclusão -->
-<div id="installmentDeleteModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-[10000] hidden">
-    <div class="relative top-5 mx-auto p-6 border max-w-2xl shadow-lg rounded-lg bg-white dark:bg-gray-800">
+<div id="installmentDeleteModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-[10003] hidden flex items-center justify-center">
+    <div class="relative mx-4 sm:mx-auto p-6 w-full sm:max-w-2xl max-w-md shadow-lg rounded-lg bg-white dark:bg-gray-800">
         <div class="flex items-center justify-between mb-4">
             <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Selecionar Parcelas para Exclusão</h3>
             <button onclick="hideInstallmentDeleteModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
@@ -2786,7 +3011,7 @@ document.addEventListener('click', function(event) {
             <p id="installmentModalInfo" class="text-sm text-gray-600 dark:text-gray-400 mb-4"></p>
             
             <!-- Botões de Seleção -->
-            <div class="flex space-x-3 mb-4">
+            <div class="flex gap-3 mb-4">
                 <button onclick="selectAllInstallments()" 
                         class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
                     Selecionar Todas
@@ -2804,7 +3029,7 @@ document.addEventListener('click', function(event) {
         </div>
         
         <!-- Botões de Ação -->
-        <div class="flex justify-end space-x-3">
+        <div class="flex justify-end gap-3">
             <button onclick="hideInstallmentDeleteModal()" 
                     class="px-4 py-2 bg-gray-500 text-white font-medium rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300">
                 Cancelar

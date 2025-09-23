@@ -37,12 +37,19 @@ class PagamentoController extends Controller
             $query->where('forma_pagamento', $request->forma_pagamento);
         }
 
-        // Filtro por período
-        if ($request->filled('data_inicio')) {
-            $query->whereDate('data_pagamento', '>=', $request->data_inicio);
+        // Filtro por mês e ano (navegador de período)
+        if ($request->filled('mes') && $request->filled('ano')) {
+            $query->whereYear('data_pagamento', $request->ano)
+                  ->whereMonth('data_pagamento', $request->mes);
         }
-        if ($request->filled('data_fim')) {
-            $query->whereDate('data_pagamento', '<=', $request->data_fim);
+        // Filtro por período (filtros manuais)
+        elseif ($request->filled('data_inicio') || $request->filled('data_fim')) {
+            if ($request->filled('data_inicio')) {
+                $query->whereDate('data_pagamento', '>=', $request->data_inicio);
+            }
+            if ($request->filled('data_fim')) {
+                $query->whereDate('data_pagamento', '<=', $request->data_fim);
+            }
         }
 
         $pagamentos = $query->paginate(15);
@@ -72,8 +79,11 @@ class PagamentoController extends Controller
 
         $totalRecebido = $baseQuery->sum('valor');
         
-        $totalMes = $baseQuery->whereYear('data_pagamento', date('Y'))
-                             ->whereMonth('data_pagamento', date('m'))
+        // Calcular total do mês (usar parâmetros do navegador se disponíveis)
+        $mesAtual = $request->filled('mes') ? $request->mes : date('m');
+        $anoAtual = $request->filled('ano') ? $request->ano : date('Y');
+        $totalMes = $baseQuery->whereYear('data_pagamento', $anoAtual)
+                             ->whereMonth('data_pagamento', $mesAtual)
                              ->sum('valor');
         
         $totalCartao = $baseQuery->whereIn('forma_pagamento', ['cartao_credito', 'cartao_debito'])

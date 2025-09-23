@@ -142,7 +142,7 @@
                         <div class="p-6">
                             <div class="flex items-start justify-between mb-4">
                                 <div class="flex items-center space-x-3">
-                                    <div class="h-12 w-12 rounded-full flex items-center justify-center flex-shrink-0" 
+                                    <div class="h-12 w-12 rounded-full flex items-center justify-center flex-shrink-0 mr-3" 
                                          style="background-color: {{ $category->color ?? '#6B7280' }}">
                                         <span class="text-white font-bold text-lg">{{ strtoupper(substr($category->name, 0, 2)) }}</span>
                                     </div>
@@ -284,19 +284,29 @@
 </div>
 
 <!-- Universal Modal Container -->
-<div id="universal-modal" class="fixed inset-0 z-50 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+<div id="universal-modal" class="fixed inset-0 z-[10003] overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:flex sm:items-center sm:p-0">
         <!-- Background overlay -->
-        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" onclick="closeModal()"></div>
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity " aria-hidden="true" onclick="closeModal()"></div>
         
         <!-- Modal panel -->
-        <div class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+        <div class="inline-block align-middle bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full z-[9999]">
             <div id="modal-content">
                 <!-- Dynamic content will be inserted here -->
             </div>
         </div>
     </div>
 </div>
+<footer class="mt-8">
+    <div class="text-center py-6">
+        <p class="text-sm text-gray-600 dark:text-gray-400">
+            © {{ date('Y') }} Danilo Miguel. Todos os direitos reservados.
+        </p>
+        <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">
+            Sistema de Gestão Financeira - Desenvolvido com Laravel
+        </p>
+    </div>
+</footer>
 
 @push('scripts')
 <script>

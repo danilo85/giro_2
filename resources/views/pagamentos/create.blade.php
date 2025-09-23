@@ -9,30 +9,15 @@
     <div class="mb-8">
         <div class="flex items-center justify-between">
             <div class="flex items-center space-x-4">
-                @if($orcamento && $orcamento->id)
-                    <a href="{{ route('orcamentos.show', $orcamento->id) }}" 
-                       class="inline-flex items-center justify-center w-10 h-10 text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                        </svg>
-                    </a>
-                @else
-                    <a href="{{ route('pagamentos.index') }}" 
-                       class="inline-flex items-center justify-center w-10 h-10 text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                        </svg>
-                    </a>
-                @endif
                 <div>
                     <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Novo Pagamento</h1>
-                    @if($orcamento && $orcamento->id)
-                         <p class="mt-2 text-gray-600 dark:text-gray-400">Registrar pagamento para o orçamento #{{ $orcamento->id }}</p>
-                     @else
-                         <p class="mt-2 text-gray-600 dark:text-gray-400">Registrar novo pagamento</p>
-                     @endif
+                    <p class="mt-2 text-gray-600 dark:text-gray-400">Registre um novo pagamento no sistema</p>
                 </div>
             </div>
+            <a href="{{ route('pagamentos.index') }}" 
+               class="inline-flex items-center px-4 py-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i>
+            </a>
         </div>
     </div>
 
@@ -213,14 +198,16 @@
                 @enderror
             </div>
             
-            <!-- Botões -->
-            <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
+            <!-- Actions -->
+            <div class="flex flex-col sm:flex-row gap-3 pt-6 border-t border-gray-200 dark:border-gray-700">
                 <a href="{{ route('pagamentos.index') }}" 
-                   class="px-4 py-2 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
+                   class="w-full sm:w-auto px-4 py-2 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors text-center inline-flex items-center justify-center">
+                    <i class="fas fa-times mr-2"></i>
                     Cancelar
                 </a>
                 <button type="submit" 
-                        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors">
+                        class="w-full sm:w-auto px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors inline-flex items-center justify-center">
+                    <i class="fas fa-save mr-2"></i>
                     Criar Pagamento
                 </button>
             </div>

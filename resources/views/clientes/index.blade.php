@@ -3,7 +3,7 @@
 @section('title', 'Clientes')
 
 @section('content')
-<div class="max-w-7xl mx-auto">
+<div class="max-w-7xl mx-auto  px-4 py-6">
     <!-- Tags de Navegação Rápida -->
     <div class="mb-6">
         <div class="flex flex-wrap gap-2">
@@ -50,6 +50,13 @@
                 </svg>
                 Modelos de Propostas
             </a>
+                <a href="{{ route('kanban.index') }}" 
+           class="inline-flex items-center px-3 py-1 text-sm font-medium rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
+            <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"></path>
+            </svg>
+            Kanban
+        </a>
         </div>
     </div>
 
@@ -129,10 +136,10 @@
             <div class="flex flex-col sm:flex-row gap-4">
                 <div class="flex-1 relative">
                     <input type="text" 
-                           id="search-input"
+                           id="search" 
                            name="search" 
                            value="{{ request('search') }}"
-                           placeholder="Buscar por nome, email, contato ou telefone..."
+                           placeholder="Buscar por nome, empresa ou email..."
                            class="w-full pl-10 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
                     <svg class="absolute left-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -144,11 +151,6 @@
                             </svg>
                         </button>
                     @endif
-                </div>
-                <div class="flex gap-2">
-                    <button type="button" id="clear-search" class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors">
-                        Limpar
-                    </button>
                 </div>
             </div>
             <div id="loading-indicator" class="hidden mt-4">
@@ -174,9 +176,9 @@
                                     @if($cliente->avatar)
                                         <img src="{{ Storage::url($cliente->avatar) }}" 
                                              alt="{{ $cliente->nome }}" 
-                                             class="w-12 h-12 rounded-full object-cover">
+                                             class="w-12 h-12 rounded-full object-cover mr-3">
                                     @else
-                                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
+                                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mr-3">
                                             <span class="text-white font-semibold text-lg">
                                                 {{ strtoupper(substr($cliente->nome, 0, 1)) }}
                                             </span>
@@ -428,8 +430,8 @@
     </div>
 
     <!-- Modal de Confirmação de Exclusão -->
-    <div id="deleteModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-[10000] hidden">
-        <div class="mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800">
+    <div id="deleteModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-[10003] hidden">
+        <div class="mx-4 sm:mx-auto p-5 border w-full sm:w-96 max-w-md shadow-lg rounded-md bg-white dark:bg-gray-800 dark:border-gray-700">
             <div class="mt-3 text-center">
                 <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900/20">
                     <svg class="h-6 w-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -477,6 +479,17 @@
         </div>
     </div>
 </div>
+<footer class="mt-8">
+    <div class="text-center py-6">
+        <p class="text-sm text-gray-600 dark:text-gray-400">
+            © {{ date('Y') }} Danilo Miguel. Todos os direitos reservados.
+        </p>
+        <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">
+            Sistema de Gestão Financeira - Desenvolvido com Laravel
+        </p>
+    </div>
+</footer>
+
 <!-- Botão Flutuante -->
 <div class="fixed bottom-6 right-6 z-50">
     <a href="{{ route('clientes.create') }}" 
@@ -642,7 +655,7 @@
 
     // Initialize search functionality
     document.addEventListener('DOMContentLoaded', function() {
-        const searchInput = document.getElementById('search-input');
+        const searchInput = document.getElementById('search');
         
         if (searchInput) {
             searchInput.addEventListener('input', function() {
@@ -656,14 +669,12 @@
         }
         
         // Clear search functionality
-        const clearButton = document.getElementById('clear-search');
-        if (clearButton) {
-            clearButton.addEventListener('click', function() {
-                const searchInput = document.getElementById('search-input');
-                if (searchInput) {
-                    searchInput.value = '';
-                    performSearch('');
-                }
+        const clearSearch = document.getElementById('clearSearch');
+        if (clearSearch) {
+            clearSearch.addEventListener('click', function() {
+                searchInput.value = '';
+                performSearch('');
+                searchInput.focus();
             });
         }
         

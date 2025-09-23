@@ -57,7 +57,7 @@ class HistoricoController extends Controller
         $maxFileSize = config('upload.max_file_size', 20480); // Default 20MB
         
         $validated = $request->validate([
-            'type' => 'required|string|in:manual,system,status_change,payment',
+            'type' => 'required|string|in:manual,system,status_change,payment,project_start',
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'entry_date' => 'required|date',
@@ -329,6 +329,38 @@ class HistoricoController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Arquivo excluído com sucesso!'
+        ]);
+    }
+
+    /**
+     * Obter arquivos de uma entrada específica do histórico
+     */
+    public function getFiles(Orcamento $orcamento, HistoricoEntry $historico)
+    {
+        // Verificar se o orçamento pertence ao usuário
+        if ($orcamento->cliente->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        // Verificar se a entrada pertence ao orçamento
+        if ($historico->orcamento_id !== $orcamento->id) {
+            abort(403);
+        }
+
+        $files = $historico->files;
+
+        return response()->json([
+            'success' => true,
+            'files' => $files->map(function ($file) {
+                return [
+                    'id' => $file->id,
+                    'name' => $file->original_name,
+                    'size' => $file->formatted_size,
+                    'mime_type' => $file->mime_type,
+                    'download_url' => $file->download_url,
+                    'icon' => $file->icon_class
+                ];
+            })
         ]);
     }
 

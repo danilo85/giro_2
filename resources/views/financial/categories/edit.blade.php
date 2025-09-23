@@ -131,19 +131,16 @@
 
                 <!-- Botões de Ação -->
                 <div class="px-6 py-4 bg-gray-50 dark:bg-gray-900/50 border-t border-gray-200 dark:border-gray-700 rounded-b-lg">
-                    <div class="flex justify-end space-x-3">
+                    <div class="flex flex-col sm:flex-row justify-end gap-3">
                         <a href="{{ route('financial.categories.index') }}" 
-                           class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                           class="w-full sm:w-auto px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center justify-center gap-2">
+                            <i class="fas fa-times w-4 h-4"></i>
                             Cancelar
                         </a>
                         <button type="submit" form="categoryForm" 
-                                class="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md">
-                            <span class="flex items-center space-x-2">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                </svg>
-                                <span>Atualizar Categoria</span>
-                            </span>
+                                class="w-full sm:w-auto px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md flex items-center justify-center gap-2">
+                            <i class="fas fa-save w-4 h-4"></i>
+                            Atualizar Categoria
                         </button>
                     </div>
                 </div>

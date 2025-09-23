@@ -79,7 +79,6 @@
             padding: 15px;
             border-radius: 4px;
             margin: 20px 0;
-            border-left: 4px solid #007bff;
         }
         
         .assinatura-section {
@@ -214,6 +213,9 @@
             .botao-imprimir {
                 display: none;
             }
+            .no-print {
+                display: none;
+            }
         }
     </style>
 </head>
@@ -264,7 +266,7 @@
         </div>
         
         @if($pagamento->observacoes)
-        <div class="valor-extenso">
+        <div class="valor-extenso no-print">
             <strong>Observações:</strong> {{ $pagamento->observacoes }}
         </div>
         @endif
@@ -272,6 +274,8 @@
         <div class="assinatura-section">
             @if(optional($pagamento->orcamento->cliente->user)->assinatura_digital)
                 <img src="{{ asset('storage/' . $pagamento->orcamento->cliente->user->assinatura_digital) }}" alt="Assinatura Digital" style="max-height: 80px; max-width: 200px; margin-bottom: 5px;">
+                
+                <div class="assinatura-linha"></div>
                 <div class="assinatura-nome">{{ $pagamento->orcamento->cliente->user->name }}</div>
             @else
                 <div class="assinatura-linha"></div>

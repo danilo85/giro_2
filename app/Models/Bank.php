@@ -43,6 +43,11 @@ class Bank extends Model
         return $this->hasMany(Transaction::class);
     }
 
+    public function pagamentos(): HasMany
+    {
+        return $this->hasMany(Pagamento::class);
+    }
+
     // Scopes
     public function scopeActive($query)
     {

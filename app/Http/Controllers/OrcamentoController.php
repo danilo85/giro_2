@@ -27,6 +27,11 @@ class OrcamentoController extends Controller
             })
             ->orderBy('created_at', 'desc');
 
+        // Filtro padrão: excluir finalizados a menos que seja especificamente solicitado
+        if (!$request->filled('status') && !$request->has('incluir_finalizados')) {
+            $query->whereIn('status', ['rascunho', 'aprovado', 'quitado', 'analisando']);
+        }
+
         // Filtros
         if ($request->filled('status')) {
             $query->where('status', $request->status);
@@ -56,7 +61,36 @@ class OrcamentoController extends Controller
         $clientes = Cliente::forUser(Auth::id())->orderBy('nome')->get();
         $statusOptions = Orcamento::getStatusOptions();
 
-        return view('orcamentos.index', compact('orcamentos', 'clientes', 'statusOptions'));
+        // Calcular estatísticas
+        $orcamentosQuery = Orcamento::with(['cliente', 'autores'])
+            ->whereHas('cliente', function($q) {
+                $q->where('user_id', Auth::id());
+            });
+        
+        $totalOrcamentos = $orcamentosQuery->count();
+        $aprovados = $orcamentosQuery->where('status', 'aprovado')->count();
+        $pendentes = $orcamentosQuery->whereIn('status', ['rascunho', 'analisando'])->count();
+        
+        // Calcular valores financeiros - apenas orçamentos com status 'aprovado' e 'quitado'
+        $valorTotalOrcamentosValidos = Orcamento::whereHas('cliente', function($q) {
+                $q->where('user_id', Auth::id());
+            })
+            ->whereIn('status', ['aprovado', 'quitado'])
+            ->sum('valor_total');
+        
+        // Calcular valor total já recebido (pagamentos) apenas dos orçamentos válidos
+        $valorTotalRecebido = \App\Models\Pagamento::whereHas('orcamento', function($q) {
+            $q->whereHas('cliente', function($clienteQuery) {
+                $clienteQuery->where('user_id', Auth::id());
+            })->whereIn('status', ['aprovado', 'quitado']);
+        })->sum('valor');
+        
+        // Calcular valor restante a receber (total dos orçamentos válidos - pagamentos recebidos)
+        $valorRestanteReceber = $valorTotalOrcamentosValidos - $valorTotalRecebido;
+        
+        $valorTotal = $valorRestanteReceber; // Valor que aparece no card "Valor a Receber" - apenas o resultado final
+
+        return view('orcamentos.index', compact('orcamentos', 'clientes', 'statusOptions', 'totalOrcamentos', 'aprovados', 'pendentes', 'valorTotal', 'valorTotalOrcamentosValidos', 'valorTotalRecebido', 'valorRestanteReceber'));
     }
 
     /**
@@ -555,6 +589,36 @@ class OrcamentoController extends Controller
     }
 
     /**
+     * Obter valor atualizado do card financeiro (AJAX)
+     */
+    public function getValorFinanceiro()
+    {
+        // Calcular valor total dos orçamentos válidos (aprovados e quitados)
+        $valorTotalOrcamentosValidos = Orcamento::whereHas('cliente', function($query) {
+            $query->where('user_id', Auth::id());
+        })
+        ->whereIn('status', ['aprovado', 'quitado'])
+        ->sum('valor_total');
+
+        // Calcular valor total recebido (pagamentos dos orçamentos válidos)
+        $valorTotalRecebido = Pagamento::whereHas('orcamento', function($query) {
+            $query->whereHas('cliente', function($subQuery) {
+                $subQuery->where('user_id', Auth::id());
+            })
+            ->whereIn('status', ['aprovado', 'quitado']);
+        })->sum('valor');
+
+        // Calcular valor restante a receber
+        $valorRestanteReceber = $valorTotalOrcamentosValidos - $valorTotalRecebido;
+
+        return response()->json([
+            'success' => true,
+            'valor_a_receber' => $valorRestanteReceber,
+            'valor_formatado' => 'R$ ' . number_format($valorRestanteReceber, 2, ',', '.')
+        ]);
+    }
+
+    /**
      * Visualização pública do orçamento
      */
     public function showPublic($token)
@@ -564,6 +628,22 @@ class OrcamentoController extends Controller
                              ->firstOrFail();
         
         return view('orcamentos.public', compact('orcamento'));
+    }
+
+    /**
+     * Visualização interna do orçamento (mesmo layout da página pública)
+     */
+    public function showInternal(Orcamento $orcamento)
+    {
+        // Verificar se o orçamento pertence ao usuário
+        if ($orcamento->cliente->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        // Carregar relacionamentos necessários
+        $orcamento->load(['cliente.user', 'autores']);
+        
+        return view('orcamentos.internal', compact('orcamento'));
     }
 
     /**

@@ -89,18 +89,10 @@
 
             <header class="flex justify-between items-start mb-12">
                 <div class="flex items-start space-x-6">
-                    {{-- Logo/Avatar do usuário --}}
-                    @if(optional($orcamento->cliente->user)->avatar && file_exists(storage_path('app/public/' . $orcamento->cliente->user->avatar)))
-                        <img src="{{ optional($orcamento->cliente->user)->avatar_url }}" alt="Logo da Empresa" class="h-16 w-16 rounded-lg object-cover border border-gray-200">
-                    @else
-                        <div class="bg-gray-800 text-white h-16 w-16 flex items-center justify-center rounded-lg font-bold text-lg">
-                            <span class="text-white">{{ strtoupper(substr(optional($orcamento->cliente->user)->name ?? 'U', 0, 1)) }}</span>
-                        </div>
-                    @endif
-                    
+    
                     <div>
-                        <h1 class="text-6xl font-black text-gray-800 tracking-tighter">PROPOSTA</h1>
-                        <div class="mt-4  text-gray-500">
+                        <h1 class="text-3xl sm:text-6xl font-black text-gray-800 tracking-tighter">PROPOSTA</h1>
+                        <div class="mt-4 text-gray-500 text-sm sm:text-base">
                             <p>Válido de {{ $orcamento->data_orcamento->format('d/m/Y') }} a {{ $orcamento->data_validade ? $orcamento->data_validade->format('d/m/Y') : 'Não definido' }}</p>
                             <p>Para <span class="font-semibold text-gray-700">{{ $orcamento->cliente->nome }}</span></p>
                         </div>
@@ -127,22 +119,22 @@
                     <p class="text-gray-700 mt-1">Prazo estimado é de {{ $orcamento->prazo_entrega_dias }} dias úteis</p>
                 </div>
 
-                <div class="bg-gray-50  p-8 mb-0  border border-gray-200">
+                <div class="bg-gray-50 p-4 sm:p-8 mb-0 border border-gray-200">
                     <div>
                         <p class="text-gray-500 uppercase text-sm font-semibold tracking-wide">Total</p>
-                        <p class="text-5xl font-black text-gray-900 mt-2">R$ {{ number_format($orcamento->valor_total, 2, ',', '.') }}</p>
+                        <p class="text-3xl sm:text-5xl font-black text-gray-900 mt-2">R$ {{ number_format($orcamento->valor_total, 2, ',', '.') }}</p>
                         <p class="mt-3 text-sm text-gray-600">Forma de pagamento: {{ $orcamento->condicoes_pagamento }}</p>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 text-white font-bold overflow-hidden shadow-sm print-grid-cols-2">
-                    <div class="bg-gray-800 p-6">
+                    <div class="bg-gray-800 p-4 sm:p-6">
                         <p class="text-xs uppercase tracking-wider text-gray-300 mb-2">40% para iniciar</p>
-                        <p class="text-2xl font-bold">1º R$ {{ number_format($orcamento->valor_total * 0.4, 2, ',', '.') }}</p>
+                        <p class="text-lg sm:text-2xl font-bold">1º R$ {{ number_format($orcamento->valor_total * 0.4, 2, ',', '.') }}</p>
                     </div>
-                    <div class="bg-gray-700 p-6">
+                    <div class="bg-gray-700 p-4 sm:p-6">
                         <p class="text-xs uppercase tracking-wider text-gray-300 mb-2">60% ao término</p>
-                        <p class="text-2xl font-bold">2º R$ {{ number_format($orcamento->valor_total * 0.6, 2, ',', '.') }}</p>
+                        <p class="text-lg sm:text-2xl font-bold">2º R$ {{ number_format($orcamento->valor_total * 0.6, 2, ',', '.') }}</p>
                     </div>
                 </div>
             
@@ -152,17 +144,17 @@
                         <div class="text-center">
                             <h3 class="text-lg font-semibold text-gray-800">Ações</h3>
                             <p class="text-gray-600 mt-1 mb-4">O que você gostaria de fazer em relação a esta proposta?</p>
-                            <div class="flex justify-center flex-wrap gap-4 no-print">
-                                <button @click="confirmingApproval = true" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-md transition-colors">Aprovar Proposta</button>
-                                <button @click="confirmingRejection = true" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-md transition-colors">Rejeitar</button>
-                                <button onclick="window.print()" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-md transition-colors">Imprimir / Salvar PDF</button>
+                            <div class="flex flex-col sm:flex-row justify-center flex-wrap gap-4 no-print">
+                                <button @click="confirmingApproval = true" class="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-md transition-colors">Aprovar Proposta</button>
+                                <button @click="confirmingRejection = true" class="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-md transition-colors">Rejeitar</button>
+                                <button onclick="window.print()" class="w-full sm:w-auto bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-md transition-colors">Imprimir / Salvar PDF</button>
                             </div>
                         </div>
                     @else
                         <div class="text-center">
                             <p class="text-lg font-semibold italic text-gray-600">Este orçamento foi {{ strtolower($orcamento->status) }}{{ $orcamento->updated_at ? ' em ' . $orcamento->updated_at->format('d/m/Y') : '' }}.</p>
                              <div class="flex justify-center flex-wrap gap-4 mt-4 no-print">
-                                <button onclick="window.print()" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-md transition-colors">Imprimir / Salvar PDF</button>
+                                <button onclick="window.print()" class="w-full sm:w-auto bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-md transition-colors">Imprimir / Salvar PDF</button>
                             </div>
                         </div>
                     @endif
@@ -196,9 +188,9 @@
 
             {{-- Rodapé com logo, redes sociais e QR code --}}
             <footer class="mt-16 border-t border-gray-200 pt-8">
-                <div class="flex justify-between items-start">
+                <div class="flex flex-col sm:flex-row justify-between items-center sm:items-start space-y-4 sm:space-y-0">
                     {{-- Lado esquerdo: Logo e contatos --}}
-                    <div class="flex flex-col space-y-4">
+                    <div class="flex flex-col space-y-4 items-center sm:items-start">
                         {{-- Primeira linha: Logo ícone e contatos --}}
                         <div class="flex items-center space-x-4">
                             {{-- Logo ícone do usuário --}}
@@ -206,9 +198,9 @@
                                 $iconLogo = optional($orcamento->cliente->user)->getLogoByType('vertical');
                             @endphp
                             @if($iconLogo && file_exists(storage_path('app/public/' . $iconLogo->caminho)))
-                                <img src="{{ $iconLogo->url }}" alt="Logo da Empresa" class="h-16 w-auto rounded">
+                                <img src="{{ $iconLogo->url }}" alt="Logo da Empresa" class="h-12 sm:h-16 w-auto rounded">
                             @else
-                                <div class="bg-gray-800 text-white px-4 py-2 rounded font-bold text-lg">
+                                <div class="bg-gray-800 text-white px-3 sm:px-4 py-2 rounded font-bold text-base sm:text-lg">
                                     <span class="text-white">LOGO</span>
                                 </div>
                             @endif
@@ -316,9 +308,9 @@
                         $logoIcone = optional($orcamento->cliente->user)->getLogoByType('icone');
                     @endphp
                     @if($logoIcone && file_exists(storage_path('app/public/' . $logoIcone->caminho)))
-                        <img src="{{ $logoIcone->url }}" alt="Logo Ícone" class="h-16 w-auto rounded">
+                        <img src="{{ $logoIcone->url }}" alt="Logo Ícone" class="h-12 sm:h-16 w-auto rounded">
                     @else
-                        <div class="w-16 h-16 bg-gray-200 border-2 border-gray-300 flex items-center justify-center">
+                        <div class="w-12 h-12 sm:w-16 sm:h-16 bg-gray-200 border-2 border-gray-300 flex items-center justify-center">
                             <span class="text-gray-600 text-xs font-bold">ÍCONE</span>
                         </div>
                     @endif

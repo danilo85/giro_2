@@ -33,9 +33,18 @@
 
     <!-- Header -->
     <div class="flex items-center justify-between">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $orcamento->titulo }}</h1>
-            <p class="text-gray-600 dark:text-gray-400 mt-1">Orçamento #{{ $orcamento->id }}</p>
+        <div class="flex items-center space-x-4">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $orcamento->titulo }}</h1>
+                <p class="text-gray-600 dark:text-gray-400 mt-1">Orçamento #{{ $orcamento->id }}</p>
+            </div>
+        </div>
+        
+        <div class="flex items-center space-x-3">
+            <a href="{{ route('orcamentos.index') }}" 
+               class="inline-flex items-center px-4 py-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i>
+            </a>
         </div>
     </div>
 
@@ -47,17 +56,24 @@
             <!-- Cliente Info -->
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Informações do Cliente</h3>
-                <div class="flex items-center space-x-4">
-                    @if($orcamento->cliente->avatar)
-                        <img src="{{ Storage::url($orcamento->cliente->avatar) }}" 
-                             alt="{{ $orcamento->cliente->nome }}" 
-                             class="h-16 w-16 rounded-full object-cover">
-                    @else
-                        <div class="h-16 w-16 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
-                            <span class="text-xl font-medium text-gray-600 dark:text-gray-300">{{ substr($orcamento->cliente->nome, 0, 1) }}</span>
-                        </div>
-                    @endif
-                    <div class="flex-1">
+                
+                <!-- Layout responsivo: flex em desktop, stack em mobile/tablet -->
+                <div class="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-4">
+                    <!-- Avatar -->
+                    <div class="flex-shrink-0 self-center md:self-start">
+                        @if($orcamento->cliente->avatar)
+                            <img src="{{ Storage::url($orcamento->cliente->avatar) }}" 
+                                 alt="{{ $orcamento->cliente->nome }}" 
+                                 class="h-12 w-12 md:h-16 md:w-16 rounded-full object-cover">
+                        @else
+                            <div class="h-12 w-12 md:h-16 md:w-16 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
+                                <span class="text-lg md:text-xl font-medium text-gray-600 dark:text-gray-300">{{ substr($orcamento->cliente->nome, 0, 1) }}</span>
+                            </div>
+                        @endif
+                    </div>
+                    
+                    <!-- Informações do cliente -->
+                    <div class="flex-1 text-center md:text-left">
                         <h4 class="text-lg font-medium text-gray-900 dark:text-white">{{ $orcamento->cliente->nome }}</h4>
                         <p class="text-gray-600 dark:text-gray-400">{{ $orcamento->cliente->email }}</p>
                         @if($orcamento->cliente->telefone)
@@ -67,14 +83,16 @@
                             <p class="text-sm text-gray-500 dark:text-gray-400">{{ $orcamento->cliente->empresa }}</p>
                         @endif
                     </div>
-                    <div class="flex items-center space-x-2">
+                    
+                    <!-- Botões de ação - responsivos -->
+                    <div class="flex flex-col sm:flex-row md:flex-col lg:flex-row gap-2 w-full md:w-auto">
                         <a href="{{ route('clientes.show', $orcamento->cliente) }}" 
-                           class="inline-flex items-center px-3 py-1 bg-gray-600 hover:bg-gray-700 text-white text-sm rounded-lg transition-colors">
+                           class="inline-flex items-center justify-center px-3 py-2 bg-gray-600 hover:bg-gray-700 text-white text-sm rounded-lg transition-colors">
                             Ver Cliente
                         </a>
                         @if($orcamento->cliente->email)
                             <a href="mailto:{{ $orcamento->cliente->email }}" 
-                               class="inline-flex items-center px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-colors">
+                               class="inline-flex items-center justify-center px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-colors">
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                                 </svg>
@@ -84,7 +102,7 @@
                         @if($orcamento->cliente->whatsapp)
                             <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $orcamento->cliente->whatsapp) }}" 
                                target="_blank"
-                               class="inline-flex items-center px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg transition-colors">
+                               class="inline-flex items-center justify-center px-3 py-2 bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg transition-colors">
                                 <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488"/>
                                 </svg>
@@ -101,27 +119,31 @@
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Autores Responsáveis</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         @foreach($orcamento->autores as $autor)
-                            <div class="flex items-center space-x-3 p-3 border border-gray-200 dark:border-gray-600 rounded-lg">
-                                @if($autor->avatar)
-                                    <img src="{{ Storage::url($autor->avatar) }}" 
-                                         alt="{{ $autor->nome }}" 
-                                         class="h-10 w-10 rounded-full object-cover">
-                                @else
-                                    <div class="h-10 w-10 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
-                                        <span class="text-sm font-medium text-gray-600 dark:text-gray-300">{{ substr($autor->nome, 0, 1) }}</span>
-                                    </div>
-                                @endif
+                            <div class="flex items-center p-3 border border-gray-200 dark:border-gray-600 rounded-lg space-x-4">
+                                <div class="flex-shrink-0">
+                                    @if($autor->avatar)
+                                        <img src="{{ Storage::url($autor->avatar) }}" 
+                                             alt="{{ $autor->nome }}" 
+                                             class="h-10 w-10 rounded-full object-cover">
+                                    @else
+                                        <div class="h-10 w-10 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
+                                            <span class="text-sm font-medium text-gray-600 dark:text-gray-300">{{ substr($autor->nome, 0, 1) }}</span>
+                                        </div>
+                                    @endif
+                                </div>
                                 <div class="flex-1">
                                     <h4 class="text-sm font-medium text-gray-900 dark:text-white">{{ $autor->nome }}</h4>
                                     <p class="text-xs text-gray-500 dark:text-gray-400">{{ $autor->especialidade }}</p>
                                 </div>
-                                <a href="{{ route('autores.show', $autor) }}" 
-                                   class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                                    </svg>
-                                </a>
+                                <div class="flex-shrink-0">
+                                    <a href="{{ route('autores.show', $autor) }}" 
+                                       class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                        </svg>
+                                    </a>
+                                </div>
                             </div>
                         @endforeach
                     </div>
@@ -131,16 +153,15 @@
             <!-- Conteúdo -->
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Conteúdo da Proposta</h3>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Conteúdo da Proposta</h3>
                     <button onclick="copyContent()" 
-                            class="inline-flex items-center px-3 py-1 bg-gray-600 hover:bg-gray-700 text-white text-sm rounded-lg transition-colors">
-                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-                        </svg>
-                        Copiar
-                    </button>
+                                class="inline-flex items-center px-3 py-1.5 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                            </svg>
+                        </button>
                 </div>
-                <div id="content-area" class="prose dark:prose-invert max-w-none">
+                <div id="content-area" class="text-gray-900 dark:text-white max-w-none">
                     {!! nl2br(e($orcamento->descricao)) !!}
                 </div>
             </div>
@@ -175,6 +196,15 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-1M14 6h6m0 0v6m0-6L10 16"></path>
                         </svg>
                         Ver Público
+                    </a>
+                    <a href="{{ route('orcamentos.internal-view', $orcamento) }}" 
+                       target="_blank"
+                       class="w-full inline-flex items-center justify-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg transition-colors">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                        </svg>
+                        Ver Interno
                     </a>
                     <a href="{{ route('orcamentos.edit', $orcamento) }}" 
                        class="w-full inline-flex items-center justify-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors">
@@ -335,8 +365,8 @@
                     </div>
                     <div class="space-y-3">
                         @foreach($orcamento->pagamentos->sortByDesc('data_pagamento') as $pagamento)
-                            <div class="flex items-center justify-between p-3 border border-gray-200 dark:border-gray-600 rounded-lg">
-                                <div>
+                            <div class="flex items-center justify-between p-3 border border-gray-200 dark:border-gray-600 rounded-lg space-x-4">
+                                <div class="flex-1">
                                     <p class="text-sm font-medium text-gray-900 dark:text-white">R$ {{ number_format($pagamento->valor, 2, ',', '.') }}</p>
                                     <p class="text-xs text-gray-500 dark:text-gray-400">{{ $pagamento->data_pagamento->format('d/m/Y') }}</p>
                                     <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
@@ -351,13 +381,15 @@
                                         {{ ucfirst($pagamento->forma_pagamento) }}
                                     </span>
                                 </div>
-                                <a href="{{ route('pagamentos.show', $pagamento) }}" 
-                                   class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                                    </svg>
-                                </a>
+                                <div class="flex-shrink-0">
+                                    <a href="{{ route('pagamentos.show', $pagamento) }}" 
+                                       class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                        </svg>
+                                    </a>
+                                </div>
                             </div>
                         @endforeach
                     </div>

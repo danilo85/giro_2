@@ -240,7 +240,7 @@ class AutorAutocomplete {
         autorCard.innerHTML = `
             <input type="checkbox" name="autores[]" value="${inputValue}" checked class="hidden">
             
-            <div class="flex items-center space-x-3">
+            <div class="flex items-center space-x-4">
                 <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-sm">
                     ${autor.nome.substring(0, 2).toUpperCase()}
                 </div>

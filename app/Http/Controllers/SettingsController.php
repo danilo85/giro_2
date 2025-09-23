@@ -219,18 +219,21 @@ class SettingsController extends Controller
             'auto_backup' => $request->boolean('auto_backup'),
         ];
 
+        // Salvar configuração de registro público usando a mesma chave do método isPublicRegistrationEnabled
+        Setting::set('public_registration_enabled', $request->boolean('allow_registration') ? '1' : '0');
+        
         $this->saveSettings('system', $settings);
 
         return redirect()->route('settings.index')->with('success', 'Configurações do sistema atualizadas com sucesso!');
     }
 
     /**
-     * Get all settings from cache or defaults.
+     * Get all settings from cache or database with defaults.
      */
     private function getSettings()
     {
         return Cache::remember('app_settings', 3600, function () {
-            return [
+            $defaults = [
                 'general' => [
                     'site_name' => 'Giro',
                     'site_description' => 'Sistema de gestão de usuários moderno e eficiente',
@@ -273,14 +276,34 @@ class SettingsController extends Controller
                     'auto_backup' => true,
                 ],
             ];
+            
+            // Merge with database values
+            foreach ($defaults as $section => $sectionSettings) {
+                foreach ($sectionSettings as $key => $defaultValue) {
+                    $settingKey = $section . '.' . $key;
+                    $dbValue = Setting::get($settingKey);
+                    if ($dbValue !== null) {
+                        $defaults[$section][$key] = $dbValue;
+                    }
+                }
+            }
+            
+            return $defaults;
         });
     }
 
     /**
-     * Save settings to cache.
+     * Save settings to database and cache.
      */
     private function saveSettings($section, $settings)
     {
+        // Save each setting to the database using Setting::set()
+        foreach ($settings as $key => $value) {
+            $settingKey = $section . '.' . $key;
+            Setting::set($settingKey, $value);
+        }
+        
+        // Update cache as well
         $allSettings = $this->getSettings();
         $allSettings[$section] = array_merge($allSettings[$section], $settings);
         

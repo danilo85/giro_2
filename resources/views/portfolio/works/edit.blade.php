@@ -3,44 +3,46 @@
 @section('content')
 <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
     <!-- Header -->
-    <div class="">
-        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between">
+    <div class="mb-8">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-4">
                 <div>
-           
-                    <h1 class="mt-2 text-3xl font-bold text-gray-900 dark:text-white">Editar Trabalho</h1>
-                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">{{ $work->title }}</p>
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Editar Trabalho</h1>
+                    <p class="mt-2 text-gray-600 dark:text-gray-400">{{ $work->title }}</p>
                 </div>
+            </div>
+            
+            <div class="flex items-center space-x-3">
+                @if($work->status === 'published')
+                    <a href="{{ route('public.portfolio.public.work', $work->slug) }}" target="_blank"
+                       class="inline-flex items-center justify-center w-10 h-10 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                        </svg>
+                    </a>
+                @endif
                 
-                <div class="flex space-x-3">
-                    @if($work->status === 'published')
-                        <a href="{{ route('public.portfolio.public.work', $work->slug) }}" target="_blank"
-                           class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-                            </svg>
-                            Ver Público
-                        </a>
-                    @endif
-                    
-                    <form action="{{ route('portfolio.works.destroy', $work) }}" method="POST" class="inline"
-                          onsubmit="return confirm('Tem certeza que deseja excluir este trabalho?')">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="inline-flex items-center px-4 py-2 border border-red-300 rounded-md shadow-sm text-sm font-medium text-red-700 bg-white hover:bg-red-50">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                            </svg>
-                            Excluir
-                        </button>
-                    </form>
-                </div>
+                <form action="{{ route('portfolio.works.destroy', $work) }}" method="POST" class="inline"
+                      onsubmit="return confirm('Tem certeza que deseja excluir este trabalho?')">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="inline-flex items-center justify-center w-10 h-10 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                    </button>
+                </form>
+                
+                <a href="{{ route('portfolio.works.index') }}" 
+                   class="inline-flex items-center px-4 py-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                </a>
             </div>
         </div>
     </div>
 
     <!-- Content -->
-    <div class="max-w-7xl mx-auto py-0 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto ">
         <form action="{{ route('portfolio.works.update', $work) }}" method="POST" enctype="multipart/form-data" 
               x-data="workForm()" @submit="submitForm($event)" class="space-y-6">
             @csrf
@@ -49,18 +51,18 @@
             <!-- Progress Steps -->
             <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
                 <nav aria-label="Progress">
-                    <ol class="flex items-center">
+                    <ol class="flex items-center justify-center sm:justify-start">
                         <li class="relative" :class="currentStep >= 1 ? 'text-blue-600' : 'text-gray-500'">
                             <button type="button" @click="setStep(1)" class="flex items-center">
                                 <span class="flex items-center justify-center w-8 h-8 border-2 rounded-full" 
                                       :class="currentStep >= 1 ? 'border-blue-600 bg-blue-600 text-white' : 'border-gray-300'">
                                     1
                                 </span>
-                                <span class="ml-2 text-sm font-medium">Informações Básicas</span>
+                                <span class="ml-2 text-sm font-medium hidden sm:block">Informações Básicas</span>
                             </button>
                         </li>
                         
-                        <li class="relative ml-8" :class="currentStep >= 2 ? 'text-blue-600' : 'text-gray-500'">
+                        <li class="relative ml-4 sm:ml-8" :class="currentStep >= 2 ? 'text-blue-600' : 'text-gray-500'">
                             <div class="absolute inset-0 flex items-center" aria-hidden="true">
                                 <div class="h-0.5 w-full bg-gray-200 dark:bg-gray-700" :class="currentStep >= 2 ? 'bg-blue-600' : ''"></div>
                             </div>
@@ -69,11 +71,11 @@
                                       :class="currentStep >= 2 ? 'border-blue-600 bg-blue-600 text-white' : 'border-gray-300'">
                                     2
                                 </span>
-                                <span class="ml-2 text-sm font-medium">Imagens</span>
+                                <span class="ml-2 text-sm font-medium hidden sm:block">Imagens</span>
                             </button>
                         </li>
                         
-                        <li class="relative ml-8" :class="currentStep >= 3 ? 'text-blue-600' : 'text-gray-500'">
+                        <li class="relative ml-4 sm:ml-8" :class="currentStep >= 3 ? 'text-blue-600' : 'text-gray-500'">
                             <div class="absolute inset-0 flex items-center" aria-hidden="true">
                                 <div class="h-0.5 w-full bg-gray-200 dark:bg-gray-700" :class="currentStep >= 3 ? 'bg-blue-600' : ''"></div>
                             </div>
@@ -82,7 +84,7 @@
                                       :class="currentStep >= 3 ? 'border-blue-600 bg-blue-600 text-white' : 'border-gray-300'">
                                     3
                                 </span>
-                                <span class="ml-2 text-sm font-medium">SEO & Publicação</span>
+                                <span class="ml-2 text-sm font-medium hidden sm:block">SEO & Publicação</span>
                             </button>
                         </li>
                     </ol>
@@ -454,25 +456,29 @@
             
             <!-- Navigation Buttons -->
             <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-                <div class="flex justify-between">
+                <div class="flex flex-col sm:flex-row justify-between gap-3">
+                    <!-- Botão Anterior -->
                     <button type="button" @click="previousStep()" x-show="currentStep > 1"
-                            class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded transition-colors">
-                        Anterior
+                            class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded transition-colors flex items-center justify-center">
+                        <i class="fas fa-arrow-left"></i>
+                        <span class="hidden sm:inline ml-2">Anterior</span>
                     </button>
                     
-                    <div class="flex space-x-3">
+                    <!-- Botões Cancelar e Próximo/Salvar -->
+                    <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
                         <a href="{{ route('portfolio.works.index') }}" 
-                           class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded transition-colors">
+                           class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded transition-colors text-center w-full sm:w-auto">
                             Cancelar
                         </a>
                         
                         <button type="button" @click="nextStep()" x-show="currentStep < 3"
-                                class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors">
-                            Próximo
+                                class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors flex items-center justify-center w-full sm:w-auto">
+                            <i class="fas fa-arrow-right"></i>
+                            <span class="hidden sm:inline ml-2">Próximo</span>
                         </button>
                         
                         <button type="submit" x-show="currentStep === 3"
-                                class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition-colors">
+                                class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition-colors w-full sm:w-auto">
                             Salvar Alterações
                         </button>
                     </div>

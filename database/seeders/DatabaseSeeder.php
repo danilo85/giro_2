@@ -15,15 +15,17 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserSeeder::class,
             BankSeeder::class,
-            CreditCardSeeder::class,
-            CategorySeeder::class,
             FinancialTransactionSeeder::class,
-            AutorSeeder::class,
             ClienteSeeder::class,
-            ModeloPropostaSeeder::class,
+            AutorSeeder::class,
+            CategorySeeder::class,
             OrcamentoSeeder::class,
-            PagamentoSeeder::class,
-            SettingsSeeder::class,
+            EtapaKanbanSeeder::class,
+            ProjetoSeeder::class,
+            SocialPostSeeder::class,
+            AdminUserSeeder::class,
+            CreditCardSeeder::class,
+            HashtagSeeder::class,
         ]);
     }
 }

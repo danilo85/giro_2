@@ -3,38 +3,41 @@
 @section('content')
 <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
     <!-- Header -->
-    <div class="">
-        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between">
+    <div class="mb-8">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-4">
                 <div>
-   
-                    <h1 class="mt-2 text-3xl font-bold text-gray-900 dark:text-white">Criar Novo Trabalho</h1>
-                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Adicione um novo trabalho ao seu portfólio</p>
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Criar Novo Trabalho</h1>
+                    <p class="mt-2 text-gray-600 dark:text-gray-400">Adicione um novo trabalho ao seu portfólio</p>
                 </div>
             </div>
+            <a href="{{ route('portfolio.works.index') }}" 
+               class="inline-flex items-center px-4 py-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i>
+            </a>
         </div>
     </div>
 
     <!-- Content -->
-    <div class="max-w-7xl mx-auto py-0 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto ">
         <form method="POST" action="{{ route('portfolio.works.store') }}" enctype="multipart/form-data" x-data="workForm()" @submit="submitForm($event)" class="space-y-6">
             @csrf
             
             <!-- Progress Steps -->
             <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
                 <nav aria-label="Progress">
-                    <ol class="flex items-center">
+                    <ol class="flex items-center justify-center sm:justify-start">
                         <li class="relative" :class="currentStep >= 1 ? 'text-blue-600' : 'text-gray-500'">
                             <button type="button" @click="setStep(1)" class="flex items-center">
                                 <span class="flex items-center justify-center w-8 h-8 border-2 rounded-full" 
                                       :class="currentStep >= 1 ? 'border-blue-600 bg-blue-600 text-white' : 'border-gray-300'">
                                     1
                                 </span>
-                                <span class="ml-2 text-sm font-medium">Informações Básicas</span>
+                                <span class="ml-2 text-sm font-medium hidden sm:block">Informações Básicas</span>
                             </button>
                         </li>
                         
-                        <li class="relative ml-8" :class="currentStep >= 2 ? 'text-blue-600' : 'text-gray-500'">
+                        <li class="relative ml-4 sm:ml-8" :class="currentStep >= 2 ? 'text-blue-600' : 'text-gray-500'">
                             <div class="absolute inset-0 flex items-center" aria-hidden="true">
                                 <div class="h-0.5 w-full bg-gray-200 dark:bg-gray-700" :class="currentStep >= 2 ? 'bg-blue-600' : ''"></div>
                             </div>
@@ -43,11 +46,11 @@
                                       :class="currentStep >= 2 ? 'border-blue-600 bg-blue-600 text-white' : 'border-gray-300'">
                                     2
                                 </span>
-                                <span class="ml-2 text-sm font-medium">Imagens</span>
+                                <span class="ml-2 text-sm font-medium hidden sm:block">Imagens</span>
                             </button>
                         </li>
                         
-                        <li class="relative ml-8" :class="currentStep >= 3 ? 'text-blue-600' : 'text-gray-500'">
+                        <li class="relative ml-4 sm:ml-8" :class="currentStep >= 3 ? 'text-blue-600' : 'text-gray-500'">
                             <div class="absolute inset-0 flex items-center" aria-hidden="true">
                                 <div class="h-0.5 w-full bg-gray-200 dark:bg-gray-700" :class="currentStep >= 3 ? 'bg-blue-600' : ''"></div>
                             </div>
@@ -56,7 +59,7 @@
                                       :class="currentStep >= 3 ? 'border-blue-600 bg-blue-600 text-white' : 'border-gray-300'">
                                     3
                                 </span>
-                                <span class="ml-2 text-sm font-medium">SEO & Publicação</span>
+                                <span class="ml-2 text-sm font-medium hidden sm:block">SEO & Publicação</span>
                             </button>
                         </li>
                     </ol>
@@ -403,25 +406,29 @@
             
             <!-- Navigation Buttons -->
             <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-                <div class="flex justify-between">
+                <div class="flex flex-col sm:flex-row justify-between gap-3">
+                    <!-- Botão Anterior -->
                     <button type="button" @click="previousStep()" x-show="currentStep > 1"
-                            class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded transition-colors">
-                        Anterior
+                            class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded transition-colors flex items-center justify-center">
+                        <i class="fas fa-arrow-left"></i>
+                        <span class="hidden sm:inline ml-2">Anterior</span>
                     </button>
                     
-                    <div class="flex space-x-3">
+                    <!-- Botões Cancelar e Próximo/Salvar -->
+                    <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
                         <a href="{{ route('portfolio.works.index') }}" 
-                           class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded transition-colors">
+                           class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded transition-colors text-center w-full sm:w-auto">
                             Cancelar
                         </a>
                         
                         <button type="button" @click="nextStep()" x-show="currentStep < 3"
-                                class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors">
-                            Próximo
+                                class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors flex items-center justify-center w-full sm:w-auto">
+                            <i class="fas fa-arrow-right"></i>
+                            <span class="hidden sm:inline ml-2">Próximo</span>
                         </button>
                         
                         <button type="submit" x-show="currentStep === 3"
-                                class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition-colors">
+                                class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition-colors w-full sm:w-auto">
                             Criar Trabalho
                         </button>
                     </div>

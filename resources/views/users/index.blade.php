@@ -4,6 +4,34 @@
 
 @section('content')
 <div class="max-w-7xl mx-auto">
+    <!-- Tags de Navegação Rápida -->
+    <div class="flex flex-wrap gap-2 mb-6">
+        <a href="{{ route('dashboard') }}" class="inline-flex items-center px-3 py-1 text-sm font-medium rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors duration-200 dark:border-gray-600 dark:text-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+            </svg>
+            Dashboard
+        </a>
+        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+            </svg>
+            Gestão de Usuários
+        </span>
+        <a href="{{ route('profile.show') }}" class="inline-flex items-center px-3 py-1 text-sm font-medium rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors duration-200 dark:border-gray-600 dark:text-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+            </svg>
+            Perfil
+        </a>
+        <a href="{{ route('settings.index') }}" class="inline-flex items-center px-3 py-1 text-sm font-medium rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors duration-200 dark:border-gray-600 dark:text-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+            Configurações
+        </a>
+    </div>
 
     <!-- Header -->
     <div class="mb-8">
@@ -13,31 +41,7 @@
                 <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Gerencie todos os usuários do sistema</p>
             </div>
             
-            <!-- Controle de Registro Público -->
-            <div class="mt-4 sm:mt-0">
-                <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
-                    <div class="flex items-center justify-between">
-                        <div class="mr-4">
-                            <h3 class="text-sm font-medium text-gray-900 dark:text-white">Registro Público</h3>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">Permitir novos cadastros</p>
-                        </div>
-                        <form id="toggle-registration-form" method="POST" action="{{ route('settings.toggle-registration') }}">
-                            @csrf
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" 
-                                       id="public-registration-toggle"
-                                       class="sr-only peer" 
-                                       {{ App\Models\Setting::isPublicRegistrationEnabled() ? 'checked' : '' }}
-                                       onchange="toggleRegistration()">
-                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                                <span class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">
-                                    {{ App\Models\Setting::isPublicRegistrationEnabled() ? 'Habilitado' : 'Desabilitado' }}
-                                </span>
-                            </label>
-                        </form>
-                    </div>
-                </div>
-            </div>
+
         </div>
     </div>
 
@@ -192,7 +196,17 @@
                 <p class="text-gray-500 dark:text-gray-400">Tente ajustar sua pesquisa ou limpar os filtros.</p>
             </div>
         </div>
-        
+        <footer class="mt-8">
+            <div class="text-center py-6">
+                <p class="text-sm text-gray-600 dark:text-gray-400">
+                    © {{ date('Y') }} Danilo Miguel. Todos os direitos reservados.
+                </p>
+                <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                    Sistema de Gestão Financeira - Desenvolvido com Laravel
+                </p>
+            </div>
+        </footer>
+
         <!-- Pagination -->
         <div id="pagination" class="flex justify-center">
             {{ $users->withQueryString()->links() }}
@@ -444,78 +458,152 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Toggle Registration function
-function toggleRegistration() {
-    const toggle = document.getElementById('public-registration-toggle');
-    const form = document.getElementById('toggle-registration-form');
-    const statusText = toggle.parentElement.querySelector('span');
+
+
+// Confirm delete function with modal
+function confirmDelete(userId, userName) {
+    // Criar modal de confirmação
+    const modal = document.createElement('div');
+    modal.id = 'deleteUserModal';
+    modal.className = 'fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-[10003] flex items-center justify-center';
     
-    // Desabilitar toggle temporariamente
-    toggle.disabled = true;
-    
-    // Fazer requisição AJAX
-    fetch(form.action, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-            'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-            enabled: toggle.checked
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Atualizar texto do status
-            statusText.textContent = data.enabled ? 'Habilitado' : 'Desabilitado';
+    modal.innerHTML = `
+        <div class="relative mx-4 sm:mx-auto w-full sm:w-96 max-w-md bg-white dark:bg-gray-800 rounded-lg shadow-xl">
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                    Confirmar Exclusão
+                </h3>
+                <button type="button" onclick="closeDeleteModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
             
-            // Mostrar toast de sucesso
-            showToast(data.message, 'success');
+            <!-- Modal Body -->
+            <div class="p-6">
+                <div class="flex items-center mb-4">
+                    <div class="flex-shrink-0 w-10 h-10 mx-auto bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center">
+                        <svg class="w-6 h-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                        </svg>
+                    </div>
+                </div>
+                
+                <div class="text-center mb-6">
+                    <p class="text-gray-900 dark:text-white font-medium mb-2">
+                        Deseja realmente excluir o usuário?
+                    </p>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">
+                        <strong>${userName}</strong>
+                    </p>
+                    <p class="text-red-600 dark:text-red-400 text-sm">
+                        ⚠️ Esta ação não pode ser desfeita!
+                    </p>
+                </div>
+                
+                <!-- Primeira etapa de confirmação -->
+                <div id="firstConfirmation" class="mb-4">
+                    <label class="flex items-center">
+                        <input type="checkbox" id="confirmCheckbox" class="rounded border-gray-300 text-red-600 shadow-sm focus:border-red-300 focus:ring focus:ring-red-200 focus:ring-opacity-50">
+                        <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                            Entendo que esta ação é irreversível
+                        </span>
+                    </label>
+                </div>
+                
+                <!-- Segunda etapa de confirmação -->
+                <div id="secondConfirmation" class="mb-6 hidden">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Digite "EXCLUIR" para confirmar:
+                    </label>
+                    <input type="text" id="confirmText" placeholder="Digite EXCLUIR" 
+                           class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:text-white">
+                </div>
+            </div>
+            
+            <!-- Modal Footer -->
+            <div class="flex gap-3 px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+                <button type="button" onclick="closeDeleteModal()" 
+                        class="flex-1 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                    Cancelar
+                </button>
+                <button type="button" id="deleteButton" onclick="proceedDelete(${userId})" disabled
+                        class="flex-1 px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed">
+                    Excluir Usuário
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Configurar eventos para as etapas de confirmação
+    setupDeleteConfirmation();
+}
+
+// Configurar eventos de confirmação
+function setupDeleteConfirmation() {
+    const checkbox = document.getElementById('confirmCheckbox');
+    const secondConfirmation = document.getElementById('secondConfirmation');
+    const confirmText = document.getElementById('confirmText');
+    const deleteButton = document.getElementById('deleteButton');
+    
+    // Primeira etapa - mostrar segunda confirmação quando checkbox marcado
+    checkbox.addEventListener('change', function() {
+        if (this.checked) {
+            secondConfirmation.classList.remove('hidden');
+            confirmText.focus();
         } else {
-            // Reverter o toggle em caso de erro
-            toggle.checked = !toggle.checked;
-            showToast(data.message || 'Erro ao alterar configuração', 'error');
+            secondConfirmation.classList.add('hidden');
+            confirmText.value = '';
+            deleteButton.disabled = true;
         }
-    })
-    .catch(error => {
-        console.error('Erro:', error);
-        // Reverter o toggle em caso de erro
-        toggle.checked = !toggle.checked;
-        showToast('Erro ao alterar configuração de registro', 'error');
-    })
-    .finally(() => {
-        // Reabilitar toggle
-        toggle.disabled = false;
+    });
+    
+    // Segunda etapa - habilitar botão quando texto correto digitado
+    confirmText.addEventListener('input', function() {
+        const isTextCorrect = this.value.trim().toUpperCase() === 'EXCLUIR';
+        const isCheckboxChecked = checkbox.checked;
+        deleteButton.disabled = !(isTextCorrect && isCheckboxChecked);
     });
 }
 
-// Confirm delete function
-function confirmDelete(userId, userName) {
-    if (confirm(`Tem certeza que deseja deletar o usuário "${userName}"? Esta ação não pode ser desfeita.`)) {
-        // Criar e submeter formulário de delete
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = `/users/${userId}`;
-        
-        // Token CSRF
-        const csrfToken = document.createElement('input');
-        csrfToken.type = 'hidden';
-        csrfToken.name = '_token';
-        csrfToken.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        form.appendChild(csrfToken);
-        
-        // Method DELETE
-        const methodField = document.createElement('input');
-        methodField.type = 'hidden';
-        methodField.name = '_method';
-        methodField.value = 'DELETE';
-        form.appendChild(methodField);
-        
-        document.body.appendChild(form);
-        form.submit();
+// Fechar modal
+function closeDeleteModal() {
+    const modal = document.getElementById('deleteUserModal');
+    if (modal) {
+        modal.remove();
     }
+}
+
+// Proceder com a exclusão
+function proceedDelete(userId) {
+    // Criar e submeter formulário de delete
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = `/users/${userId}`;
+    
+    // Token CSRF
+    const csrfToken = document.createElement('input');
+    csrfToken.type = 'hidden';
+    csrfToken.name = '_token';
+    csrfToken.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    form.appendChild(csrfToken);
+    
+    // Method DELETE
+    const methodField = document.createElement('input');
+    methodField.type = 'hidden';
+    methodField.name = '_method';
+    methodField.value = 'DELETE';
+    form.appendChild(methodField);
+    
+    document.body.appendChild(form);
+    form.submit();
+    
+    // Fechar modal
+    closeDeleteModal();
 }
 </script>
 @endsection

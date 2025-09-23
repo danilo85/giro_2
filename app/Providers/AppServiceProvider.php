@@ -8,7 +8,6 @@ use App\Models\Transaction;
 use App\Observers\TransactionObserver;
 use App\Models\Orcamento;
 use App\Observers\OrcamentoObserver;
-
 class AppServiceProvider extends ServiceProvider
 {
     /**

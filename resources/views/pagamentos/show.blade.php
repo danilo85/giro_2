@@ -22,18 +22,13 @@
                     </svg>
                 </a>
                 
-                <form method="POST" action="{{ route('pagamentos.destroy', $pagamento) }}" class="inline" 
-                      onsubmit="return confirm('Tem certeza que deseja excluir este pagamento? Esta ação não pode ser desfeita.')">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" 
-                            class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-                            title="Excluir">
-                        <svg class="w-5 h-5 text-red-600 hover:text-red-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                        </svg>
-                    </button>
-                </form>
+                <button type="button" onclick="openDeleteModal()"
+                        class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                        title="Excluir">
+                    <svg class="w-5 h-5 text-red-600 hover:text-red-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
+                </button>
                 
                 <a href="{{ route('pagamentos.index') }}" 
                    class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
@@ -128,10 +123,12 @@
                     <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Orçamento Relacionado</h2>
                 </div>
                 <div class="p-6">
-                    <div class="flex items-start space-x-4">
-                        <img class="h-12 w-12 rounded-full" 
-                             src="{{ $pagamento->orcamento->cliente->avatar ? Storage::url($pagamento->orcamento->cliente->avatar) : 'data:image/svg+xml,%3csvg width=\'100\' height=\'100\' xmlns=\'http://www.w3.org/2000/svg\'%3e%3crect width=\'100\' height=\'100\' fill=\'%23f3f4f6\'/%3e%3ctext x=\'50%25\' y=\'50%25\' font-size=\'18\' text-anchor=\'middle\' alignment-baseline=\'middle\' font-family=\'monospace, sans-serif\' fill=\'%236b7280\'%3e' . strtoupper(substr($pagamento->orcamento->cliente->nome, 0, 2)) . '%3c/text%3e%3c/svg%3e' }}" 
-                             alt="{{ $pagamento->orcamento->cliente->nome }}">
+                    <div class="flex items-center space-x-4">
+                        <div class="flex-shrink-0">
+                            <img class="h-12 w-12 rounded-full" 
+                                 src="{{ $pagamento->orcamento->cliente->avatar ? Storage::url($pagamento->orcamento->cliente->avatar) : 'data:image/svg+xml,%3csvg width=\'100\' height=\'100\' xmlns=\'http://www.w3.org/2000/svg\'%3e%3crect width=\'100\' height=\'100\' fill=\'%23f3f4f6\'/%3e%3ctext x=\'50%25\' y=\'50%25\' font-size=\'18\' text-anchor=\'middle\' alignment-baseline=\'middle\' font-family=\'monospace, sans-serif\' fill=\'%236b7280\'%3e' . strtoupper(substr($pagamento->orcamento->cliente->nome, 0, 2)) . '%3c/text%3e%3c/svg%3e' }}" 
+                                 alt="{{ $pagamento->orcamento->cliente->nome }}">
+                        </div>
                         <div class="flex-1">
                             <h3 class="text-lg font-medium text-gray-900 dark:text-white">{{ $pagamento->orcamento->titulo }}</h3>
                             <p class="text-sm text-gray-600 dark:text-gray-400">Cliente: {{ $pagamento->orcamento->cliente->nome }}</p>
@@ -288,4 +285,61 @@
         </div>
     </div>
 </div>
+
+<!-- Modal de Confirmação de Exclusão -->
+<div id="deleteModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="relative mx-auto p-5 border max-w-md w-full mx-4 shadow-lg rounded-md bg-white dark:bg-gray-800">
+        <div class="mt-3 text-center">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900">
+                <svg class="h-6 w-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16c-.77.833.192 2.5 1.732 2.5z"></path>
+                </svg>
+            </div>
+            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white mt-4">Confirmar Exclusão</h3>
+            <div class="mt-2 px-7 py-3">
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                    Tem certeza que deseja excluir este pagamento? Esta ação não pode ser desfeita.
+                </p>
+            </div>
+            <div class="items-center px-4 py-3">
+                <form id="deleteForm" method="POST" action="{{ route('pagamentos.destroy', $pagamento) }}" class="inline">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" 
+                            class="px-4 py-2 bg-red-600 text-white text-base font-medium rounded-md w-24 mr-2 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-300">
+                        Excluir
+                    </button>
+                </form>
+                <button onclick="closeDeleteModal()" 
+                        class="px-4 py-2 bg-gray-300 text-gray-800 text-base font-medium rounded-md w-24 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function openDeleteModal() {
+    document.getElementById('deleteModal').classList.remove('hidden');
+}
+
+function closeDeleteModal() {
+    document.getElementById('deleteModal').classList.add('hidden');
+}
+
+// Fechar modal ao clicar fora
+document.getElementById('deleteModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeDeleteModal();
+    }
+});
+
+// Fechar modal com ESC
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeDeleteModal();
+    }
+});
+</script>
 @endsection

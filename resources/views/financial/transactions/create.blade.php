@@ -240,18 +240,14 @@
             </div>
             
             <!-- Action Buttons -->
-            <div class="flex justify-end space-x-3 mt-6">
-                <button type="button" onclick="window.location.href='{{ route('financial.transactions.index') }}'" class="inline-flex items-center px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white text-sm font-medium rounded-md transition-colors">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
+            <div class="flex flex-col sm:flex-row justify-center sm:justify-end gap-3 mt-6">
+                <button type="button" onclick="window.location.href='{{ route('financial.transactions.index') }}'" class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white text-sm font-medium rounded-md transition-colors">
+                    <i class="fas fa-times mr-2"></i>
                     Cancelar
                 </button>
-                <button type="submit" form="transaction-form" class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-colors">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                    Salvar Transação
+                <button type="submit" form="transaction-form" class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-colors">
+                    <i class="fas fa-save mr-2"></i>
+                    Criar Transação
                 </button>
             </div>
         </div>
