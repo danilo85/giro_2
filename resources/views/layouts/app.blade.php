@@ -129,9 +129,9 @@
     
     <div id="app" class="min-h-full">
         <!-- Mobile Header -->
-        <div class="lg:hidden bg-transparent fixed top-0 left-0 right-0 z-[10001] h-16">
+        <div class="lg:hidden bg-white dark:bg-gray-800 fixed top-0 left-0 right-0 z-40 h-16 border-b border-gray-200 dark:border-gray-700">
             <div class="flex items-center justify-between h-full px-4">
-                <button @click="$store.sidebar.toggle()" class="p-2 rounded-md text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-800 shadow-md hover:bg-gray-100 dark:hover:bg-gray-700">
+                <button @click="$store.sidebar.toggle()" class="p-2 rounded-md text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
@@ -139,7 +139,7 @@
                 <div class="flex-1"></div> <!-- Spacer -->
                 <button id="theme-toggle-mobile" 
                         onclick="toggleTheme()"
-                        class="p-2 rounded-md text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-800 shadow-md hover:bg-gray-100 dark:hover:bg-gray-700">
+                        class="p-2 rounded-md text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
                     <svg id="theme-toggle-dark-icon-mobile" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
                     </svg>
@@ -158,18 +158,18 @@
              x-transition:leave="transition-opacity ease-linear duration-300"
              x-transition:leave-start="opacity-100"
              x-transition:leave-end="opacity-0"
-             class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[10001] lg:hidden"
+             class="fixed inset-0 bg-gray-600 bg-opacity-75 z-40 lg:hidden"
              @click="$store.sidebar.close()"></div>
 
         <!-- Sidebar -->
-        <div class="fixed inset-y-0 left-0 z-[10002] transition-all duration-300 ease-in-out"
+        <div class="fixed inset-y-0 left-0 z-50 transition-all duration-300 ease-in-out"
              :class="{
                  'w-64': !$store.sidebar.collapsed,
                  'w-16': $store.sidebar.collapsed,
                  'translate-x-0': $store.sidebar.open || !$store.sidebar.isMobile,
                  '-translate-x-full': !$store.sidebar.open && $store.sidebar.isMobile
              }"
-             x-show="$store.sidebar.open || !$store.sidebar.isMobile">
+             x-show="!$store.sidebar.isMobile || $store.sidebar.open">
             <div class="flex flex-col h-full bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700">
                 <!-- Close Button (Mobile only) -->
                 <div class="flex justify-end p-4" x-show="$store.sidebar.isMobile">
@@ -179,37 +179,6 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
                     </button>
-                </div>
-                
-                <!-- User Avatar and Info (Mobile only) -->
-                <div class="flex flex-col items-center mb-6 pb-4 border-b border-gray-200 dark:border-gray-700 px-4" x-show="$store.sidebar.isMobile">
-                    <a href="{{ route('dashboard') }}" class="flex flex-col items-center">
-                        <!-- Avatar -->
-                        @if(auth()->check() && auth()->user()->avatar_url)
-                            <img src="{{ auth()->user()->avatar_url }}" alt="{{ auth()->user()->name }}" class="w-16 h-16 rounded-full object-cover flex-shrink-0" style="aspect-ratio: 1/1;">
-                        @else
-                            <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
-                                <span class="text-white font-bold text-xl">{{ auth()->check() ? strtoupper(substr(auth()->user()->name, 0, 1)) : 'U' }}</span>
-                            </div>
-                        @endif
-                        
-                        <!-- User Name with Star if Admin -->
-                        <div class="mt-3 text-center">
-                            <span class="text-sm font-medium text-gray-900 dark:text-white">
-                                {{ auth()->check() ? auth()->user()->name : 'Usuário' }}
-                                @if(auth()->check() && (auth()->user()->is_admin ?? false))
-                                    <span class="text-yellow-500 ml-1">⭐</span>
-                                @endif
-                            </span>
-                            
-                            <!-- User Profession -->
-                            <div class="mt-1">
-                                <span class="text-xs text-gray-500 dark:text-gray-400">
-                                    {{ auth()->check() ? (auth()->user()->profissao ?? 'Não informado') : 'Não informado' }}
-                                </span>
-                            </div>
-                        </div>
-                    </a>
                 </div>
                 
                 <!-- Navigation -->
@@ -227,20 +196,20 @@
                          </button>
                      </div>
                      
-                     <!-- User Avatar and Info (Desktop only) -->
-                     <div class="flex flex-col items-center mb-6 pb-4 border-b border-gray-200 dark:border-gray-700" :class="{ 'justify-center': $store.sidebar.collapsed }" x-show="!$store.sidebar.isMobile">
+                     <!-- User Avatar and Info -->
+                     <div class="flex flex-col items-center mb-6 pb-4 border-b border-gray-200 dark:border-gray-700" :class="{ 'justify-center': $store.sidebar.collapsed && !$store.sidebar.isMobile, 'px-4': $store.sidebar.isMobile }">
                          <a href="{{ route('dashboard') }}" class="flex flex-col items-center">
                              <!-- Avatar -->
                              @if(auth()->check() && auth()->user()->avatar_url)
-                                 <img src="{{ auth()->user()->avatar_url }}" alt="{{ auth()->user()->name }}" :class="$store.sidebar.collapsed ? 'w-12 h-12' : 'w-16 h-16'" class="rounded-full object-cover flex-shrink-0" style="aspect-ratio: 1/1;">
+                                 <img src="{{ auth()->user()->avatar_url }}" alt="{{ auth()->user()->name }}" :class="$store.sidebar.collapsed && !$store.sidebar.isMobile ? 'w-12 h-12' : 'w-16 h-16'" class="rounded-full object-cover flex-shrink-0" style="aspect-ratio: 1/1;">
                              @else
-                                 <div :class="$store.sidebar.collapsed ? 'w-12 h-12' : 'w-16 h-16'" class="bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
-                                     <span class="text-white font-bold" :class="$store.sidebar.collapsed ? 'text-lg' : 'text-xl'">{{ auth()->check() ? strtoupper(substr(auth()->user()->name, 0, 1)) : 'U' }}</span>
+                                 <div :class="$store.sidebar.collapsed && !$store.sidebar.isMobile ? 'w-12 h-12' : 'w-16 h-16'" class="bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                     <span class="text-white font-bold" :class="$store.sidebar.collapsed && !$store.sidebar.isMobile ? 'text-lg' : 'text-xl'">{{ auth()->check() ? strtoupper(substr(auth()->user()->name, 0, 1)) : 'U' }}</span>
                                  </div>
                              @endif
                              
                              <!-- User Name with Star if Admin -->
-                             <div x-show="!$store.sidebar.collapsed" 
+                             <div x-show="!$store.sidebar.collapsed || $store.sidebar.isMobile" 
                                   x-transition:enter="transition ease-in-out duration-150"
                                   x-transition:enter-start="opacity-0 transform scale-95"
                                   x-transition:enter-end="opacity-100 transform scale-100"
