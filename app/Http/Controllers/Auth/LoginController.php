@@ -56,6 +56,12 @@ class LoginController extends Controller
             ]);
         }
 
+        // Check if email verification is required (now using User model method)
+        if ($user->shouldVerifyEmail() && !$user->hasVerifiedEmail()) {
+            Auth::logout();
+            return redirect()->route('verification.notice');
+        }
+
         // Update user online status
         $user->update([
             'is_online' => true,

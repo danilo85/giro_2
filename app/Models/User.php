@@ -184,6 +184,45 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Check if email verification is required based on system settings.
+     */
+    public function shouldVerifyEmail()
+    {
+        // Get email verification setting from system settings
+        $emailVerificationRequired = \App\Http\Controllers\SettingsController::get('system', 'email_verification', false);
+        
+        return $emailVerificationRequired;
+    }
+
+    /**
+     * Override hasVerifiedEmail to check system settings.
+     */
+    public function hasVerifiedEmail()
+    {
+        // If email verification is not required, consider email as verified
+        if (!$this->shouldVerifyEmail()) {
+            return true;
+        }
+
+        return !is_null($this->email_verified_at);
+    }
+
+    /**
+     * Override markEmailAsVerified to check system settings.
+     */
+    public function markEmailAsVerified()
+    {
+        // Only mark as verified if verification is required
+        if ($this->shouldVerifyEmail()) {
+            return $this->forceFill([
+                'email_verified_at' => $this->freshTimestamp(),
+            ])->save();
+        }
+
+        return true;
+    }
+
+    /**
      * Get the user's avatar URL.
      */
     public function getAvatarUrlAttribute()

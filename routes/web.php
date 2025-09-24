@@ -101,7 +101,7 @@ Route::get('/test-categories', [CategoryController::class, 'getCategoriesGrouped
 Route::get('/clientes/autocomplete', [ClienteController::class, 'autocomplete'])->name('clientes.autocomplete');
 
 // Protected Routes
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'conditional.verified'])->group(function () {
     // Main Dashboard (redirects to financial dashboard)
     Route::get('/dashboard', function () {
         return redirect()->route('financial.dashboard');
@@ -160,7 +160,7 @@ Route::post('/debug-form', function (\Illuminate\Http\Request $request) {
         'has_images' => $request->hasFile('images'),
         'images_count' => $request->hasFile('images') ? count($request->file('images')) : 0
     ]);
-})->withoutMiddleware(['auth', 'verified']);
+})->withoutMiddleware(['auth', 'conditional.verified']);
 
     // Profile routes
     Route::get('/profile', function () {
