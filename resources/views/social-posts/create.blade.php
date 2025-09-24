@@ -118,19 +118,7 @@
                                             <path d="M12.5 3a1 1 0 0 0 0 2h1.382l-4 12H8.5a1 1 0 0 0 0 2h4a1 1 0 0 0 0-2H10.618l4-12H16.5a1 1 0 0 0 0-2h-4Z"/>
                                         </svg>
                                     </button>
-                                    <div class="h-4 w-px bg-gray-300 dark:bg-gray-600"></div>
-                                    <button type="button" class="p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600" onclick="insertEmoji('😀')">
-                                        😀
-                                    </button>
-                                    <button type="button" class="p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600" onclick="insertEmoji('❤️')">
-                                        ❤️
-                                    </button>
-                                    <button type="button" class="p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600" onclick="insertEmoji('👍')">
-                                        👍
-                                    </button>
-                                    <button type="button" class="p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600" onclick="insertEmoji('🔥')">
-                                        🔥
-                                    </button>
+
                                 </div>
                             </div>
                             <textarea id="legenda" 
@@ -230,27 +218,12 @@
                                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12l4-4m-4 4 4 4"/>
                                         </svg>
                                     </button>
-                                    <button type="button" class="p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600" 
-                                            onclick="insertEmojiToCarousel('😀')">
-                                        😀
-                                    </button>
-                                    <button type="button" class="p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600" 
-                                            onclick="insertEmojiToCarousel('❤️')">
-                                        ❤️
-                                    </button>
-                                    <button type="button" class="p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600" 
-                                            onclick="insertEmojiToCarousel('👍')">
-                                        👍
-                                    </button>
-                                    <button type="button" class="p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600" 
-                                            onclick="insertEmojiToCarousel('🔥')">
-                                        🔥
-                                    </button>
+
                                 </div>
                             </div>
                             <textarea id="carouselTextsInput" 
                                       name="carousel_texts_combined" 
-                                      class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                                      class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                                       rows="8" 
                                       placeholder="Digite os textos do carrossel. Use '---' para separar cada slide.&#10;&#10;Exemplo:&#10;Primeiro texto do slide&#10;---&#10;Segundo texto do slide&#10;---&#10;Terceiro texto do slide"
                                       oninput="updateCarouselPreview()"></textarea>
@@ -309,21 +282,8 @@
                                             <path d="M12.5 3a1 1 0 0 0 0 2h1.382l-4 12H8.5a1 1 0 0 0 0 2h4a1 1 0 0 0 0-2H10.618l4-12H16.5a1 1 0 0 0 0-2h-4Z"/>
                                         </svg>
                                     </button>
-                                    <div class="h-4 w-px bg-gray-300 dark:bg-gray-600"></div>
-                                    <button type="button" class="p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600" onclick="insertEmojiToFinal('🎯')">
-                                        🎯
-                                    </button>
-                                    <button type="button" class="p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600" onclick="insertEmojiToFinal('💪')">
-                                        💪
-                                    </button>
-                                    <button type="button" class="p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600" onclick="insertEmojiToFinal('✨')">
-                                        ✨
-                                    </button>
-                                    <button type="button" class="p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600" onclick="showEmojiPicker('texto_final')">
-                                        <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM13.5 6a1.5 1.5 0 1 1-1.5 1.5A1.5 1.5 0 0 1 13.5 6ZM10 15.5a5.5 5.5 0 0 1-4.6-2.5 1 1 0 0 1 1.7-1 3.5 3.5 0 0 0 5.8 0 1 1 0 0 1 1.7 1 5.5 5.5 0 0 1-4.6 2.5ZM6.5 6a1.5 1.5 0 1 1 1.5 1.5A1.5 1.5 0 0 1 6.5 6Z"/>
-                                        </svg>
-                                    </button>
+
+
                                 </div>
                             </div>
                             <textarea id="texto_final" 

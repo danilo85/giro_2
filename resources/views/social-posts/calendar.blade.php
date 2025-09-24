@@ -9,11 +9,11 @@
         <!-- Tags de Navegação Rápida -->
         <div class="flex flex-wrap gap-2 mb-4">
             <a href="{{ route('social-posts.index') }}" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">
-                <i class="fas fa-list mr-1 sm:mr-2"></i>
-                <span class="hidden xs:inline">Todos os </span>Posts
+                <i class="fas fa-list mr-2"></i>
+                Todos os Posts
             </a>
             <a href="{{ route('social-posts.calendar') }}" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                <i class="fas fa-calendar mr-1 sm:mr-2"></i>
+                <i class="fas fa-calendar mr-2"></i>
                 Calendário
             </a>
         </div>

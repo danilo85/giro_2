@@ -161,6 +161,89 @@ function insertEmojiToFinal(emoji) {
     updatePreview();
 }
 
+// Emoji modal functions
+function showEmojiPicker(targetId) {
+    currentEmojiTarget = targetId;
+    const modal = document.getElementById('emojiModal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        loadEmojis();
+    }
+}
+
+function closeEmojiModal() {
+    const modal = document.getElementById('emojiModal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+    currentEmojiTarget = null;
+}
+
+function loadEmojis() {
+    const emojiGrid = document.getElementById('emojiGrid');
+    if (!emojiGrid) return;
+    
+    // Lista básica de emojis organizados por categoria
+    const emojis = {
+        smileys: ['😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚', '😋', '😛', '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🤩', '🥳'],
+        people: ['👋', '🤚', '🖐️', '✋', '🖖', '👌', '🤏', '✌️', '🤞', '🤟', '🤘', '🤙', '👈', '👉', '👆', '🖕', '👇', '☝️', '👍', '👎', '👊', '✊', '🤛', '🤜', '👏', '🙌', '👐', '🤲', '🤝', '🙏'],
+        nature: ['🌱', '🌿', '🍀', '🌾', '🌵', '🌲', '🌳', '🌴', '🌸', '🌺', '🌻', '🌹', '🥀', '🌷', '💐', '🌼', '🌙', '🌛', '🌜', '🌚', '🌕', '🌖', '🌗', '🌘', '🌑', '🌒', '🌓', '🌔', '⭐', '🌟'],
+        food: ['🍎', '🍊', '🍋', '🍌', '🍉', '🍇', '🍓', '🍈', '🍒', '🍑', '🥭', '🍍', '🥥', '🥝', '🍅', '🍆', '🥑', '🥦', '🥬', '🥒', '🌶️', '🌽', '🥕', '🧄', '🧅', '🥔', '🍠', '🥐', '🍞', '🥖'],
+        activities: ['⚽', '🏀', '🏈', '⚾', '🥎', '🎾', '🏐', '🏉', '🥏', '🎱', '🪀', '🏓', '🏸', '🏒', '🏑', '🥍', '🏏', '🪃', '🥅', '⛳', '🪁', '🏹', '🎣', '🤿', '🥊', '🥋', '🎽', '🛹', '🛷', '⛸️'],
+        objects: ['💎', '🔔', '🔕', '🎵', '🎶', '💰', '💴', '💵', '💶', '💷', '💸', '💳', '🧾', '💹', '💱', '💲', '✉️', '📧', '📨', '📩', '📤', '📥', '📦', '📫', '📪', '📬', '📭', '📮', '🗳️', '✏️']
+    };
+    
+    // Carregar todos os emojis por padrão
+    let allEmojis = [];
+    Object.values(emojis).forEach(category => {
+        allEmojis = allEmojis.concat(category);
+    });
+    
+    emojiGrid.innerHTML = allEmojis.map(emoji => 
+        `<button type="button" class="p-2 hover:bg-gray-200 dark:hover:bg-gray-600 rounded text-lg" onclick="selectEmoji('${emoji}')">${emoji}</button>`
+    ).join('');
+}
+
+function selectEmoji(emoji) {
+    if (currentEmojiTarget) {
+        const textarea = document.getElementById(currentEmojiTarget);
+        if (textarea) {
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            textarea.value = textarea.value.substring(0, start) + emoji + textarea.value.substring(end);
+            textarea.focus();
+            textarea.setSelectionRange(start + emoji.length, start + emoji.length);
+            
+            // Atualizar preview baseado no campo
+            if (currentEmojiTarget === 'carouselTextsInput') {
+                updateCarouselPreview();
+            } else {
+                updatePreview();
+            }
+        }
+    }
+    closeEmojiModal();
+}
+
+function filterEmojis() {
+    // Função para filtrar emojis (implementação básica)
+    const searchInput = document.getElementById('emojiSearch');
+    if (!searchInput) return;
+    
+    const query = searchInput.value.toLowerCase();
+    const buttons = document.querySelectorAll('#emojiGrid button');
+    
+    buttons.forEach(button => {
+        const emoji = button.textContent;
+        button.style.display = query === '' || emoji.includes(query) ? 'block' : 'none';
+    });
+}
+
+function filterEmojisByCategory(category) {
+    // Função para filtrar por categoria (implementação básica)
+    loadEmojis(); // Recarregar todos os emojis por enquanto
+}
+
 // Expose functions globally for HTML onclick handlers
 window.insertEmoji = insertEmoji;
 window.insertEmojiToCarousel = insertEmojiToCarousel;
@@ -182,6 +265,11 @@ window.saveDraft = saveDraft;
 window.toggleCallToActionType = toggleCallToActionType;
 window.previewCallToActionImage = previewCallToActionImage;
 window.removeCurrentImage = removeCurrentImage;
+window.showEmojiPicker = showEmojiPicker;
+window.closeEmojiModal = closeEmojiModal;
+window.selectEmoji = selectEmoji;
+window.filterEmojis = filterEmojis;
+window.filterEmojisByCategory = filterEmojisByCategory;
 
 // Hashtag functions
 function handleHashtagSearch(e) {

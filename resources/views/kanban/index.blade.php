@@ -340,10 +340,9 @@ function kanbanBoard() {
                 this.initializeSortable();
             });
             
-            // Listener para redimensionamento da tela
+            // Listener para redimensionamento da janela
             window.addEventListener('resize', () => {
                 this.initializeSlider();
-                this.updateScrollIndicators();
             });
         },
         
@@ -351,7 +350,11 @@ function kanbanBoard() {
             this.calculateResponsiveSettings();
             this.visibleColumns = this.getVisibleColumns();
             this.columnWidth = this.getColumnWidth();
-            this.maxScrollOffset = Math.max(0, (this.etapas.length * this.columnWidth) - (this.visibleColumns * this.columnWidth));
+            
+            // Calcular largura total necessária incluindo padding
+            const totalWidth = this.etapas.length * (this.columnWidth + 16); // 16px = padding left + right (8px cada)
+            const containerWidth = this.visibleColumns * this.columnWidth;
+            this.maxScrollOffset = Math.max(0, totalWidth - containerWidth);
             
             // Ajustar scroll se necessário
             if (this.scrollOffset > this.maxScrollOffset) {
@@ -359,23 +362,24 @@ function kanbanBoard() {
             }
             
             this.updateScrollIndicators();
+            this.updateSliderTrackWidth();
         },
         
         calculateResponsiveSettings() {
             const screenWidth = window.innerWidth;
             
             if (screenWidth >= 1024) {
-                // Desktop: mostrar todas as colunas
-                this.columnsPerView = 4;
+                // Desktop: largura fixa das colunas
+                this.columnsPerView = Math.min(4, this.etapas.length);
                 this.columnWidth = 280;
             } else if (screenWidth >= 768) {
-                // Tablet: mostrar 3 colunas
-                this.columnsPerView = 3;
-                this.columnWidth = Math.floor((screenWidth - 48) / 3);
+                // Tablet: largura fixa das colunas
+                this.columnsPerView = Math.min(2, this.etapas.length);
+                this.columnWidth = 320;
             } else {
-                // Mobile: mostrar 2 colunas
-                this.columnsPerView = 2;
-                this.columnWidth = Math.floor((screenWidth - 32) / 2);
+                // Mobile: largura fixa das colunas
+                this.columnsPerView = Math.min(1, this.etapas.length);
+                this.columnWidth = 300;
             }
         },
         
@@ -428,17 +432,27 @@ function kanbanBoard() {
         },
         
         getVisibleColumns() {
-            if (window.innerWidth >= 1536) return 4; // 2xl - 4 colunas
-            if (window.innerWidth >= 1280) return 4; // xl - 4 colunas
-            if (window.innerWidth >= 1024) return 3; // lg - 3 colunas
-            if (window.innerWidth >= 768) return 2; // md - 2 colunas
-            return 1; // sm - 1 coluna
+            const screenWidth = window.innerWidth;
+            
+            if (screenWidth >= 1024) {
+                return Math.min(4, this.etapas.length);
+            } else if (screenWidth >= 768) {
+                return Math.min(2, this.etapas.length);
+            } else {
+                return Math.min(1, this.etapas.length);
+            }
         },
         
         getColumnWidth() {
-            if (window.innerWidth >= 1024) return 280; // Desktop
-            if (window.innerWidth >= 768) return Math.floor((window.innerWidth - 48) / 3); // Tablet
-            return Math.floor((window.innerWidth - 32) / 2); // Mobile
+            const screenWidth = window.innerWidth;
+            
+            if (screenWidth >= 1024) {
+                return 280; // Desktop
+            } else if (screenWidth >= 768) {
+                return 320; // Tablet
+            } else {
+                return 300; // Mobile
+            }
         },
         
         // Touch handling
@@ -524,6 +538,15 @@ function kanbanBoard() {
             
             this.scrollIndicatorPosition = scrollPercentage * (100 - (visiblePercentage * 100));
             this.scrollIndicatorWidth = visiblePercentage * 100;
+        },
+        
+        updateSliderTrackWidth() {
+            const sliderTrack = document.querySelector('.slider-track');
+            if (sliderTrack) {
+                // Calcular largura total incluindo padding das colunas
+                const totalWidth = this.etapas.length * (this.columnWidth + 16); // 16px = padding left + right
+                sliderTrack.style.width = `${totalWidth}px`;
+            }
         },
         
         initializeSortable() {
@@ -723,13 +746,13 @@ function kanbanBoard() {
 
 @media (min-width: 768px) and (max-width: 1023px) {
     .slider-column {
-        width: calc(50vw - 24px);
+        width: 320px;
     }
 }
 
 @media (max-width: 767px) {
     .slider-column {
-        width: calc(100vw - 32px);
+        width: 300px;
     }
 }
 
@@ -747,12 +770,12 @@ function kanbanBoard() {
 
 .edge-scroll-left {
     left: 0;
-    background: linear-gradient(to right, rgba(255, 255, 255, 0.5), transparent);
+    background: linear-gradient(to right, rgba(255, 255, 255, 0), transparent);
 }
 
 .edge-scroll-right {
     right: 0;
-    background: linear-gradient(to left, rgba(255, 255, 255, 0.5), transparent);
+    background: linear-gradient(to left, rgba(255, 255, 255, 0), transparent);
 }
 
 /* Indicadores de scroll */

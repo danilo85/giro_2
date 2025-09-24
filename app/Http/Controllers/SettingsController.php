@@ -317,7 +317,16 @@ class SettingsController extends Controller
     {
         $settings = Cache::get('app_settings');
         
-        if (!$settings || !isset($settings[$section][$key])) {
+        if (!$settings) {
+            // If cache doesn't exist, create a new instance and get settings
+            $instance = new static();
+            $reflection = new \ReflectionClass($instance);
+            $method = $reflection->getMethod('getSettings');
+            $method->setAccessible(true);
+            $settings = $method->invoke($instance);
+        }
+        
+        if (!isset($settings[$section][$key])) {
             return $default;
         }
         

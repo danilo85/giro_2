@@ -8,21 +8,13 @@
     <div class="mb-6">
         <!-- Tags de Navegação Rápida -->
         <div class="flex flex-wrap gap-2 mb-4">
-            <a href="{{ route('social-posts.index') }}" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {{ !request('status') ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' : 'border border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700' }}">
+            <a href="{{ route('social-posts.index') }}" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
                 <i class="fas fa-list mr-2"></i>
                 Todos os Posts
             </a>
-            <a href="{{ route('social-posts.index', ['status' => 'rascunho']) }}" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {{ request('status') == 'rascunho' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' : 'border border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700' }}">
-                <i class="fas fa-edit mr-2"></i>
-                Rascunhos
-            </a>
-            <a href="{{ route('social-posts.index', ['status' => 'arquivado']) }}" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {{ request('status') == 'arquivado' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200' : 'border border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700' }}">
-                <i class="fas fa-archive mr-2"></i>
-                Arquivados
-            </a>
-            <a href="{{ route('social-posts.index', ['status' => 'publicado']) }}" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {{ request('status') == 'publicado' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'border border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700' }}">
-                <i class="fas fa-check-circle mr-2"></i>
-                Publicados
+            <a href="{{ route('social-posts.calendar') }}" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">
+                <i class="fas fa-calendar mr-2"></i>
+                Calendário
             </a>
         </div>
     </div>

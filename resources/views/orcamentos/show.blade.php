@@ -119,7 +119,7 @@
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Autores Responsáveis</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         @foreach($orcamento->autores as $autor)
-                            <div class="flex items-center p-3 border border-gray-200 dark:border-gray-600 rounded-lg space-x-4">
+                            <div class="flex items-center p-3 border border-gray-200 dark:border-gray-600 rounded-lg gap-3">
                                 <div class="flex-shrink-0">
                                     @if($autor->avatar)
                                         <img src="{{ Storage::url($autor->avatar) }}" 

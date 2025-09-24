@@ -36,17 +36,17 @@
             </nav>
             <div class="flex items-center justify-between">
                 <div>
-                     <h1 class="text-2xl font-bold text-gray-900">Gerar Imagens</h1>
-                        <p class="text-sm text-gray-600">{{ $socialPost->titulo }}</p>
+                     <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Gerar Imagens</h1>
+                        <p class="text-sm text-gray-600 dark:text-gray-300">{{ $socialPost->titulo }}</p>
                 </div>
                 <div class="flex items-center space-x-2">
                     <!-- Ícones de Ações Rápidas -->
-                    <button id="generateAllBtn" class="p-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors duration-200" title="Gerar Todas as Imagens">
+                    <button id="generateAllBtn" class="p-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200" title="Gerar Todas as Imagens">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                         </svg>
                     </button>
-                    <button id="downloadAllBtn" class="p-2 text-green-600 hover:text-green-700 hover:bg-green-50 rounded-lg transition-colors duration-200" title="Baixar Todas as Imagens">
+                    <button id="downloadAllBtn" class="p-2 text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 hover:bg-green-50 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200" title="Baixar Todas as Imagens">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                         </svg>
@@ -64,85 +64,85 @@
         <!-- Control Panel - Reorganizado em 2 Colunas -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             <!-- Coluna 1: Formato das Imagens -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
                 <div class="flex items-center mb-4">
                     <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center mr-3">
                         <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                         </svg>
                     </div>
-                    <h2 class="text-xl font-bold text-gray-900">Formato das Imagens</h2>
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white">Formato das Imagens</h2>
                 </div>
                 <div class="space-y-4">
                     <label class="cursor-pointer block">
                         <input type="radio" name="format" value="stories" class="sr-only format-radio" checked>
-                        <div class="format-option border-2 border-gray-200 rounded-lg p-4 hover:border-purple-500 hover:shadow-md transition-all duration-200 flex items-center space-x-3">
+                        <div class="format-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-4 hover:border-purple-500 hover:shadow-md transition-all duration-200 flex items-center gap-6 sm:gap-4">
                             <div class="w-10 h-16 bg-gradient-to-b from-purple-400 to-pink-400 rounded-lg flex-shrink-0 shadow-sm"></div>
                             <div class="flex-1">
-                                <h3 class="font-semibold text-gray-900">Stories</h3>
-                                <p class="text-sm text-gray-600">1080 x 1920 (9:16)</p>
+                                <h3 class="font-semibold text-gray-900 dark:text-white">Stories</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-300">1080 x 1920 (9:16)</p>
                                 <p class="text-xs text-purple-600 font-medium">Ideal para Instagram Stories</p>
                             </div>
                         </div>
                     </label>
                     <label class="cursor-pointer block">
                         <input type="radio" name="format" value="square" class="sr-only format-radio">
-                        <div class="format-option border-2 border-gray-200 rounded-lg p-4 hover:border-blue-500 hover:shadow-md transition-all duration-200 flex items-center space-x-3">
+                        <div class="format-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-4 hover:border-blue-500 hover:shadow-md transition-all duration-200 flex items-center gap-6 sm:gap-4">
                             <div class="w-10 h-10 bg-gradient-to-br from-blue-400 to-purple-400 rounded-lg flex-shrink-0 shadow-sm"></div>
                             <div class="flex-1">
-                                <h3 class="font-semibold text-gray-900">Quadrado</h3>
-                                <p class="text-sm text-gray-600">1080 x 1080 (1:1)</p>
+                                <h3 class="font-semibold text-gray-900 dark:text-white">Quadrado</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-300">1080 x 1080 (1:1)</p>
                                 <p class="text-xs text-blue-600 font-medium">Ideal para Feed e Reels</p>
                             </div>
                         </div>
                     </label>
                     <label class="cursor-pointer block">
                         <input type="radio" name="format" value="rectangular" class="sr-only format-radio">
-                        <div class="format-option border-2 border-gray-200 rounded-lg p-4 hover:border-green-500 hover:shadow-md transition-all duration-200 flex items-center space-x-3">
+                        <div class="format-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-4 hover:border-green-500 hover:shadow-md transition-all duration-200 flex items-center gap-6 sm:gap-4">
                             <div class="w-10 h-12 bg-gradient-to-r from-green-400 to-blue-400 rounded-lg flex-shrink-0 shadow-sm"></div>
                             <div class="flex-1">
-                                <h3 class="font-semibold text-gray-900">Retangular</h3>
-                                <p class="text-sm text-gray-600">1080 x 1350 (4:5)</p>
+                                <h3 class="font-semibold text-gray-900 dark:text-white">Retangular</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-300">1080 x 1350 (4:5)</p>
                                 <p class="text-xs text-green-600 font-medium">Ideal para Feed vertical</p>
                             </div>
                         </div>
                     </label>
                 </div>
                 <!-- Status do formato atual -->
-                <div class="mt-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg p-3 border border-gray-200">
+                <div class="mt-4 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600 rounded-lg p-3 border border-gray-200 dark:border-gray-600">
                     <div class="flex items-center justify-between text-sm">
-                        <span class="text-gray-700 font-medium">📐 Formato selecionado: <span id="currentFormatDisplay" class="text-gray-900 font-semibold">Stories (9:16)</span></span>
-                        <span class="text-gray-500">Todas as imagens serão geradas neste formato</span>
+                        <span class="text-gray-700 dark:text-gray-300 font-medium">📐 Formato selecionado: <span id="currentFormatDisplay" class="text-gray-900 dark:text-white font-semibold">Stories (9:16)</span></span>
+                        <span class="text-gray-500 dark:text-gray-400">Todas as imagens serão geradas neste formato</span>
                     </div>
                 </div>
             </div>
 
             <!-- Coluna 2: Personalização de Cores -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
                 <div class="flex items-center mb-4">
                     <div class="w-10 h-10 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-lg flex items-center justify-center mr-3">
                         <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z"></path>
                         </svg>
                     </div>
-                    <h2 class="text-xl font-bold text-gray-900">Personalização de Cores</h2>
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white">Personalização de Cores</h2>
                 </div>
                 
                 <!-- Seletor de Nova Cor -->
                 <div class="space-y-8 mb-6">
                     <div>
-                        <label for="colorPicker" class="block text-sm font-semibold text-gray-700 mb-3">🎨 Escolher Nova Cor</label>
-                        <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                        <label for="colorPicker" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">🎨 Escolher Nova Cor</label>
+                        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
                             <div class="space-y-3">
                                 <div class="flex items-center space-x-3">
-                                    <input type="color" id="colorPicker" value="#FFD700" class="w-14 h-12 border-2 border-gray-300 rounded-lg cursor-pointer shadow-sm hover:shadow-md transition-shadow">
-                                    <input type="text" id="colorHex" value="#FFD700" class="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg text-sm font-mono bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all" placeholder="#FFD700">
+                                    <input type="color" id="colorPicker" value="#FFD700" class="w-14 h-12 border-2 border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer shadow-sm hover:shadow-md transition-shadow">
+                                    <input type="text" id="colorHex" value="#FFD700" class="flex-1 px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg text-sm font-mono bg-white dark:bg-gray-800 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all" placeholder="#FFD700">
                                 </div>
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                    <button id="saveColorBtn" class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-4 py-3 rounded-lg text-sm font-semibold transition-all duration-200 shadow-sm hover:shadow-md">
+                                    <button id="saveColorBtn" class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 dark:from-blue-700 dark:to-blue-800 dark:hover:from-blue-800 dark:hover:to-blue-900 text-white px-4 py-3 rounded-lg text-sm font-semibold transition-all duration-200 shadow-sm hover:shadow-md">
                                         💾 Salvar Cor
                                     </button>
-                                    <button id="setDefaultColorBtn" class="bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-700 hover:to-yellow-800 text-white px-4 py-3 rounded-lg text-sm font-semibold transition-all duration-200 shadow-sm hover:shadow-md">
+                                    <button id="setDefaultColorBtn" class="bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-700 hover:to-yellow-800 dark:from-yellow-700 dark:to-yellow-800 dark:hover:from-yellow-800 dark:hover:to-yellow-900 text-white px-4 py-3 rounded-lg text-sm font-semibold transition-all duration-200 shadow-sm hover:shadow-md">
                                         ⭐ Definir como Padrão
                                     </button>
                                 </div>
@@ -153,12 +153,12 @@
                 
                 <!-- Cores Salvas -->
                 <div id="savedColorsSection">
-                        <label class="block text-sm font-semibold text-gray-700 mb-3">🎨 Cores Salvas</label>
+                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">🎨 Cores Salvas</label>
                         
                         @if(isset($postColors) && $postColors->count() > 0)
                         <div class="mb-4">
-                            <h4 class="text-xs font-semibold text-blue-600 mb-3 flex items-center">
-                                <span class="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
+                            <h4 class="text-xs font-semibold text-blue-600 dark:text-blue-400 mb-3 flex items-center">
+                                <span class="w-2 h-2 bg-blue-500 dark:bg-blue-400 rounded-full mr-2"></span>
                                 Cores deste post
                             </h4>
                             <div class="grid grid-cols-8 gap-2">
@@ -189,8 +189,8 @@
                         <div id="savedColorsList">
                             @if(isset($defaultColors) && $defaultColors->count() > 0)
                             <div class="mb-4">
-                                <h4 class="text-xs font-semibold text-yellow-600 mb-3 flex items-center">
-                                    <span class="w-2 h-2 bg-yellow-500 rounded-full mr-2"></span>
+                                <h4 class="text-xs font-semibold text-yellow-600 dark:text-yellow-400 mb-3 flex items-center">
+                                    <span class="w-2 h-2 bg-yellow-500 dark:bg-yellow-400 rounded-full mr-2"></span>
                                     Cores padrão
                                 </h4>
                                 <div class="grid grid-cols-8 gap-2">
@@ -214,8 +214,8 @@
                             
                             @if(isset($globalColors) && $globalColors->count() > 0)
                             <div class="mb-4">
-                                <h4 class="text-xs font-semibold text-gray-600 mb-3 flex items-center">
-                                    <span class="w-2 h-2 bg-gray-500 rounded-full mr-2"></span>
+                                <h4 class="text-xs font-semibold text-gray-600 dark:text-gray-400 mb-3 flex items-center">
+                                    <span class="w-2 h-2 bg-gray-500 dark:bg-gray-400 rounded-full mr-2"></span>
                                     Cores globais
                                 </h4>
                                 <div class="grid grid-cols-8 gap-2">
@@ -239,13 +239,13 @@
                             
                             @if((!isset($postColors) || $postColors->count() == 0) && (!isset($defaultColors) || $defaultColors->count() == 0) && (!isset($globalColors) || $globalColors->count() == 0))
                                 <div class="text-center py-8">
-                                    <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                                        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <div class="w-16 h-16 bg-gray-100 dark:bg-gray-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                                        <svg class="w-8 h-8 text-gray-400 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z"></path>
                                         </svg>
                                     </div>
-                                    <p class="text-sm text-gray-500 font-medium">Nenhuma cor salva ainda</p>
-                                    <p class="text-xs text-gray-400">Escolha uma cor e clique em "Salvar Cor"</p>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Nenhuma cor salva ainda</p>
+                                    <p class="text-xs text-gray-400 dark:text-gray-500">Escolha uma cor e clique em "Salvar Cor"</p>
                                 </div>
                             @endif
                         </div>
@@ -257,10 +257,10 @@
         <!-- Image Previews -->
         <div class="space-y-8">
             <!-- Title Image -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold text-gray-900">Imagem do Título</h3>
-                    <button class="download-btn bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200" data-type="title">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Imagem do Título</h3>
+                    <button class="download-btn bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200" data-type="title">
                         Baixar
                     </button>
                 </div>
@@ -270,15 +270,15 @@
                     <!-- Primeira Coluna: Imagem do Título -->
                     <div class="order-2 lg:order-1">
                         <div class="image-preview-container">
-                            <canvas id="titleCanvas" class="border border-gray-300 rounded-lg max-w-full h-auto"></canvas>
+                            <canvas id="titleCanvas" class="border border-gray-300 dark:border-gray-600 rounded-lg max-w-full h-auto"></canvas>
                         </div>
                     </div>
                     
                     <!-- Segunda Coluna: Controles de Alinhamento Justificado -->
                     <div class="order-1 lg:order-2">
-                        <div class="p-4 bg-white rounded-lg border border-gray-200 shadow-sm h-fit">
-                            <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                                <svg class="w-5 h-5 text-gray-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm h-fit">
+                            <h4 class="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center">
+                                <svg class="w-5 h-5 text-gray-600 dark:text-gray-300 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                                 </svg>
                                 Controles de Alinhamento
@@ -286,25 +286,25 @@
                             
                             <!-- Controle de Quebra de Linha -->
                             <div class="mb-3">
-                                <label class="block text-xs font-medium text-blue-700 mb-1">Quebra de Linha</label>
+                                <label class="block text-xs font-medium text-blue-700 dark:text-blue-400 mb-1">Quebra de Linha</label>
                                 <div class="flex items-center space-x-2">
                                     <input type="range" id="lineBreakSlider" min="1" max="5" value="3" class="flex-1 h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer">
-                                    <span id="lineBreakValue" class="text-xs font-mono text-blue-600 w-8">3</span>
+                                    <span id="lineBreakValue" class="text-xs font-mono text-blue-600 dark:text-blue-400 w-8">3</span>
                                 </div>
                             </div>
                             
                             <!-- Controle de Linha Destacada -->
                             <div class="mb-3">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Linha com Caixa Preta</label>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Linha com Caixa Preta</label>
                                 <div class="space-y-2">
-                                    <div class="flex items-center justify-between text-xs text-gray-500">
+                                    <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
                                         <span>Nenhuma</span>
                                         <span>5ª linha</span>
                                     </div>
                                     <div class="relative">
                                         <input type="range" id="highlightLineSelect" min="0" max="5" value="2" step="1" 
                                                class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-thumb">
-                                        <div class="flex justify-between text-xs text-gray-500 mt-1 px-1">
+                                        <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1 px-1">
                                             <span>0</span>
                                             <span>1</span>
                                             <span>2</span>
@@ -313,7 +313,7 @@
                                             <span>5</span>
                                         </div>
                                     </div>
-                                    <div class="text-xs text-center text-gray-600 mt-1">
+                                    <div class="text-xs text-center text-gray-600 dark:text-gray-300 mt-1">
                                         <span id="highlightLineLabel">Segunda linha</span>
                                     </div>
                                 </div>
@@ -321,24 +321,24 @@
                             
                             <!-- Controle de Espaçamento -->
                             <div class="mb-3">
-                                <label class="block text-xs font-medium text-blue-700 mb-1">Espaçamento entre Linhas</label>
+                                <label class="block text-xs font-medium text-blue-700 dark:text-blue-400 mb-1">Espaçamento entre Linhas</label>
                                 <div class="flex items-center space-x-2">
                                     <input type="range" id="lineSpacingSlider" min="1.0" max="2.5" step="0.1" value="1.5" class="flex-1 h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer">
-                                    <span id="lineSpacingValue" class="text-xs font-mono text-blue-600 w-8">1.5</span>
+                                    <span id="lineSpacingValue" class="text-xs font-mono text-blue-600 dark:text-blue-400 w-8">1.5</span>
                                 </div>
                             </div>
                             
                             <!-- Controle de Espaçamento Personalizado -->
                             <div class="mb-3">
                                 <div class="flex items-center justify-between mb-2">
-                                    <label class="block text-sm font-medium text-gray-700">Espaçamento Personalizado</label>
-                                    <button id="customSpacingToggle" class="relative inline-flex h-6 w-11 items-center rounded-full bg-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" data-state="off">
-                                        <span class="inline-block h-4 w-4 transform rounded-full bg-white shadow-lg transition-transform translate-x-1"></span>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Espaçamento Personalizado</label>
+                                    <button id="customSpacingToggle" class="relative inline-flex h-6 w-11 items-center rounded-full bg-gray-300 dark:bg-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" data-state="off">
+                                        <span class="inline-block h-4 w-4 transform rounded-full bg-white dark:bg-gray-200 shadow-lg transition-transform translate-x-1"></span>
                                         <span class="sr-only">Toggle espaçamento personalizado</span>
                                     </button>
                                 </div>
                                 <div id="customSpacingControls" class="space-y-2 hidden">
-                                    <div class="text-xs text-blue-600 mb-1">Ajuste o espaçamento de cada linha:</div>
+                                    <div class="text-xs text-blue-600 dark:text-blue-400 mb-1">Ajuste o espaçamento de cada linha:</div>
                                     <div id="lineSpacingInputs" class="space-y-1">
                                         <!-- Controles serão gerados dinamicamente -->
                                     </div>
@@ -348,9 +348,9 @@
                             <!-- Botões de Controle -->
                             <div class="space-y-3">
                                 <div class="flex items-center justify-between">
-                                    <label class="block text-sm font-medium text-gray-700">Justificar Texto</label>
-                                    <button id="justifyToggle" class="relative inline-flex h-6 w-11 items-center rounded-full bg-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" data-state="on">
-                                        <span class="inline-block h-4 w-4 transform rounded-full bg-white shadow-lg transition-transform translate-x-6"></span>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Justificar Texto</label>
+                                    <button id="justifyToggle" class="relative inline-flex h-6 w-11 items-center rounded-full bg-blue-600 dark:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800" data-state="on">
+                                        <span class="inline-block h-4 w-4 transform rounded-full bg-white dark:bg-gray-200 shadow-lg transition-transform translate-x-6"></span>
                                         <span class="sr-only">Toggle justificar texto</span>
                                     </button>
                                 </div>
@@ -368,26 +368,26 @@
             </div>
 
             <!-- Carousel Images -->            <!-- Debug: CarouselTexts count = {{ $socialPost->carouselTexts->count() }} -->            {{-- Temporariamente removendo a condição para testar os modais --}}            @if(true || $socialPost->carouselTexts->count() > 0)
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold text-gray-900">Imagens do Carrossel</h3>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Imagens do Carrossel</h3>
                     <div class="flex space-x-2">
-                        <button id="globalCarouselSettings" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200">
+                        <button id="globalCarouselSettings" class="bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200">
                             Configurações Globais
                         </button>
-                        <button class="download-btn bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200" data-type="carousel">
+                        <button class="download-btn bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200" data-type="carousel">
                             Baixar Todas
                         </button>
                     </div>
                 </div>
                 
                 <!-- Modal de Configurações Globais -->
-                <div id="globalCarouselModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-[10003]">
+                <div id="globalCarouselModal" class="hidden fixed inset-0 bg-black bg-opacity-50 dark:bg-black dark:bg-opacity-70 z-[10003]">
                     <div class="flex items-center justify-center min-h-screen p-4">
-                        <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-md">
                             <div class="flex items-center justify-between mb-4">
-                                <h4 class="text-lg font-semibold text-gray-800">Configurações Globais do Carrossel</h4>
-                                <button id="closeGlobalModal" class="text-gray-400 hover:text-gray-600">
+                                <h4 class="text-lg font-semibold text-gray-800 dark:text-white">Configurações Globais do Carrossel</h4>
+                                <button id="closeGlobalModal" class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300">
                                     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                                     </svg>
@@ -397,17 +397,17 @@
                             <div class="space-y-4">
                                 <!-- Tamanho da Fonte Global -->
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Tamanho da Fonte</label>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tamanho da Fonte</label>
                                     <div class="flex items-center space-x-3">
                                         <input type="range" id="globalFontSize" min="16" max="60" value="54" class="flex-1 h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer">
-                            <span id="globalFontSizeValue" class="text-sm font-mono text-blue-600 w-12">54px</span>
+                            <span id="globalFontSizeValue" class="text-sm font-mono text-blue-600 dark:text-blue-400 w-12">54px</span>
                                     </div>
                                 </div>
                                 
                                 <!-- Espessura da Fonte Global -->
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Espessura da Fonte</label>
-                                    <select id="globalFontWeight" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Espessura da Fonte</label>
+                                    <select id="globalFontWeight" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg px-3 py-2">
                                         <option value="300">Fina (Light)</option>
                                         <option value="400" selected>Normal</option>
                                         <option value="500">Média (Medium)</option>
@@ -419,8 +419,8 @@
                                 
                                 <!-- Quebra de Texto Global -->
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Quebra de Texto</label>
-                                    <select id="globalTextWrap" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Quebra de Texto</label>
+                                    <select id="globalTextWrap" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg px-3 py-2">
                                         <option value="auto">Automática</option>
                                         <option value="manual">Manual</option>
                                         <option value="none">Sem Quebra</option>
@@ -429,8 +429,8 @@
                                 
                                 <!-- Alinhamento do Texto Global -->
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Alinhamento do Texto</label>
-                                    <select id="globalTextAlignment" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Alinhamento do Texto</label>
+                                    <select id="globalTextAlignment" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg px-3 py-2">
                                         <option value="left">Esquerda</option>
                                         <option value="center">Centro</option>
                                         <option value="right">Direita</option>
@@ -440,25 +440,25 @@
                                 
                                 <!-- Padding Global -->
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Padding (Distância do Texto à Borda)</label>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Padding (Distância do Texto à Borda)</label>
                                     <div class="flex items-center space-x-3">
                                         <input type="range" id="globalPadding" min="0" max="100" value="30" class="flex-1 h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer">
-                                        <span id="globalPaddingValue" class="text-sm font-mono text-blue-600 w-12">30px</span>
+                                        <span id="globalPaddingValue" class="text-sm font-mono text-blue-600 dark:text-blue-400 w-12">30px</span>
                                     </div>
                                 </div>
                                 
                                 <!-- Formatação Global -->
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Formatação</label>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Formatação</label>
                                     <div class="flex space-x-2">
-                                        <button id="globalUppercase" class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded-lg transition-colors" title="Maiúsculas">ABC</button>
-                                        <button id="globalNumbering" class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded-lg transition-colors" title="Numeração">123</button>
+                                        <button id="globalUppercase" class="px-3 py-2 text-sm bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 dark:text-white rounded-lg transition-colors" title="Maiúsculas">ABC</button>
+                                        <button id="globalNumbering" class="px-3 py-2 text-sm bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 dark:text-white rounded-lg transition-colors" title="Numeração">123</button>
                                     </div>
                                 </div>
                                 
                                 <!-- Botões de Ação -->
-                                <div class="flex justify-between pt-4 border-t border-gray-200">
-                                    <button id="resetGlobalSettings" class="text-sm text-gray-500 hover:text-gray-700 underline">
+                                <div class="flex justify-between pt-4 border-t border-gray-200 dark:border-gray-600">
+                                    <button id="resetGlobalSettings" class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 underline">
                                         Resetar Tudo
                                     </button>
                                     <div class="space-x-2">
@@ -476,27 +476,27 @@
                     @foreach($socialPost->carouselTexts->sortBy('position') as $index => $carouselText)
                     <div class="carousel-item relative">
                         <div class="flex items-center justify-between mb-2">
-                            <h4 class="text-sm font-medium text-gray-700">Slide {{ $index + 1 }}</h4>
+                            <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300">Slide {{ $index + 1 }}</h4>
                             <div class="flex items-center space-x-2">
                                 <button class="carousel-settings-btn relative" data-index="{{ $index }}" title="Configurações do slide">
-                                    <svg class="w-5 h-5 text-gray-600 hover:text-blue-600 transition-colors" fill="currentColor" viewBox="0 0 20 20">
+                                    <svg class="w-5 h-5 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors" fill="currentColor" viewBox="0 0 20 20">
                                         <circle cx="10" cy="3" r="1.5"/>
                                         <circle cx="10" cy="10" r="1.5"/>
                                         <circle cx="10" cy="17" r="1.5"/>
                                     </svg>
                                 </button>
-                                <button class="download-btn bg-gray-100 hover:bg-gray-200 text-gray-700 px-2 py-1 rounded text-xs font-medium transition-colors duration-200" data-type="carousel" data-index="{{ $index }}">
+                                <button class="download-btn bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-2 py-1 rounded text-xs font-medium transition-colors duration-200" data-type="carousel" data-index="{{ $index }}">
                                     Baixar
                                 </button>
                             </div>
                         </div>
-                        <canvas id="carouselCanvas{{ $index }}" class="border border-gray-300 rounded-lg w-full h-auto" data-text="{{ $carouselText->texto }}"></canvas>
+                        <canvas id="carouselCanvas{{ $index }}" class="border border-gray-300 dark:border-gray-600 rounded-lg w-full h-auto" data-text="{{ $carouselText->texto }}"></canvas>
                         
                         <!-- Modal de Configurações Flutuante -->
-                        <div id="carouselModal{{ $index }}" class="carousel-modal hidden absolute top-0 right-0 mt-8 mr-2 bg-white border border-gray-200 rounded-lg shadow-lg p-4 z-50 w-80">
+                        <div id="carouselModal{{ $index }}" class="carousel-modal hidden absolute top-0 right-0 mt-8 mr-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-4 z-50 w-80">
                             <div class="flex items-center justify-between mb-3">
-                                <h5 class="text-sm font-semibold text-gray-800">Configurações - Slide {{ $index + 1 }}</h5>
-                                <button class="close-modal text-gray-400 hover:text-gray-600" data-index="{{ $index }}">
+                                <h5 class="text-sm font-semibold text-gray-800 dark:text-white">Configurações - Slide {{ $index + 1 }}</h5>
+                                <button class="close-modal text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300" data-index="{{ $index }}">
                                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                                     </svg>
@@ -506,17 +506,17 @@
                             <div class="space-y-3">
                                 <!-- Tamanho da Fonte -->
                                 <div>
-                                    <label class="block text-xs font-medium text-gray-700 mb-1">Tamanho da Fonte</label>
+                                    <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Tamanho da Fonte</label>
                                     <div class="flex items-center space-x-2">
                                         <input type="range" id="fontSize_{{ $index }}" min="16" max="60" value="54" class="flex-1 h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer">
-                                    <span id="fontSizeValue_{{ $index }}" class="text-xs font-mono text-blue-600 w-8">54</span>
+                                    <span id="fontSizeValue_{{ $index }}" class="text-xs font-mono text-blue-600 dark:text-blue-400 w-8">54</span>
                                     </div>
                                 </div>
                                 
                                 <!-- Espessura da Fonte -->
                                 <div>
-                                    <label class="block text-xs font-medium text-gray-700 mb-1">Espessura da Fonte</label>
-                                    <select id="fontWeight_{{ $index }}" class="w-full text-xs border border-gray-300 rounded px-2 py-1">
+                                    <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Espessura da Fonte</label>
+                                    <select id="fontWeight_{{ $index }}" class="w-full text-xs border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-2 py-1">
                                         <option value="300">Fina (Light)</option>
                                         <option value="400" selected>Normal</option>
                                         <option value="500">Média (Medium)</option>
@@ -528,8 +528,8 @@
                                 
                                 <!-- Quebra de Texto -->
                                 <div>
-                                    <label class="block text-xs font-medium text-gray-700 mb-1">Quebra de Texto</label>
-                                    <select id="textWrap_{{ $index }}" class="w-full text-xs border border-gray-300 rounded px-2 py-1">
+                                    <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Quebra de Texto</label>
+                                    <select id="textWrap_{{ $index }}" class="w-full text-xs border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-2 py-1">
                                         <option value="auto">Automática</option>
                                         <option value="manual">Manual</option>
                                         <option value="none">Sem Quebra</option>
@@ -538,8 +538,8 @@
                                 
                                 <!-- Alinhamento do Texto -->
                                 <div>
-                                    <label class="block text-xs font-medium text-gray-700 mb-1">Alinhamento do Texto</label>
-                                    <select id="textAlignment_{{ $index }}" class="w-full text-xs border border-gray-300 rounded px-2 py-1">
+                                    <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Alinhamento do Texto</label>
+                                    <select id="textAlign_{{ $index }}" class="w-full text-xs border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-2 py-1">
                                         <option value="left">Esquerda</option>
                                         <option value="center">Centro</option>
                                         <option value="right">Direita</option>
@@ -549,29 +549,29 @@
                                 
                                 <!-- Formatação -->
                                 <div>
-                                    <label class="block text-xs font-medium text-gray-700 mb-1">Formatação</label>
+                                    <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Formatação</label>
                                     <div class="flex space-x-1">
-                                        <button id="uppercase_{{ $index }}" class="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded transition-colors" title="Maiúsculas">ABC</button>
-                                        <button id="numbering_{{ $index }}" class="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded transition-colors" title="Numeração">123</button>
+                                        <button id="uppercase_{{ $index }}" class="px-2 py-1 text-xs bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 dark:text-white rounded transition-colors" title="Maiúsculas">ABC</button>
+                                        <button id="numbering_{{ $index }}" class="px-2 py-1 text-xs bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 dark:text-white rounded transition-colors" title="Numeração">123</button>
                                     </div>
                                 </div>
                                 
                                 <!-- Texto Personalizado -->
                                 <div>
-                                    <label class="block text-xs font-medium text-gray-700 mb-1">Texto Personalizado</label>
-                                    <textarea id="customText_{{ $index }}" class="w-full text-xs border border-gray-300 rounded px-2 py-1 h-16 resize-none" placeholder="Digite o texto personalizado...">{{ $carouselText->texto }}</textarea>
+                                    <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Texto Personalizado</label>
+                                    <textarea id="customText_{{ $index }}" class="w-full text-xs border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-2 py-1 h-16 resize-none" placeholder="Digite o texto personalizado...">{{ $carouselText->texto }}</textarea>
                                 </div>
                                 
                                 <!-- Botões de Ação -->
-                                <div class="flex justify-between pt-2 border-t border-gray-200">
-                                    <button id="resetSlide_{{ $index }}" class="text-xs text-gray-500 hover:text-gray-700 underline">
+                                <div class="flex justify-between pt-2 border-t border-gray-200 dark:border-gray-600">
+                                    <button id="resetSlide_{{ $index }}" class="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 underline">
                                         Resetar
                                     </button>
                                     <div class="flex space-x-2">
-                                        <button id="previewSlide_{{ $index }}" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs font-medium transition-colors">
+                                        <button id="previewSlide_{{ $index }}" class="bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 text-white px-3 py-1 rounded text-xs font-medium transition-colors">
                                             Preview
                                         </button>
-                                        <button id="saveSlide_{{ $index }}" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-xs font-medium transition-colors">
+                                        <button id="saveSlide_{{ $index }}" class="bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 text-white px-3 py-1 rounded text-xs font-medium transition-colors">
                                             Salvar
                                         </button>
                                     </div>
@@ -586,41 +586,40 @@
 
             <!-- Call to Action Image -->
             @if($socialPost->texto_final || $socialPost->call_to_action_image)
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold text-gray-900">Imagem Call-to-Action</h3>
-                    <button class="download-btn bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200" data-type="cta">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Imagem Call-to-Action</h3>
+                    <button class="download-btn bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200" data-type="cta">
                         Baixar
                     </button>
                 </div>
     
                 
+                <!-- Canvas Principal para CTA (sempre presente quando há conteúdo) -->
+                <div class="image-preview-container mb-4">
+                    <canvas id="ctaCanvas" class="border border-gray-300 dark:border-gray-600 rounded-lg max-w-full h-auto"></canvas>
+                </div>
+                
                 @if($socialPost->call_to_action_image)
-                    <!-- Canvas para Renderizar Imagem -->
-                    <div class="border-t border-gray-200 pt-6">
-                        <div class="flex items-center mb-3">
-                            <svg class="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <!-- Informações sobre Imagem -->
+                    <div class="border-t border-gray-200 dark:border-gray-600 pt-4">
+                        <div class="flex items-center mb-2">
+                            <svg class="w-4 h-4 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                             </svg>
-                            <h4 class="text-md font-medium text-gray-900">Imagem Renderizada no Canvas</h4>
-                        </div>
-                        <div class="image-preview-container">
-                            <canvas id="ctaCanvas" class="border border-gray-300 rounded-lg max-w-full h-auto"></canvas>
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Imagem carregada do storage</span>
                         </div>
                     </div>
                 @endif
                 
                 @if($socialPost->texto_final)
-                    <!-- Gerador de Imagem com Texto -->
-                    <div class="{{ $socialPost->call_to_action_image ? 'border-t border-gray-200 pt-6' : '' }}">
-                        <div class="flex items-center mb-3">
-                            <svg class="w-5 h-5 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <!-- Informações sobre Texto -->
+                    <div class="border-t border-gray-200 dark:border-gray-600 pt-4">
+                        <div class="flex items-center mb-2">
+                            <svg class="w-4 h-4 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                             </svg>
-                            <h4 class="text-md font-medium text-gray-900">Gerar com Texto Final</h4>
-                        </div>
-                        <div class="image-preview-container">
-                            <canvas id="ctaTextCanvas" class="border border-gray-300 rounded-lg max-w-full h-auto"></canvas>
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Texto final: "{{ Str::limit($socialPost->texto_final, 50) }}"</span>
                         </div>
                     </div>
                 @endif
@@ -838,12 +837,12 @@ function initializeFormatSelector() {
                 
                 // Atualizar visual dos seletores
                 formatOptions.forEach(option => {
-                    option.classList.remove('border-blue-500', 'bg-blue-50');
-                    option.classList.add('border-gray-200');
+                    option.classList.remove('border-blue-500', 'bg-blue-50', 'dark:border-blue-500', 'dark:bg-blue-900');
+                    option.classList.add('border-gray-200', 'dark:border-gray-600');
                 });
                 
-                formatOptions[index].classList.remove('border-gray-200');
-                formatOptions[index].classList.add('border-blue-500', 'bg-blue-50');
+                formatOptions[index].classList.remove('border-gray-200', 'dark:border-gray-600');
+                formatOptions[index].classList.add('border-blue-500', 'bg-blue-50', 'dark:border-blue-500', 'dark:bg-blue-900');
                 
                 // Atualizar display do formato
                 updateFormatDisplay();
@@ -855,7 +854,7 @@ function initializeFormatSelector() {
     });
     
     // Marcar o primeiro como selecionado
-    formatOptions[0].classList.add('border-blue-500', 'bg-blue-50');
+    formatOptions[0].classList.add('border-blue-500', 'bg-blue-50', 'dark:border-blue-500', 'dark:bg-blue-900');
 }
 
 // Gerar todas as imagens
@@ -1619,12 +1618,35 @@ function generateCtaImage() {
     console.log('Texto final:', postData.textoFinal);
     console.log('Imagem CTA do postData:', postData.callToActionImage);
     
-    const canvas = document.getElementById('ctaCanvas');
-    if (!canvas) {
-        console.error('Canvas ctaCanvas não encontrado!');
+    // Verificar se o DOM está carregado
+    if (document.readyState === 'loading') {
+        console.log('DOM ainda carregando, aguardando...');
+        document.addEventListener('DOMContentLoaded', generateCtaImage);
         return;
     }
     
+    const canvas = document.getElementById('ctaCanvas');
+    if (!canvas) {
+        console.error('Canvas ctaCanvas não encontrado! Tentando novamente em 200ms...');
+        // Tentar novamente após um pequeno delay para garantir que o DOM esteja pronto
+        setTimeout(() => {
+            const retryCanvas = document.getElementById('ctaCanvas');
+            if (retryCanvas) {
+                console.log('Canvas encontrado na segunda tentativa');
+                generateCtaImageWithCanvas(retryCanvas);
+            } else {
+                console.error('Canvas ctaCanvas definitivamente não encontrado no DOM');
+                console.log('Elementos canvas disponíveis:', document.querySelectorAll('canvas'));
+            }
+        }, 200);
+        return;
+    }
+    
+    generateCtaImageWithCanvas(canvas);
+}
+
+// Função auxiliar para gerar CTA com canvas válido
+function generateCtaImageWithCanvas(canvas) {
     console.log('Canvas CTA encontrado:', canvas);
     const ctx = canvas.getContext('2d');
     const config = formatConfigs[currentFormat];
@@ -1691,14 +1713,84 @@ function generateCtaContent(ctx, config, canvas) {
         };
         
         img.onerror = function() {
-            console.error('Erro ao carregar imagem call-to-action');
-            // Fallback para texto se a imagem falhar
-            generateCtaText(ctx, config, canvas);
+            console.error('Erro ao carregar imagem call-to-action:', imageUrl);
+            console.error('Verificar se o arquivo existe no storage:', postData.callToActionImage);
+            console.error('Caminho completo esperado: {{ storage_path("app/public") }}/call-to-action-images/');
+            
+            // Tentar URL alternativa sem asset helper
+            const alternativeUrl = `/storage/${postData.callToActionImage}`;
+            console.log('Tentando URL alternativa:', alternativeUrl);
+            
+            const fallbackImg = new Image();
+            fallbackImg.crossOrigin = 'anonymous';
+            
+            fallbackImg.onload = function() {
+                console.log('Imagem carregada com URL alternativa');
+                // Usar as mesmas proporções das outras imagens (85% da largura máxima)
+                const maxWidth = config.width * 0.85;
+                const maxHeight = config.height * 0.85;
+                
+                // Calcular proporção da imagem original
+                const aspectRatio = fallbackImg.width / fallbackImg.height;
+                
+                // Calcular dimensões finais mantendo proporção
+                let imgWidth, imgHeight;
+                
+                if (aspectRatio > maxWidth / maxHeight) {
+                    imgWidth = maxWidth;
+                    imgHeight = imgWidth / aspectRatio;
+                } else {
+                    imgHeight = maxHeight;
+                    imgWidth = imgHeight * aspectRatio;
+                }
+                
+                // Centralizar a imagem no canvas
+                const x = (config.width - imgWidth) / 2;
+                const y = (config.height - imgHeight) / 2;
+                
+                // Desenhar a imagem
+                ctx.drawImage(fallbackImg, x, y, imgWidth, imgHeight);
+                console.log(`Imagem CTA renderizada com URL alternativa: ${imgWidth}x${imgHeight}`);
+                adjustCanvasDisplaySize(canvas);
+            };
+            
+            fallbackImg.onerror = function() {
+                console.error('Falha também com URL alternativa:', alternativeUrl);
+                // Fallback para texto se a imagem falhar
+                if (postData.textoFinal) {
+                    console.log('Usando texto final como fallback para CTA');
+                    generateCtaText(ctx, config, canvas);
+                } else {
+                    console.warn('Nem imagem nem texto final disponíveis para CTA');
+                    // Desenhar placeholder
+                    ctx.fillStyle = '#f3f4f6';
+                    ctx.fillRect(config.width * 0.1, config.height * 0.4, config.width * 0.8, config.height * 0.2);
+                    ctx.fillStyle = '#6b7280';
+                    ctx.font = `${Math.floor(config.width / 30)}px Arial`;
+                    ctx.textAlign = 'center';
+                    ctx.fillText('Imagem não encontrada', config.width / 2, config.height / 2);
+                    adjustCanvasDisplaySize(canvas);
+                }
+            };
+            
+            fallbackImg.src = alternativeUrl;
         };
         
-        // Construir URL da imagem a partir do storage
-        const imageUrl = `/storage/${postData.callToActionImage}`;
+        // Construir URL da imagem a partir do storage usando asset helper do Laravel
+        const imageUrl = `{{ asset('storage') }}/${postData.callToActionImage}`;
         console.log('URL da imagem CTA:', imageUrl);
+        
+        // Verificar se callToActionImage não está vazio
+        if (!postData.callToActionImage || postData.callToActionImage.trim() === '') {
+            console.warn('callToActionImage está vazio, usando texto final');
+            if (postData.textoFinal) {
+                generateCtaText(ctx, config, canvas);
+            } else {
+                adjustCanvasDisplaySize(canvas);
+            }
+            return;
+        }
+        
         img.src = imageUrl;
     } else if (postData.textoFinal) {
         // Se não há imagem, usar texto
@@ -1713,6 +1805,21 @@ function generateCtaContent(ctx, config, canvas) {
 
 // Função auxiliar para gerar texto CTA
 function generateCtaText(ctx, config, canvas) {
+    // Verificar se textoFinal existe e não é null
+    if (!postData.textoFinal || postData.textoFinal === null || postData.textoFinal === undefined) {
+        console.warn('Texto final não encontrado para CTA');
+        adjustCanvasDisplaySize(canvas);
+        return;
+    }
+    
+    // Verificar se textoFinal é uma string válida
+    const textoFinal = String(postData.textoFinal).trim();
+    if (textoFinal === '' || textoFinal === 'null' || textoFinal === 'undefined') {
+        console.warn('Texto final está vazio ou inválido para CTA');
+        adjustCanvasDisplaySize(canvas);
+        return;
+    }
+    
     // Texto do CTA (cor preta para consistência)
     ctx.fillStyle = '#000000';
     ctx.textAlign = 'center';
@@ -1722,9 +1829,9 @@ function generateCtaText(ctx, config, canvas) {
     const fontSize = Math.floor(config.width / 22);
     ctx.font = `bold ${fontSize}px Libre Franklin, Arial, sans-serif`;
     
-    // Quebrar texto em linhas (convertendo para maiúsculas)
+    // Quebrar texto em linhas (convertendo para maiúsculas com verificação)
     // Habilitar hifenização para melhor quebra de texto
-    const lines = wrapText(ctx, postData.textoFinal.toUpperCase(), config.width * 0.8, true);
+    const lines = wrapText(ctx, textoFinal.toUpperCase(), config.width * 0.8, true);
     const lineHeight = fontSize * 1.2;
     const totalHeight = lines.length * lineHeight;
     const startY = (config.height - totalHeight) / 2 + lineHeight / 2;
@@ -1953,25 +2060,27 @@ function initializeCarouselModals() {
     });
     
     if (settingsButtons.length === 0) {
-        console.error('ERRO: Nenhum botão .carousel-settings-btn encontrado!');
+        console.warn('AVISO: Nenhum botão .carousel-settings-btn encontrado. Isso pode ser normal se não há textos de carrossel.');
         // Tentar encontrar por outros seletores
         const allButtons = document.querySelectorAll('button');
         console.log('Total de botões na página:', allButtons.length);
         const carouselButtons = document.querySelectorAll('[data-index]');
         console.log('Botões com data-index:', carouselButtons.length);
+        
+        // Verificar se existem textos de carrossel no postData
+        if (typeof postData !== 'undefined' && postData.carouselTexts && postData.carouselTexts.length > 0) {
+            console.warn('Textos de carrossel existem no postData, mas botões não foram encontrados. Aguardando DOM...');
+            // Tentar novamente após um delay
+            setTimeout(() => {
+                const retryButtons = document.querySelectorAll('.carousel-settings-btn');
+                if (retryButtons.length > 0) {
+                    console.log('Botões encontrados na segunda tentativa:', retryButtons.length);
+                    setupCarouselButtonListeners(retryButtons);
+                }
+            }, 1000);
+        }
+        return; // Sair da função se não há botões
     }
-    
-    settingsButtons.forEach((btn, btnIndex) => {
-        console.log(`Configurando botão ${btnIndex}, index: ${btn.dataset.index}, elemento:`, btn);
-        
-        // Remover listeners anteriores se existirem
-        btn.removeEventListener('click', handleCarouselButtonClick);
-        
-        // Adicionar novo listener
-        btn.addEventListener('click', handleCarouselButtonClick);
-        
-        console.log(`Event listener adicionado ao botão ${btnIndex}`);
-    });
     
     // Adicionar listener global para debug de cliques
     document.addEventListener('click', function(e) {
@@ -1987,6 +2096,9 @@ function initializeCarouselModals() {
             console.log('Clique em botão detectado:', button.className, 'data-index:', button.dataset.index);
         }
     });
+    
+    // Configurar listeners para os botões encontrados
+    setupCarouselButtonListeners(settingsButtons);
     
     console.log('=== MODAIS DE CARROSSEL INICIALIZADOS ===');
 
@@ -2008,6 +2120,21 @@ function initializeCarouselModals() {
     
     // Inicializar controles de cada modal
     initializeModalControls();
+}
+
+// Função para configurar listeners dos botões do carrossel
+function setupCarouselButtonListeners(settingsButtons) {
+    settingsButtons.forEach((btn, btnIndex) => {
+        console.log(`Configurando botão ${btnIndex}, index: ${btn.dataset.index}, elemento:`, btn);
+        
+        // Remover listeners anteriores se existirem
+        btn.removeEventListener('click', handleCarouselButtonClick);
+        
+        // Adicionar novo listener
+        btn.addEventListener('click', handleCarouselButtonClick);
+        
+        console.log(`Event listener adicionado ao botão ${btnIndex}`);
+    });
 }
 
 // Função separada para handle do clique
@@ -2899,24 +3026,24 @@ function generateIndividualSlideEditors() {
         }
         
         const editorHTML = `
-            <div class="p-3 bg-white rounded border">
+            <div class="p-3 bg-white dark:bg-gray-800 rounded border dark:border-gray-700">
                 <div class="flex items-center justify-between mb-3">
-                    <h5 class="text-sm font-semibold text-gray-800">Slide ${index + 1}</h5>
-                    <button class="text-xs text-blue-600 hover:text-blue-800" onclick="resetIndividualSlide(${index})">Resetar</button>
+                    <h5 class="text-sm font-semibold text-gray-800 dark:text-white">Slide ${index + 1}</h5>
+                    <button class="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300" onclick="resetIndividualSlide(${index})">Resetar</button>
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3 mb-3">
                     <div>
-                        <label class="block text-xs font-medium text-gray-600 mb-1">Fonte</label>
+                        <label class="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">Fonte</label>
                         <div class="flex items-center space-x-1">
-                            <input type="range" id="fontSize_${index}" min="16" max="60" value="${window.carouselEditorConfig.individualSettings[index].fontSize}" class="flex-1 h-1 bg-gray-200 rounded">
-                    <span id="fontSizeValue_${index}" class="text-xs w-6">${window.carouselEditorConfig.individualSettings[index].fontSize}</span>
+                            <input type="range" id="fontSize_${index}" min="16" max="60" value="${window.carouselEditorConfig.individualSettings[index].fontSize}" class="flex-1 h-1 bg-gray-200 dark:bg-gray-700 rounded">
+                    <span id="fontSizeValue_${index}" class="text-xs w-6 text-gray-900 dark:text-white">${window.carouselEditorConfig.individualSettings[index].fontSize}</span>
                         </div>
                     </div>
                     
                     <div>
-                        <label class="block text-xs font-medium text-gray-600 mb-1">Quebra</label>
-                        <select id="textWrap_${index}" class="w-full text-xs border border-gray-300 rounded px-1 py-1">
+                        <label class="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">Quebra</label>
+                        <select id="textWrap_${index}" class="w-full text-xs border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-1 py-1">
                             <option value="auto" ${window.carouselEditorConfig.individualSettings[index].textWrap === 'auto' ? 'selected' : ''}>Auto</option>
                             <option value="manual" ${window.carouselEditorConfig.individualSettings[index].textWrap === 'manual' ? 'selected' : ''}>Manual</option>
                             <option value="none" ${window.carouselEditorConfig.individualSettings[index].textWrap === 'none' ? 'selected' : ''}>Sem</option>
@@ -2924,8 +3051,8 @@ function generateIndividualSlideEditors() {
                     </div>
                     
                     <div>
-                        <label class="block text-xs font-medium text-gray-600 mb-1">Alinhamento</label>
-                        <select id="textAlignment_${index}" class="w-full text-xs border border-gray-300 rounded px-1 py-1">
+                        <label class="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">Alinhamento</label>
+                        <select id="textAlignment_${index}" class="w-full text-xs border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-1 py-1">
                             <option value="left" ${window.carouselEditorConfig.individualSettings[index].textAlignment === 'left' ? 'selected' : ''}>Esquerda</option>
                             <option value="center" ${window.carouselEditorConfig.individualSettings[index].textAlignment === 'center' ? 'selected' : ''}>Centro</option>
                             <option value="right" ${window.carouselEditorConfig.individualSettings[index].textAlignment === 'right' ? 'selected' : ''}>Direita</option>
@@ -2934,22 +3061,22 @@ function generateIndividualSlideEditors() {
                     </div>
                     
                     <div>
-                        <label class="block text-xs font-medium text-gray-600 mb-1">Formato</label>
+                        <label class="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">Formato</label>
                         <div class="flex space-x-1">
-                            <button id="uppercase_${index}" class="px-1 py-1 text-xs rounded transition-colors ${window.carouselEditorConfig.individualSettings[index].uppercase ? 'bg-blue-500 text-white' : 'bg-gray-200'}">ABC</button>
-                        <button id="numbering_${index}" class="px-1 py-1 text-xs rounded transition-colors ${window.carouselEditorConfig.individualSettings[index].numbering ? 'bg-blue-500 text-white' : 'bg-gray-200'}">123</button>
+                            <button id="uppercase_${index}" class="px-1 py-1 text-xs rounded transition-colors ${window.carouselEditorConfig.individualSettings[index].uppercase ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-600 dark:text-white'}">ABC</button>
+                        <button id="numbering_${index}" class="px-1 py-1 text-xs rounded transition-colors ${window.carouselEditorConfig.individualSettings[index].numbering ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-600 dark:text-white'}">123</button>
                         </div>
                     </div>
                     
                     <div>
-                        <label class="block text-xs font-medium text-gray-600 mb-1">Preview</label>
-                        <button class="w-full px-2 py-1 text-xs bg-green-500 hover:bg-green-600 text-white rounded" onclick="previewIndividualSlide(${index})">Ver</button>
+                        <label class="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">Preview</label>
+                        <button class="w-full px-2 py-1 text-xs bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 text-white rounded" onclick="previewIndividualSlide(${index})">Ver</button>
                     </div>
                 </div>
                 
                 <div>
-                    <label class="block text-xs font-medium text-gray-600 mb-1">Texto do Slide</label>
-                    <textarea id="customText_${index}" rows="3" class="w-full text-xs border border-gray-300 rounded px-2 py-1" placeholder="Texto personalizado para este slide...">${window.carouselEditorConfig.individualSettings[index].customText}</textarea>
+                    <label class="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">Texto do Slide</label>
+                    <textarea id="customText_${index}" rows="3" class="w-full text-xs border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-2 py-1" placeholder="Texto personalizado para este slide...">${window.carouselEditorConfig.individualSettings[index].customText}</textarea>
                 </div>
             </div>
         `;
@@ -3626,25 +3753,25 @@ function showNotification(message, type = 'info') {
 </script>
 
 <!-- Modal de Confirmação para Exclusão de Cor -->
-<div id="deleteColorModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-[10003]">
-    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+<div id="deleteColorModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 dark:bg-gray-900 dark:bg-opacity-75 overflow-y-auto h-full w-full hidden z-[10003]">
+    <div class="relative top-20 mx-auto p-5 border dark:border-gray-700 w-96 shadow-lg rounded-md bg-white dark:bg-gray-800">
         <div class="mt-3 text-center">
-            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
-                <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900">
+                <svg class="h-6 w-6 text-red-600 dark:text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
                 </svg>
             </div>
-            <h3 class="text-lg leading-6 font-medium text-gray-900 mt-2">Confirmar Exclusão</h3>
+            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white mt-2">Confirmar Exclusão</h3>
             <div class="mt-2 px-7 py-3">
-                <p class="text-sm text-gray-500">
+                <p class="text-sm text-gray-500 dark:text-gray-300">
                     Tem certeza que deseja excluir esta cor de fundo? Esta ação não pode ser desfeita.
                 </p>
             </div>
             <div class="items-center px-4 py-3">
-                <button id="confirmDeleteColor" class="px-4 py-2 bg-red-500 text-white text-base font-medium rounded-md w-24 mr-2 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300">
+                <button id="confirmDeleteColor" class="px-4 py-2 bg-red-500 text-white text-base font-medium rounded-md w-24 mr-2 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-300 dark:focus:ring-red-500">
                     Excluir
                 </button>
-                <button id="cancelDeleteColor" class="px-4 py-2 bg-gray-500 text-white text-base font-medium rounded-md w-24 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                <button id="cancelDeleteColor" class="px-4 py-2 bg-gray-500 text-white text-base font-medium rounded-md w-24 hover:bg-gray-600 dark:bg-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-500">
                     Cancelar
                 </button>
             </div>
@@ -3690,6 +3817,25 @@ function showNotification(message, type = 'info') {
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
 }
 
+/* Dark mode slider styles */
+.dark .slider-thumb::-webkit-slider-thumb {
+    background: #60a5fa;
+    border: 2px solid #374151;
+}
+
+.dark .slider-thumb::-webkit-slider-thumb:hover {
+    background: #3b82f6;
+}
+
+.dark .slider-thumb::-moz-range-thumb {
+    background: #60a5fa;
+    border: 2px solid #374151;
+}
+
+.dark .slider-thumb:focus::-webkit-slider-thumb {
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.3);
+}
+
 /* Toggle switch styles */
 .toggle-switch[data-state="on"] {
     background-color: #3b82f6;
@@ -3705,6 +3851,15 @@ function showNotification(message, type = 'info') {
 
 .toggle-switch[data-state="off"] .toggle-thumb {
     transform: translateX(0.25rem);
+}
+
+/* Dark mode toggle switch styles */
+.dark .toggle-switch[data-state="on"] {
+    background-color: #60a5fa;
+}
+
+.dark .toggle-switch[data-state="off"] {
+    background-color: #6b7280;
 }
 </style>
 

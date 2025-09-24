@@ -70,33 +70,33 @@ use Illuminate\Support\Facades\Storage;
             <!-- Main Content -->
             <div class="lg:col-span-2">
             <!-- Título -->
-            <div class="bg-white rounded-lg shadow-sm border-0 mb-4">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border-0 mb-4">
                 <div class="px-6 py-4 bg-transparent border-0">
-                    <h6 class="text-lg font-medium mb-0">
+                    <h6 class="text-lg font-medium mb-0 dark:text-white">
                         <i class="fas fa-heading text-blue-600 mr-2"></i>
                         Título do Post
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 ml-2">Imagem 1</span>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 ml-2">Imagem 1</span>
                     </h6>
                 </div>
                 <div class="px-6 pb-6">
-                    <div class="p-3 bg-gray-100 rounded">
-                        <h5 class="mb-0">{{ $socialPost->titulo }}</h5>
+                    <div class="p-3 bg-gray-100 dark:bg-gray-700 rounded">
+                        <h5 class="mb-0 dark:text-white">{{ $socialPost->titulo }}</h5>
                     </div>
                 </div>
             </div>
 
             <!-- Legenda -->
             @if($socialPost->legenda)
-            <div class="bg-white rounded-lg shadow-sm border-0 mb-4">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border-0 mb-4">
                 <div class="px-6 py-4 bg-transparent border-0">
-                    <h6 class="text-lg font-medium mb-0">
+                    <h6 class="text-lg font-medium mb-0 dark:text-white">
                         <i class="fas fa-align-left text-blue-600 mr-2"></i>
                         Legenda
                     </h6>
                 </div>
                 <div class="px-6 pb-6">
-                    <div class="p-3 bg-gray-100 rounded">
-                        <div class="formatted-text">{!! nl2br(e($socialPost->legenda)) !!}</div>
+                    <div class="p-3 bg-gray-100 dark:bg-gray-700 rounded">
+                        <div class="formatted-text dark:text-white">{!! nl2br(e($socialPost->legenda)) !!}</div>
                     </div>
                 </div>
             </div>
@@ -104,20 +104,20 @@ use Illuminate\Support\Facades\Storage;
 
             <!-- Hashtags -->
             @if($socialPost->hashtags->count() > 0)
-            <div class="bg-white rounded-lg shadow-sm border-0 mb-4">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border-0 mb-4">
                 <div class="px-6 py-4 bg-transparent border-0">
                     <div class="flex justify-between items-center">
-                        <h6 class="text-lg font-medium mb-0">
+                        <h6 class="text-lg font-medium mb-0 dark:text-white">
                             <i class="fas fa-hashtag text-blue-600 mr-2"></i>
                             Hashtags
                         </h6>
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">{{ $socialPost->hashtags->count() }}/30</span>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">{{ $socialPost->hashtags->count() }}/30</span>
                     </div>
                 </div>
                 <div class="px-6 pb-6">
                     <div class="flex flex-wrap gap-2">
                         @foreach($socialPost->hashtags as $hashtag)
-                            <span class="inline-flex items-center px-3 py-2 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                            <span class="inline-flex items-center px-3 py-2 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
                                 #{{ $hashtag->name }}
                                 @if($hashtag->usage_count > 1)
                                     <small class="opacity-75">({{ $hashtag->usage_count }})</small>
@@ -131,26 +131,26 @@ use Illuminate\Support\Facades\Storage;
 
             <!-- Textos do Carrossel -->
             @if($socialPost->carouselTexts->count() > 0)
-            <div class="bg-white rounded-lg shadow-sm border-0 mb-4">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border-0 mb-4">
                 <div class="px-6 py-4 bg-transparent border-0">
-                    <h6 class="text-lg font-medium mb-0">
+                    <h6 class="text-lg font-medium mb-0 dark:text-white">
                         <i class="fas fa-images text-blue-600 mr-2"></i>
                         Textos do Carrossel
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 ml-2">{{ $socialPost->carouselTexts->count() }} texto(s)</span>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 ml-2">{{ $socialPost->carouselTexts->count() }} texto(s)</span>
                     </h6>
                 </div>
                 <div class="px-6 pb-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         @foreach($socialPost->carouselTexts->sortBy('position') as $carouselText)
-                            <div class="bg-gray-100 border-0 rounded-lg h-full">
+                            <div class="bg-gray-100 dark:bg-gray-700 border-0 rounded-lg h-full">
                                 <div class="px-4 py-3 bg-transparent border-0">
-                                    <h6 class="mb-0">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mr-2">{{ $carouselText->position }}</span>
+                                    <h6 class="mb-0 dark:text-white">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 mr-2">{{ $carouselText->position }}</span>
                                         Imagem {{ $carouselText->position }}
                                     </h6>
                                 </div>
                                 <div class="px-4 pb-4">
-                                    <div class="formatted-text">{!! nl2br(e($carouselText->texto)) !!}</div>
+                                    <div class="formatted-text dark:text-white">{!! nl2br(e($carouselText->texto)) !!}</div>
                                 </div>
                             </div>
                         @endforeach
@@ -161,9 +161,9 @@ use Illuminate\Support\Facades\Storage;
 
             <!-- Call-to-Action -->
             @if($socialPost->texto_final || $socialPost->call_to_action_image)
-            <div class="bg-white rounded-lg shadow-sm border-0 mb-4">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border-0 mb-4">
                 <div class="px-6 py-4 bg-transparent border-0">
-                    <h6 class="text-lg font-medium mb-0">
+                    <h6 class="text-lg font-medium mb-0 dark:text-white">
                         <i class="fas fa-bullhorn text-blue-600 mr-2"></i>
                         Call-to-Action
                     </h6>
@@ -171,11 +171,11 @@ use Illuminate\Support\Facades\Storage;
                 <div class="px-6 pb-6">
                     @if($socialPost->call_to_action_image)
                         <div class="text-center">
-                            <img src="{{ Storage::url($socialPost->call_to_action_image) }}" alt="Call-to-Action" class="max-w-full h-auto rounded-lg border border-gray-200 dark:border-gray-600">
+                            <img src="{{ asset('storage/' . $socialPost->call_to_action_image) }}" alt="Call-to-Action" class="max-w-full h-auto rounded-lg border border-gray-200 dark:border-gray-600">
                         </div>
                     @elseif($socialPost->texto_final)
-                        <div class="p-3 bg-gray-100 rounded">
-                            <div class="formatted-text">{!! nl2br(e($socialPost->texto_final)) !!}</div>
+                        <div class="p-3 bg-gray-100 dark:bg-gray-700 rounded">
+                            <div class="formatted-text dark:text-white">{!! nl2br(e($socialPost->texto_final)) !!}</div>
                         </div>
                     @endif
                 </div>
@@ -186,9 +186,9 @@ use Illuminate\Support\Facades\Storage;
             <!-- Sidebar -->
             <div class="lg:col-span-1">
             <!-- Informações -->
-            <div class="bg-white rounded-lg shadow-sm border-0 mb-4">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border-0 mb-4">
                 <div class="px-6 py-4 bg-transparent border-0">
-                    <h6 class="text-lg font-medium mb-0">
+                    <h6 class="text-lg font-medium mb-0 dark:text-white">
                         <i class="fas fa-info-circle text-blue-600 mr-2"></i>
                         Informações
                     </h6>
@@ -196,87 +196,87 @@ use Illuminate\Support\Facades\Storage;
                 <div class="px-6 pb-6">
                     <div class="space-y-3">
                         <div class="flex justify-between items-center">
-                            <span class="text-gray-600">Status:</span>
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $socialPost->status == 'publicado' ? 'bg-green-100 text-green-800' : ($socialPost->status == 'arquivado' ? 'bg-orange-100 text-orange-800' : 'bg-gray-100 text-gray-800') }}">
+                            <span class="text-gray-600 dark:text-gray-300">Status:</span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $socialPost->status == 'publicado' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : ($socialPost->status == 'arquivado' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200' : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200') }}">
                                 {{ ucfirst($socialPost->status) }}
                             </span>
                         </div>
                         <div class="flex justify-between items-center">
-                            <span class="text-gray-600">Criado em:</span>
-                            <span>{{ $socialPost->created_at->format('d/m/Y H:i') }}</span>
+                            <span class="text-gray-600 dark:text-gray-300">Criado em:</span>
+                            <span class="dark:text-white">{{ $socialPost->created_at->format('d/m/Y H:i') }}</span>
                         </div>
                         <div class="flex justify-between items-center">
-                            <span class="text-gray-600">Atualizado em:</span>
-                            <span>{{ $socialPost->updated_at->format('d/m/Y H:i') }}</span>
+                            <span class="text-gray-600 dark:text-gray-300">Atualizado em:</span>
+                            <span class="dark:text-white">{{ $socialPost->updated_at->format('d/m/Y H:i') }}</span>
                         </div>
                         <div class="flex justify-between items-center">
-                            <span class="text-gray-600">Criado por:</span>
-                            <span>{{ $socialPost->user->name }}</span>
+                            <span class="text-gray-600 dark:text-gray-300">Criado por:</span>
+                            <span class="dark:text-white">{{ $socialPost->user->name }}</span>
                         </div>
                         <div class="flex justify-between items-center">
-                            <span class="text-gray-600">Hashtags:</span>
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">{{ $socialPost->hashtags->count() }}</span>
+                            <span class="text-gray-600 dark:text-gray-300">Hashtags:</span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">{{ $socialPost->hashtags->count() }}</span>
                         </div>
                         <div class="flex justify-between items-center">
-                            <span class="text-gray-600">Textos carrossel:</span>
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-cyan-100 text-cyan-800">{{ $socialPost->carouselTexts->count() }}</span>
+                            <span class="text-gray-600 dark:text-gray-300">Textos carrossel:</span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-200">{{ $socialPost->carouselTexts->count() }}</span>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Estatísticas -->
-            <div class="bg-white rounded-lg shadow-sm border-0 mb-4">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border-0 mb-4">
                 <div class="px-6 py-4 bg-transparent border-0">
-                    <h6 class="text-lg font-medium mb-0">
+                    <h6 class="text-lg font-medium mb-0 dark:text-white">
                         <i class="fas fa-chart-bar text-blue-600 mr-2"></i>
                         Estatísticas
                     </h6>
                 </div>
                 <div class="px-6 pb-6">
                     <div class="grid grid-cols-2 gap-3 text-center">
-                        <div class="p-3 bg-gray-100 rounded">
+                        <div class="p-3 bg-gray-100 dark:bg-gray-700 rounded">
                             <div class="text-2xl font-bold mb-1 text-blue-600">{{ strlen($socialPost->titulo) }}</div>
-                            <small class="text-gray-600">Caracteres no título</small>
+                            <small class="text-gray-600 dark:text-gray-300">Caracteres no título</small>
                         </div>
-                        <div class="p-3 bg-gray-100 rounded">
+                        <div class="p-3 bg-gray-100 dark:bg-gray-700 rounded">
                             <div class="text-2xl font-bold mb-1 text-cyan-600">{{ strlen($socialPost->legenda ?? '') }}</div>
-                            <small class="text-gray-600">Caracteres na legenda</small>
+                            <small class="text-gray-600 dark:text-gray-300">Caracteres na legenda</small>
                         </div>
-                        <div class="p-3 bg-gray-100 rounded">
+                        <div class="p-3 bg-gray-100 dark:bg-gray-700 rounded">
                             <div class="text-2xl font-bold mb-1 text-green-600">{{ $socialPost->hashtags->count() }}</div>
-                            <small class="text-gray-600">Total de hashtags</small>
+                            <small class="text-gray-600 dark:text-gray-300">Total de hashtags</small>
                         </div>
-                        <div class="p-3 bg-gray-100 rounded">
+                        <div class="p-3 bg-gray-100 dark:bg-gray-700 rounded">
                             <div class="text-2xl font-bold mb-1 text-yellow-600">{{ $socialPost->carouselTexts->count() + 1 }}</div>
-                            <small class="text-gray-600">Total de imagens</small>
+                            <small class="text-gray-600 dark:text-gray-300">Total de imagens</small>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Preview Mobile -->
-            <div class="bg-white rounded-lg shadow-sm border-0 mb-4">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border-0 mb-4">
                 <div class="px-6 py-4 bg-transparent border-0">
-                    <h6 class="text-lg font-medium mb-0">
+                    <h6 class="text-lg font-medium mb-0 dark:text-white">
                         <i class="fas fa-mobile-alt text-blue-600 mr-2"></i>
                         Preview Mobile
                     </h6>
                 </div>
                 <div class="px-6 pb-6">
                     <div class="mobile-preview mx-auto" style="max-width: 300px;">
-                        <div class="border rounded-lg p-3 bg-white" style="box-shadow: 0 0 20px rgba(0,0,0,0.1);">
+                        <div class="border rounded-lg p-3 bg-white dark:bg-gray-800 dark:border-gray-600" style="box-shadow: 0 0 20px rgba(0,0,0,0.1);">
                             <!-- Header do Instagram -->
                             <div class="flex items-center mb-3">
                                 <div class="rounded-full bg-gradient" style="width: 32px; height: 32px; background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);"></div>
                                 <div class="ml-2">
-                                    <div class="font-bold" style="font-size: 0.9em;">{{ $socialPost->user->name }}</div>
+                                    <div class="font-bold dark:text-white" style="font-size: 0.9em;">{{ $socialPost->user->name }}</div>
                                 </div>
                             </div>
                             
                             <!-- Imagem simulada -->
-                            <div class="bg-gray-100 rounded mb-3 flex items-center justify-center" style="height: 200px; font-size: 0.8em;">
-                                <div class="text-center text-gray-600">
+                            <div class="bg-gray-100 dark:bg-gray-700 rounded mb-3 flex items-center justify-center" style="height: 200px; font-size: 0.8em;">
+                                <div class="text-center text-gray-600 dark:text-gray-300">
                                     <i class="fas fa-image fa-2x mb-2"></i>
                                     <div>{{ $socialPost->titulo }}</div>
                                 </div>
@@ -285,20 +285,20 @@ use Illuminate\Support\Facades\Storage;
                             <!-- Ações -->
                             <div class="flex justify-between mb-3">
                                 <div>
-                                    <i class="far fa-heart mr-2"></i>
-                                    <i class="far fa-comment mr-2"></i>
-                                    <i class="far fa-paper-plane"></i>
+                                    <i class="far fa-heart mr-2 dark:text-white"></i>
+                                    <i class="far fa-comment mr-2 dark:text-white"></i>
+                                    <i class="far fa-paper-plane dark:text-white"></i>
                                 </div>
-                                <i class="far fa-bookmark"></i>
+                                <i class="far fa-bookmark dark:text-white"></i>
                             </div>
                             
                             <!-- Legenda -->
                             @if($socialPost->legenda)
                             <div style="font-size: 0.85em; line-height: 1.4;">
-                                <span class="font-bold">{{ $socialPost->user->name }}</span>
-                                {{ Str::limit($socialPost->legenda, 100) }}
+                                <span class="font-bold dark:text-white">{{ $socialPost->user->name }}</span>
+                                <span class="dark:text-white">{{ Str::limit($socialPost->legenda, 100) }}</span>
                                 @if(strlen($socialPost->legenda) > 100)
-                                    <span class="text-gray-600">... mais</span>
+                                    <span class="text-gray-600 dark:text-gray-400">... mais</span>
                                 @endif
                             </div>
                             @endif
@@ -307,10 +307,10 @@ use Illuminate\Support\Facades\Storage;
                             @if($socialPost->hashtags->count() > 0)
                             <div class="mt-2" style="font-size: 0.8em;">
                                 @foreach($socialPost->hashtags->take(5) as $hashtag)
-                                    <span class="text-blue-600">#{{ $hashtag->name }}</span>{{ !$loop->last ? ' ' : '' }}
+                                    <span class="text-blue-600 dark:text-blue-400">#{{ $hashtag->name }}</span>{{ !$loop->last ? ' ' : '' }}
                                 @endforeach
                                 @if($socialPost->hashtags->count() > 5)
-                                    <span class="text-gray-600">... +{{ $socialPost->hashtags->count() - 5 }} mais</span>
+                                    <span class="text-gray-600 dark:text-gray-400">... +{{ $socialPost->hashtags->count() - 5 }} mais</span>
                                 @endif
                             </div>
                             @endif
@@ -320,7 +320,7 @@ use Illuminate\Support\Facades\Storage;
             </div>
 
             <!-- Ações -->
-            <div class="bg-white rounded-lg shadow-sm border-0">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border-0">
                 <div class="p-6">
                     <div class="space-y-2">
                         <a href="{{ route('social-posts.edit', $socialPost) }}" class="w-full inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200">
@@ -348,14 +348,14 @@ use Illuminate\Support\Facades\Storage;
 
 <!-- Modal de Confirmação de Duplicação -->
 <div class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-[10003] flex items-center justify-center" id="duplicateModal">
-    <div class="relative mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+    <div class="relative mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800 dark:border-gray-600">
         <div class="mt-3">
             <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-medium text-gray-900">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white">
                     <i class="fas fa-copy text-green-500 mr-2"></i>
                     Confirmar Duplicação
                 </h3>
-                <button type="button" class="text-gray-400 hover:text-gray-600" onclick="closeDuplicateModal()">
+                <button type="button" class="text-gray-400 hover:text-gray-600 dark:text-gray-300 dark:hover:text-gray-100" onclick="closeDuplicateModal()">
                     <span class="sr-only">Fechar</span>
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -363,12 +363,12 @@ use Illuminate\Support\Facades\Storage;
                 </button>
             </div>
             <div class="mb-4">
-                <p class="text-gray-700">Deseja duplicar este post?</p>
-                <p class="text-gray-500 text-sm mt-1">Uma cópia será criada com status "rascunho".</p>
+                <p class="text-gray-700 dark:text-gray-300">Deseja duplicar este post?</p>
+                <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Uma cópia será criada com status "rascunho".</p>
             </div>
             <div class="flex justify-end space-x-3">
-                <button type="button" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition duration-200" onclick="closeDuplicateModal()">Cancelar</button>
-                <button type="button" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-200" onclick="confirmDuplicatePost()">Duplicar</button>
+                <button type="button" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-gray-500 transition duration-200" onclick="closeDuplicateModal()">Cancelar</button>
+                <button type="button" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 transition duration-200" onclick="confirmDuplicatePost()">Duplicar</button>
             </div>
         </div>
     </div>
@@ -376,14 +376,14 @@ use Illuminate\Support\Facades\Storage;
 
 <!-- Modal de Confirmação de Exclusão -->
 <div class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-[10003] flex items-center justify-center" id="deleteModal">
-    <div class="relative mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+    <div class="relative mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800 dark:border-gray-600">
         <div class="mt-3">
             <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-medium text-gray-900">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white">
                     <i class="fas fa-exclamation-triangle text-yellow-500 mr-2"></i>
                     Confirmar Exclusão
                 </h3>
-                <button type="button" class="text-gray-400 hover:text-gray-600" onclick="closeDeleteModal()">
+                <button type="button" class="text-gray-400 hover:text-gray-600 dark:text-gray-300 dark:hover:text-gray-100" onclick="closeDeleteModal()">
                     <span class="sr-only">Fechar</span>
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -391,15 +391,15 @@ use Illuminate\Support\Facades\Storage;
                 </button>
             </div>
             <div class="mb-4">
-                <p class="text-gray-700">Tem certeza que deseja excluir este post?</p>
-                <p class="text-gray-500 text-sm mt-1">Esta ação não pode ser desfeita.</p>
+                <p class="text-gray-700 dark:text-gray-300">Tem certeza que deseja excluir este post?</p>
+                <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Esta ação não pode ser desfeita.</p>
             </div>
             <div class="flex justify-end space-x-3">
-                <button type="button" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition duration-200" onclick="closeDeleteModal()">Cancelar</button>
+                <button type="button" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-gray-500 transition duration-200" onclick="closeDeleteModal()">Cancelar</button>
                 <form method="POST" action="{{ route('social-posts.destroy', $socialPost) }}" style="display: inline;">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-200">Excluir</button>
+                    <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800 transition duration-200">Excluir</button>
                 </form>
             </div>
         </div>
@@ -408,14 +408,14 @@ use Illuminate\Support\Facades\Storage;
 
 <!-- Modal de Exportação -->
 <div class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-[10003] flex items-center justify-center" id="exportModal">
-    <div class="relative mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+    <div class="relative mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800 dark:border-gray-600">
         <div class="mt-3">
             <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-medium text-gray-900">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white">
                     <i class="fas fa-download text-cyan-500 mr-2"></i>
                     Exportar Post
                 </h3>
-                <button type="button" class="text-gray-400 hover:text-gray-600" onclick="closeExportModal()">
+                <button type="button" class="text-gray-400 hover:text-gray-600 dark:text-gray-300 dark:hover:text-gray-100" onclick="closeExportModal()">
                     <span class="sr-only">Fechar</span>
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -423,21 +423,21 @@ use Illuminate\Support\Facades\Storage;
                 </button>
             </div>
             <div class="mb-4">
-                <p class="text-gray-700 mb-4">Escolha o formato de exportação:</p>
+                <p class="text-gray-700 dark:text-gray-300 mb-4">Escolha o formato de exportação:</p>
                 <div class="space-y-2">
-                    <button type="button" class="w-full inline-flex items-center justify-center px-4 py-2 border border-blue-300 text-blue-700 rounded-md hover:bg-blue-50 transition duration-200" onclick="exportAsText()">
+                    <button type="button" class="w-full inline-flex items-center justify-center px-4 py-2 border border-blue-300 text-blue-700 rounded-md hover:bg-blue-50 dark:border-blue-600 dark:text-blue-400 dark:hover:bg-blue-900 transition duration-200" onclick="exportAsText()">
                         <i class="fas fa-file-alt mr-2"></i> Exportar como Texto
                     </button>
-                    <button type="button" class="w-full inline-flex items-center justify-center px-4 py-2 border border-cyan-300 text-cyan-700 rounded-md hover:bg-cyan-50 transition duration-200" onclick="exportAsJson()">
+                    <button type="button" class="w-full inline-flex items-center justify-center px-4 py-2 border border-cyan-300 text-cyan-700 rounded-md hover:bg-cyan-50 dark:border-cyan-600 dark:text-cyan-400 dark:hover:bg-cyan-900 transition duration-200" onclick="exportAsJson()">
                         <i class="fas fa-code mr-2"></i> Exportar como JSON
                     </button>
-                    <button type="button" class="w-full inline-flex items-center justify-center px-4 py-2 border border-green-300 text-green-700 rounded-md hover:bg-green-50 transition duration-200" onclick="copyToClipboard()">
+                    <button type="button" class="w-full inline-flex items-center justify-center px-4 py-2 border border-green-300 text-green-700 rounded-md hover:bg-green-50 dark:border-green-600 dark:text-green-400 dark:hover:bg-green-900 transition duration-200" onclick="copyToClipboard()">
                         <i class="fas fa-copy mr-2"></i> Copiar para Área de Transferência
                     </button>
                 </div>
             </div>
             <div class="flex justify-end">
-                <button type="button" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition duration-200" onclick="closeExportModal()">Fechar</button>
+                <button type="button" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-gray-500 transition duration-200" onclick="closeExportModal()">Fechar</button>
             </div>
         </div>
     </div>

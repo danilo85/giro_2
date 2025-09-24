@@ -38,6 +38,11 @@ use App\Utils\MimeTypeDetector;
 |
 */
 
+// Maintenance page (accessible during maintenance mode)
+Route::get('/maintenance', function () {
+    return view('maintenance');
+})->name('maintenance');
+
 // Redirect root to dashboard
 Route::get('/', function () {
     return redirect()->route('dashboard');
@@ -67,6 +72,23 @@ Route::middleware('guest')->group(function () {
 // Logout (available for authenticated users)
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
 
+// Email Verification Routes
+Route::middleware('auth')->group(function () {
+    Route::get('/email/verify', function () {
+        return view('auth.verify-email');
+    })->name('verification.notice');
+    
+    Route::get('/email/verify/{id}/{hash}', function (\Illuminate\Foundation\Auth\EmailVerificationRequest $request) {
+        $request->fulfill();
+        return redirect('/dashboard')->with('success', 'Email verificado com sucesso!');
+    })->middleware(['signed'])->name('verification.verify');
+    
+    Route::post('/email/verification-notification', function (\Illuminate\Http\Request $request) {
+        $request->user()->sendEmailVerificationNotification();
+        return back()->with('message', 'Link de verificação enviado!');
+    })->middleware(['throttle:6,1'])->name('verification.send');
+});
+
 // Test route for transactions create (temporarily without auth)
 Route::get('/test-transaction-form', [TransactionController::class, 'create'])->name('test.transaction.form');
 
@@ -79,7 +101,7 @@ Route::get('/test-categories', [CategoryController::class, 'getCategoriesGrouped
 Route::get('/clientes/autocomplete', [ClienteController::class, 'autocomplete'])->name('clientes.autocomplete');
 
 // Protected Routes
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     // Main Dashboard (redirects to financial dashboard)
     Route::get('/dashboard', function () {
         return redirect()->route('financial.dashboard');
@@ -92,7 +114,19 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['admin'])->group(function () {
         Route::resource('users', UserController::class);
         Route::post('/users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
-    });
+        
+        // User Approval Management
+         Route::prefix('admin/user-approvals')->name('admin.user-approvals.')->group(function () {
+             Route::get('/', [\App\Http\Controllers\Admin\UserApprovalController::class, 'index'])->name('index');
+             Route::patch('/{user}/approve', [\App\Http\Controllers\Admin\UserApprovalController::class, 'approve'])->name('approve');
+             Route::patch('/{user}/reject', [\App\Http\Controllers\Admin\UserApprovalController::class, 'reject'])->name('reject');
+             Route::patch('/{user}/remove-approval', [\App\Http\Controllers\Admin\UserApprovalController::class, 'removeApproval'])->name('remove-approval');
+             Route::delete('/{user}', [\App\Http\Controllers\Admin\UserApprovalController::class, 'delete'])->name('delete');
+             Route::post('/bulk-approve', [\App\Http\Controllers\Admin\UserApprovalController::class, 'bulkApprove'])->name('bulk-approve');
+             Route::post('/bulk-reject', [\App\Http\Controllers\Admin\UserApprovalController::class, 'bulkReject'])->name('bulk-reject');
+             Route::post('/bulk-delete', [\App\Http\Controllers\Admin\UserApprovalController::class, 'bulkDelete'])->name('bulk-delete');
+         });
+     });
 
 // Debug route for form submission (outside auth middleware)
 Route::post('/debug-form', function (\Illuminate\Http\Request $request) {

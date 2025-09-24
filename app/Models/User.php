@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -24,6 +24,9 @@ class User extends Authenticatable
         'avatar',
         'is_admin',
         'is_active',
+        'admin_approved',
+        'approved_by',
+        'approved_at',
         'last_login_at',
         'last_login_ip',
         'is_online',
@@ -66,6 +69,8 @@ class User extends Authenticatable
         'password' => 'hashed',
         'is_admin' => 'boolean',
         'is_active' => 'boolean',
+        'admin_approved' => 'boolean',
+        'approved_at' => 'datetime',
         'last_login_at' => 'datetime',
         'is_online' => 'boolean',
         'last_activity_at' => 'datetime',
@@ -128,11 +133,54 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the user who approved this user.
+     */
+    public function approvedBy()
+    {
+        return $this->belongsTo(User::class, 'approved_by');
+    }
+
+    /**
+     * Get users approved by this user.
+     */
+    public function approvedUsers()
+    {
+        return $this->hasMany(User::class, 'approved_by');
+    }
+
+    /**
      * Check if user is admin.
      */
     public function isAdmin()
     {
         return $this->is_admin;
+    }
+
+    /**
+     * Check if user is approved by admin.
+     */
+    public function isApproved()
+    {
+        return $this->admin_approved;
+    }
+
+    /**
+     * Check if user can login (is active and approved if required).
+     */
+    public function canLogin()
+    {
+        if (!$this->is_active) {
+            return false;
+        }
+
+        // Get admin approval setting
+        $adminApprovalRequired = \App\Http\Controllers\SettingsController::get('system', 'admin_approval', false);
+
+        if ($adminApprovalRequired && !$this->admin_approved) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
