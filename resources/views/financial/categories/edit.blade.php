@@ -93,7 +93,7 @@
                             </div>
                             
                             <!-- Icon Grid -->
-                            <div id="icon-grid" class="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-10 gap-3 max-h-64 overflow-y-auto border border-gray-200 dark:border-gray-600 rounded-lg p-4">
+                            <div id="icon-grid" class="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 gap-2 sm:gap-3 max-h-64 overflow-y-auto border border-gray-200 dark:border-gray-600 rounded-lg p-3 sm:p-4">
                                 <!-- Icons will be populated by JavaScript -->
                             </div>
                             <div class="text-red-500 text-sm mt-1 hidden" id="icone-error"></div>
