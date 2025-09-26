@@ -32,7 +32,12 @@ class ConditionalEmailVerification
             ($request->user() instanceof MustVerifyEmail &&
             ! $request->user()->hasVerifiedEmail())) {
             return $request->expectsJson()
-                    ? abort(409, 'Your email address is not verified.')
+                    ? response()->json([
+                        'success' => false,
+                        'message' => 'Your email address is not verified.',
+                        'error' => 'email_not_verified',
+                        'redirect' => route('verification.notice')
+                    ], 409)
                     : redirect()->guest($redirectToRoute ?: route('verification.notice'));
         }
 

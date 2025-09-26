@@ -46,7 +46,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-blue-100 text-sm font-medium">Total de Categorias</p>
-                    <p class="text-2xl font-bold">{{ $categories->total() }}</p>
+                    <p class="text-2xl font-bold">{{ $categories->count() }}</p>
                 </div>
                 <div class="p-3 bg-white bg-opacity-20 rounded-lg backdrop-blur-sm">
                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -263,12 +263,7 @@
             </div>
         @endif
 
-        <!-- Pagination -->
-        @if($categories->hasPages())
-            <div class="mt-6">
-                {{ $categories->links() }}
-            </div>
-        @endif
+        <!-- Pagination removed - using Collection instead of paginated results -->
     </div>
     
     <!-- Botão Flutuante -->
@@ -918,7 +913,8 @@ const ModalSystem = {
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
                 },
                 body: formData
             });

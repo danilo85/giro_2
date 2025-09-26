@@ -158,11 +158,6 @@ final class Middleware
                     return $tokenProvider()->then(
                         function (TokenInterface $token)
                         use ($handler, $command, $signer, $request) {
-                            $command->getMetricsBuilder()->identifyMetricByValueAndAppend(
-                                'token',
-                                $token
-                            );
-
                             return $handler(
                                 $command,
                                 $signer->authorizeRequest($request, $token)

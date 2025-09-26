@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Admin AJAX</title>
+    <meta name="csrf-token" content="test-token">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Test Admin AJAX Request</h1>
+    <button onclick="testAjax()">Test AJAX Request</button>
+    <button onclick="testAjaxWithToken()">Test AJAX with Real Token</button>
+    <div id="result"></div>
+
+    <script>
+        function testAjax() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Sending request...';
+            
+            fetch('/portfolio/categories', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: 'name=Test Admin Category&description=Test&is_active=1&_token=fake-token'
+            })
+            .then(response => {
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
+                return response.text();
+            })
+            .then(data => {
+                console.log('Response data:', data);
+                resultDiv.innerHTML = `<pre>${data}</pre>`;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                resultDiv.innerHTML = `Error: ${error.message}`;
+            });
+        }
+        
+        function testAjaxWithToken() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Getting CSRF token and sending request...';
+            
+            // Primeiro, obter o token CSRF da página de categorias
+            fetch('/portfolio/categories')
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const csrfToken = doc.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ||
+                                 doc.querySelector('input[name="_token"]')?.value;
+                
+                console.log('CSRF Token found:', csrfToken);
+                
+                if (!csrfToken) {
+                    resultDiv.innerHTML = 'CSRF token not found!';
+                    return;
+                }
+                
+                // Agora fazer a requisição com o token correto
+                return fetch('/portfolio/categories', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: new URLSearchParams({
+                        name: 'Test Admin Category Real',
+                        description: 'Teste com token real',
+                        is_active: '1',
+                        _token: csrfToken
+                    })
+                });
+            })
+            .then(response => {
+                if (!response) return;
+                
+                console.log('Response status:', response.status);
+                console.log('Response headers:', [...response.headers.entries()]);
+                console.log('Content-Type:', response.headers.get('content-type'));
+                
+                return response.text();
+            })
+            .then(data => {
+                if (!data) return;
+                
+                console.log('Response data (raw):', data);
+                
+                // Tentar fazer parse como JSON
+                try {
+                    const jsonData = JSON.parse(data);
+                    console.log('Response data (JSON):', jsonData);
+                    resultDiv.innerHTML = `<h3>JSON Response:</h3><pre>${JSON.stringify(jsonData, null, 2)}</pre>`;
+                } catch (e) {
+                    console.log('Não é JSON válido. Conteúdo HTML:', data.substring(0, 500));
+                    resultDiv.innerHTML = `<h3>HTML Response (first 500 chars):</h3><pre>${data.substring(0, 500)}</pre>`;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                resultDiv.innerHTML = `Error: ${error.message}`;
+            });
+        }
+    </script>
+</body>
+</html>

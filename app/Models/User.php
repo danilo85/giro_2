@@ -133,6 +133,22 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Get the files for the user.
+     */
+    public function files()
+    {
+        return $this->hasMany(File::class);
+    }
+
+    /**
+     * Get the file activity logs for the user.
+     */
+    public function fileActivityLogs()
+    {
+        return $this->hasMany(FileActivityLog::class);
+    }
+
+    /**
      * Get the user who approved this user.
      */
     public function approvedBy()

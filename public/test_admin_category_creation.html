@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Admin Category Creation</title>
+    <meta charset="utf-8">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Test Admin Category Creation</h1>
+    <button id="testBtn">Test Category Creation</button>
+    <div id="result"></div>
+
+    <script>
+        $(document).ready(function() {
+            $('#testBtn').click(function() {
+                console.log('Iniciando teste de criação de categoria...');
+                
+                // Primeiro, obter o token CSRF
+                $.get('/portfolio/categories')
+                    .done(function(data) {
+                        console.log('Página de categorias carregada');
+                        
+                        // Extrair o token CSRF da página
+                        var csrfToken = $(data).find('meta[name="csrf-token"]').attr('content');
+                        if (!csrfToken) {
+                            // Tentar encontrar em um input hidden
+                            csrfToken = $(data).find('input[name="_token"]').val();
+                        }
+                        
+                        console.log('CSRF Token encontrado:', csrfToken);
+                        
+                        if (csrfToken) {
+                            // Fazer a requisição POST para criar categoria
+                            $.ajax({
+                                url: '/portfolio/categories',
+                                method: 'POST',
+                                headers: {
+                                    'X-CSRF-TOKEN': csrfToken,
+                                    'X-Requested-With': 'XMLHttpRequest'
+                                },
+                                data: {
+                                    name: 'Test Admin Category ' + Date.now(),
+                                    description: 'Categoria de teste para admin',
+                                    is_active: 1,
+                                    _token: csrfToken
+                                },
+                                success: function(response) {
+                                    console.log('✅ Sucesso! Resposta:', response);
+                                    $('#result').html('<div style="color: green;">✅ Categoria criada com sucesso!<br>Resposta: ' + JSON.stringify(response, null, 2) + '</div>');
+                                },
+                                error: function(xhr, status, error) {
+                                    console.log('❌ Erro! Status:', xhr.status);
+                                    console.log('❌ Erro! Response:', xhr.responseText);
+                                    console.log('❌ Erro! Headers:', xhr.getAllResponseHeaders());
+                                    
+                                    var errorMsg = '❌ Erro ao criar categoria!<br>';
+                                    errorMsg += 'Status: ' + xhr.status + '<br>';
+                                    errorMsg += 'Error: ' + error + '<br>';
+                                    errorMsg += 'Response: <pre>' + xhr.responseText + '</pre>';
+                                    
+                                    $('#result').html('<div style="color: red;">' + errorMsg + '</div>');
+                                    
+                                    // Verificar se a resposta é HTML em vez de JSON
+                                    if (xhr.responseText.includes('<!DOCTYPE') || xhr.responseText.includes('<html')) {
+                                        console.log('🔍 A resposta é HTML em vez de JSON!');
+                                        $('#result').append('<div style="color: orange;">🔍 PROBLEMA IDENTIFICADO: A resposta é HTML em vez de JSON!</div>');
+                                    }
+                                }
+                            });
+                        } else {
+                            console.log('❌ Token CSRF não encontrado');
+                            $('#result').html('<div style="color: red;">❌ Token CSRF não encontrado</div>');
+                        }
+                    })
+                    .fail(function(xhr, status, error) {
+                        console.log('❌ Erro ao carregar página de categorias:', error);
+                        $('#result').html('<div style="color: red;">❌ Erro ao carregar página de categorias: ' + error + '</div>');
+                    });
+            });
+        });
+    </script>
+</body>
+</html>

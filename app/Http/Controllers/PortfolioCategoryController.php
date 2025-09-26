@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\PortfolioCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
@@ -13,28 +14,14 @@ class PortfolioCategoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
-        $query = PortfolioCategory::where('user_id', Auth::id());
-
-        // Filtros
-        if ($request->filled('status')) {
-            if ($request->status === 'active') {
-                $query->where('is_active', true);
-            } elseif ($request->status === 'inactive') {
-                $query->where('is_active', false);
-            }
-        }
-
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
-            });
-        }
-
-        $categories = $query->ordered()->paginate(15);
+        $query = PortfolioCategory::query();
+        
+        // Todos os usuários (incluindo admin) devem ver apenas suas próprias categorias
+        $query->where('user_id', Auth::id());
+        
+        $categories = $query->orderBy('sort_order')->get();
 
         return view('portfolio.categories.index', compact('categories'));
     }
@@ -52,6 +39,20 @@ class PortfolioCategoryController extends Controller
      */
     public function store(Request $request)
     {
+        // Debug logs
+        Log::info('PortfolioCategory store - Debug START', [
+            'user_id' => auth()->id(),
+            'is_admin' => auth()->user()->is_admin ?? false,
+            'expects_json' => $request->expectsJson(),
+            'content_type' => $request->header('Content-Type'),
+            'accept' => $request->header('Accept'),
+            'x_requested_with' => $request->header('X-Requested-With'),
+            'all_headers' => $request->headers->all(),
+            'request_data' => $request->all(),
+            'request_method' => $request->method(),
+            'request_url' => $request->url()
+        ]);
+
         $request->validate([
             'name' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255|unique:portfolio_categories,slug',
@@ -89,13 +90,32 @@ class PortfolioCategoryController extends Controller
 
         $category = PortfolioCategory::create($categoryData);
 
+        // Debug logs após criação
+        Log::info('PortfolioCategory store - Debug após criação', [
+            'user_id' => auth()->id(),
+            'is_admin' => auth()->user()->is_admin ?? false,
+            'expects_json' => $request->expectsJson(),
+            'category_created' => $category->id
+        ]);
+
         if ($request->expectsJson()) {
-            return response()->json([
+            $jsonResponse = response()->json([
                 'success' => true,
                 'message' => 'Categoria criada com sucesso!',
                 'category' => $category
             ]);
+            
+            Log::info('PortfolioCategory store - Returning JSON', [
+                'response_content' => $jsonResponse->getContent(),
+                'response_headers' => $jsonResponse->headers->all()
+            ]);
+            
+            return $jsonResponse;
         }
+
+        Log::info('PortfolioCategory store - Returning REDIRECT', [
+            'redirect_to' => route('portfolio.categories.index')
+        ]);
 
         return redirect()->route('portfolio.categories.index')
             ->with('success', 'Categoria criada com sucesso!');
@@ -106,14 +126,9 @@ class PortfolioCategoryController extends Controller
      */
     public function show(PortfolioCategory $category)
     {
-        // Verificar se a categoria pertence ao usuário
         if ($category->user_id !== Auth::id()) {
-            abort(403);
+            abort(403, 'Unauthorized action.');
         }
-
-        $category->load(['portfolioWorks' => function($query) {
-            $query->published()->with(['client', 'featuredImage'])->latest();
-        }]);
 
         return view('portfolio.categories.show', compact('category'));
     }
@@ -123,9 +138,8 @@ class PortfolioCategoryController extends Controller
      */
     public function edit(PortfolioCategory $category)
     {
-        // Verificar se a categoria pertence ao usuário
         if ($category->user_id !== Auth::id()) {
-            abort(403);
+            abort(403, 'Unauthorized action.');
         }
 
         return view('portfolio.categories.edit', compact('category'));
@@ -136,9 +150,11 @@ class PortfolioCategoryController extends Controller
      */
     public function update(Request $request, PortfolioCategory $category)
     {
-        // Verificar se a categoria pertence ao usuário
         if ($category->user_id !== Auth::id()) {
-            abort(403);
+            if ($request->expectsJson()) {
+                return response()->json(['error' => 'Unauthorized action.'], 403);
+            }
+            abort(403, 'Unauthorized action.');
         }
 
         $request->validate([
@@ -188,9 +204,11 @@ class PortfolioCategoryController extends Controller
      */
     public function destroy(PortfolioCategory $category)
     {
-        // Verificar se a categoria pertence ao usuário
         if ($category->user_id !== Auth::id()) {
-            abort(403);
+            if (request()->expectsJson()) {
+                return response()->json(['error' => 'Unauthorized action.'], 403);
+            }
+            abort(403, 'Unauthorized action.');
         }
 
         // Verificar se há trabalhos associados
@@ -229,14 +247,13 @@ class PortfolioCategoryController extends Controller
             'categories.*.sort_order' => 'required|integer|min:0'
         ]);
 
-        foreach ($request->categories as $categoryData) {
-            $category = PortfolioCategory::where('id', $categoryData['id'])
-                ->where('user_id', Auth::id())
-                ->first();
-                
-            if ($category) {
-                $category->update(['sort_order' => $categoryData['sort_order']]);
-            }
+        foreach ($request->categories as $index => $categoryId) {
+            $query = PortfolioCategory::where('id', $categoryId);
+            
+            // Garantir que apenas categorias do usuário logado sejam atualizadas
+            $query->where('user_id', Auth::id());
+            
+            $query->update(['sort_order' => $index + 1]);
         }
 
         return response()->json([
@@ -250,9 +267,11 @@ class PortfolioCategoryController extends Controller
      */
     public function toggleStatus(PortfolioCategory $category)
     {
-        // Verificar se a categoria pertence ao usuário
         if ($category->user_id !== Auth::id()) {
-            abort(403);
+            if (request()->expectsJson()) {
+                return response()->json(['error' => 'Unauthorized action.'], 403);
+            }
+            abort(403, 'Unauthorized action.');
         }
 
         $category->update(['is_active' => !$category->is_active]);
@@ -276,13 +295,12 @@ class PortfolioCategoryController extends Controller
      */
     public function api(Request $request)
     {
-        $query = PortfolioCategory::where('user_id', Auth::id());
-
-        if ($request->filled('active_only')) {
-            $query->active();
-        }
-
-        $categories = $query->ordered()->get();
+        $query = PortfolioCategory::query();
+        
+        // Todos os usuários (incluindo admin) devem ver apenas suas próprias categorias
+        $query->where('user_id', Auth::id());
+        
+        $categories = $query->orderBy('sort_order')->get();
 
         return response()->json([
             'success' => true,

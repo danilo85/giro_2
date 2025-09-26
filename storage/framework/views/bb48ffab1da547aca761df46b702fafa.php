@@ -653,6 +653,82 @@
                          </div>
                      </div>
 
+                     <!-- File Management Section -->
+                     <div class="mt-8" x-data="{ open: JSON.parse(localStorage.getItem('sidebar_files') || 'true') }" 
+                          x-init="$watch('open', value => localStorage.setItem('sidebar_files', JSON.stringify(value)))">
+                         <button @click="open = !open" 
+                                 class="w-full flex items-center justify-between px-3 py-3 text-left text-sm font-bold text-purple-700 dark:text-purple-300 uppercase tracking-wider hover:text-purple-900 dark:hover:text-purple-100 transition-colors bg-gray-50 dark:bg-gray-800 rounded-md"
+                                 x-show="!$store.sidebar.collapsed || $store.sidebar.isMobile"
+                                 x-transition:enter="transition ease-in-out duration-150"
+                                 x-transition:enter-start="opacity-0 transform scale-95"
+                                 x-transition:enter-end="opacity-100 transform scale-100"
+                                 x-transition:leave="transition ease-in-out duration-150"
+                                 x-transition:leave-start="opacity-100 transform scale-100"
+                                 x-transition:leave-end="opacity-0 transform scale-95">
+                             <span class="flex items-center">
+                                 <i class="fas fa-folder w-5 h-5 mr-2"></i>
+                                 Arquivos
+                             </span>
+                             <svg class="w-4 h-4 transform transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                             </svg>
+                         </button>
+                         
+                         <div class="mt-2 space-y-1" :class="{ 'mt-0': $store.sidebar.collapsed }" 
+                              x-show="open" 
+                              x-transition:enter="transition ease-out duration-200"
+                              x-transition:enter-start="opacity-0 transform scale-95"
+                              x-transition:enter-end="opacity-100 transform scale-100"
+                              x-transition:leave="transition ease-in duration-150"
+                              x-transition:leave-start="opacity-100 transform scale-100"
+                              x-transition:leave-end="opacity-0 transform scale-95">
+                             <!-- Files Dashboard -->
+                             <a href="<?php echo e(route('files.index')); ?>" 
+                                class="<?php echo e(request()->routeIs('files.index') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'); ?> group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
+                                :class="{ 'justify-center': $store.sidebar.collapsed }">
+                                 <i class="fas fa-folder-open <?php echo e(request()->routeIs('files.index') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300'); ?> flex-shrink-0 w-6 h-6"></i>
+                                 <span x-show="!$store.sidebar.collapsed || $store.sidebar.isMobile" 
+                                       x-transition:enter="transition ease-in-out duration-150"
+                                       x-transition:enter-start="opacity-0 transform scale-95"
+                                       x-transition:enter-end="opacity-100 transform scale-100"
+                                       x-transition:leave="transition ease-in-out duration-150"
+                                       x-transition:leave-start="opacity-100 transform scale-100"
+                                       x-transition:leave-end="opacity-0 transform scale-95"
+                                       class="ml-3">Meus Arquivos</span>
+                             </a>
+
+                             <!-- Upload Files -->
+                             <a href="<?php echo e(route('files.create')); ?>" 
+                                class="<?php echo e(request()->routeIs('files.create') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'); ?> group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
+                                :class="{ 'justify-center': $store.sidebar.collapsed }">
+                                 <i class="fas fa-cloud-upload-alt <?php echo e(request()->routeIs('files.create') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300'); ?> flex-shrink-0 w-6 h-6"></i>
+                                 <span x-show="!$store.sidebar.collapsed || $store.sidebar.isMobile" 
+                                       x-transition:enter="transition ease-in-out duration-150"
+                                       x-transition:enter-start="opacity-0 transform scale-95"
+                                       x-transition:enter-end="opacity-100 transform scale-100"
+                                       x-transition:leave="transition ease-in-out duration-150"
+                                       x-transition:leave-start="opacity-100 transform scale-100"
+                                       x-transition:leave-end="opacity-0 transform scale-95"
+                                       class="ml-3">Upload</span>
+                             </a>
+
+                             <!-- File Categories -->
+                             <a href="<?php echo e(route('file-categories.index')); ?>" 
+                                class="<?php echo e(request()->routeIs('file-categories.*') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'); ?> group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
+                                :class="{ 'justify-center': $store.sidebar.collapsed }">
+                                 <i class="fas fa-tags <?php echo e(request()->routeIs('file-categories.*') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300'); ?> flex-shrink-0 w-6 h-6"></i>
+                                 <span x-show="!$store.sidebar.collapsed || $store.sidebar.isMobile" 
+                                       x-transition:enter="transition ease-in-out duration-150"
+                                       x-transition:enter-start="opacity-0 transform scale-95"
+                                       x-transition:enter-end="opacity-100 transform scale-100"
+                                       x-transition:leave="transition ease-in-out duration-150"
+                                       x-transition:leave-start="opacity-100 transform scale-100"
+                                       x-transition:leave-end="opacity-0 transform scale-95"
+                                       class="ml-3">Categorias</span>
+                             </a>
+                         </div>
+                     </div>
+
                      <!-- Admin Section -->
                      <div class="mt-8" x-data="{ open: JSON.parse(localStorage.getItem('sidebar_administracao') || 'true') }" 
                           x-init="$watch('open', value => localStorage.setItem('sidebar_administracao', JSON.stringify(value)))">

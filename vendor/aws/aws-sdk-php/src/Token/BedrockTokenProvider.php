@@ -71,12 +71,9 @@ class BedrockTokenProvider extends TokenProvider
      *
      * @return callable
      */
-    public static function fromTokenValue(
-        string $tokenValue,
-        ?TokenSource $source = null
-    ): callable
+    public static function fromTokenValue(string $tokenValue): callable
     {
-        $token = new Token($tokenValue, null, $source);
+        $token = new Token($tokenValue);
         return self::fromToken($token);
     }
 
@@ -97,7 +94,7 @@ class BedrockTokenProvider extends TokenProvider
             array_unshift($authSchemePreference, self::BEARER_AUTH);
             $args['config']['auth_scheme_preference'] = $authSchemePreference;
 
-            return self::fromTokenValue($tokenValue, TokenSource::BEARER_SERVICE_ENV_VARS);
+            return self::fromTokenValue($tokenValue);
         }
 
         return null;

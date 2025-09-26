@@ -25,6 +25,9 @@ use App\Http\Controllers\HistoricoController;
 use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\PortfolioCategoryController;
 use App\Http\Controllers\PortfolioApiController;
+use App\Http\Controllers\FileController;
+use App\Http\Controllers\FileCategoryController;
+use App\Http\Controllers\SharedLinkController;
 use App\Utils\MimeTypeDetector;
 
 /*
@@ -397,6 +400,30 @@ Route::post('/debug-form', function (\Illuminate\Http\Request $request) {
         Route::patch('/works/images/{image}/set-cover', [PortfolioController::class, 'setCoverImage'])->name('works.images.set-cover');
         Route::patch('/works/images/update-order', [PortfolioController::class, 'updateImagesOrder'])->name('works.images.update-order');
     });
+
+    // File Management Module (Módulo de Gestão de Arquivos)
+    Route::prefix('files')->name('files.')->group(function () {
+        // File management routes
+        Route::get('/', [FileController::class, 'index'])->name('index');
+        Route::get('/create', [FileController::class, 'create'])->name('create');
+        Route::post('/', [FileController::class, 'store'])->name('store');
+        Route::get('/{file}', [FileController::class, 'show'])->name('show');
+        Route::get('/{file}/download', [FileController::class, 'download'])->name('download');
+        Route::put('/{file}', [FileController::class, 'update'])->name('update');
+        Route::delete('/{file}', [FileController::class, 'destroy'])->name('destroy');
+        Route::get('/category/{category}', [FileController::class, 'getByCategory'])->name('by-category');
+        Route::post('/upload-progress', [FileController::class, 'uploadProgress'])->name('upload-progress');
+        
+        // Shared links management
+        Route::post('/{file}/share', [SharedLinkController::class, 'store'])->name('share');
+        Route::get('/{file}/links', [SharedLinkController::class, 'getFileLinks'])->name('links');
+        Route::delete('/shared-links/{sharedLink}', [SharedLinkController::class, 'destroy'])->name('shared-links.destroy');
+        Route::get('/shared-links/{sharedLink}/access-logs', [SharedLinkController::class, 'getAccessLogs'])->name('shared-links.access-logs');
+    });
+
+    // File Categories Management
+    Route::resource('file-categories', FileCategoryController::class)->except(['show']);
+    Route::get('/file-categories/api', [FileCategoryController::class, 'api'])->name('file-categories.api');
    
 
 
@@ -524,6 +551,11 @@ Route::prefix('public')->name('public.')->group(function () {
     Route::get('/contato', function () {
         return view('contact');
     })->name('contact');
+    
+    // Public shared file access routes
+    Route::get('/shared/{token}', [SharedLinkController::class, 'show'])->name('shared.show');
+    Route::match(['GET', 'POST'], '/shared/{token}/download', [SharedLinkController::class, 'download'])->name('shared.download');
+    Route::get('/shared/{token}/preview', [SharedLinkController::class, 'preview'])->name('shared.preview');
 });
 
 // File upload routes moved to RouteServiceProvider (without any middleware)
