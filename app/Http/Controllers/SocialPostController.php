@@ -26,19 +26,28 @@ class SocialPostController extends Controller
         // Criar data do primeiro dia do mês
         $currentDate = Carbon::createFromDate($year, $month, 1);
         
-        // Buscar posts do mês atual
-        $posts = SocialPost::forUser(Auth::id())
+        // Buscar posts agendados do mês atual
+        $scheduledPosts = SocialPost::forUser(Auth::id())
             ->whereYear('scheduled_date', $year)
             ->whereMonth('scheduled_date', $month)
             ->with(['hashtags', 'carouselTexts'])
-            ->get()
-            ->groupBy(function($post) {
-                return $post->scheduled_date ? $post->scheduled_date->format('Y-m-d') : null;
-            });
+            ->get();
         
-        // Remover posts sem data agendada
-        $posts = $posts->filter(function($group, $date) {
-            return $date !== null;
+        // Buscar posts sem data agendada criados no mês atual
+        $unscheduledPosts = SocialPost::forUser(Auth::id())
+            ->whereNull('scheduled_date')
+            ->whereYear('created_at', $year)
+            ->whereMonth('created_at', $month)
+            ->with(['hashtags', 'carouselTexts'])
+            ->get();
+        
+        // Combinar e agrupar todos os posts por data
+        $allPosts = $scheduledPosts->concat($unscheduledPosts);
+        
+        $posts = $allPosts->groupBy(function($post) {
+            // Usar scheduled_date se existir, senão usar created_at
+            $date = $post->scheduled_date ? $post->scheduled_date : $post->created_at;
+            return $date->format('Y-m-d');
         });
         
         // Estatísticas para cards de resumo
@@ -46,8 +55,16 @@ class SocialPostController extends Controller
             'total' => SocialPost::forUser(Auth::id())->count(),
             'agendados' => SocialPost::forUser(Auth::id())->whereNotNull('scheduled_date')->count(),
             'este_mes' => SocialPost::forUser(Auth::id())
-                ->whereYear('scheduled_date', $year)
-                ->whereMonth('scheduled_date', $month)
+                ->where(function($query) use ($year, $month) {
+                    $query->where(function($q) use ($year, $month) {
+                        $q->whereYear('scheduled_date', $year)
+                          ->whereMonth('scheduled_date', $month);
+                    })->orWhere(function($q) use ($year, $month) {
+                        $q->whereNull('scheduled_date')
+                          ->whereYear('created_at', $year)
+                          ->whereMonth('created_at', $month);
+                    });
+                })
                 ->count(),
         ];
         
@@ -109,7 +126,10 @@ class SocialPostController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        // Converter data brasileira para formato do banco
+        $scheduledDate = $this->convertBrazilianDateToDatabase($request->scheduled_date);
+        
+        $validator = Validator::make(array_merge($request->all(), ['scheduled_date' => $scheduledDate]), [
             'titulo' => 'required|string|max:255',
             'legenda' => 'nullable|string',
             'texto_final' => 'nullable|string',
@@ -145,7 +165,7 @@ class SocialPostController extends Controller
                 'texto_final' => $request->texto_final,
                 'call_to_action_image' => $callToActionImagePath,
                 'status' => $request->status,
-                'scheduled_date' => $request->scheduled_date,
+                'scheduled_date' => $scheduledDate,
                 'scheduled_time' => $request->scheduled_time,
                 'user_id' => Auth::id()
             ]);
@@ -216,7 +236,10 @@ class SocialPostController extends Controller
             abort(403);
         }
 
-        $validator = Validator::make($request->all(), [
+        // Converter data brasileira para formato do banco
+        $scheduledDate = $this->convertBrazilianDateToDatabase($request->scheduled_date);
+
+        $validator = Validator::make(array_merge($request->all(), ['scheduled_date' => $scheduledDate]), [
             'titulo' => 'required|string|max:255',
             'legenda' => 'nullable|string',
             'texto_final' => 'nullable|string',
@@ -245,7 +268,7 @@ class SocialPostController extends Controller
                 'legenda' => $request->legenda,
                 'texto_final' => $request->texto_final,
                 'status' => $request->status,
-                'scheduled_date' => $request->scheduled_date,
+                'scheduled_date' => $scheduledDate,
                 'scheduled_time' => $request->scheduled_time
             ];
 
@@ -796,5 +819,34 @@ class SocialPostController extends Controller
         }
         
         return $closestColor;
+    }
+
+    /**
+     * Convert Brazilian date format (dd/mm/yyyy) to database format (yyyy-mm-dd)
+     */
+    private function convertBrazilianDateToDatabase($dateString)
+    {
+        if (empty($dateString)) {
+            return null;
+        }
+
+        // Se já está no formato do banco (yyyy-mm-dd), retorna como está
+        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateString)) {
+            return $dateString;
+        }
+
+        // Se está no formato brasileiro (dd/mm/yyyy), converte
+        if (preg_match('/^(\d{2})\/(\d{2})\/(\d{4})$/', $dateString, $matches)) {
+            $day = $matches[1];
+            $month = $matches[2];
+            $year = $matches[3];
+            
+            // Validar se a data é válida
+            if (checkdate($month, $day, $year)) {
+                return $year . '-' . $month . '-' . $day;
+            }
+        }
+
+        return null;
     }
 }

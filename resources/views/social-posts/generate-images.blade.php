@@ -644,12 +644,14 @@ try {
     console.log('=== SCRIPT INICIADO ===');
     // Dados do post
     postData = {
-        titulo: @json($socialPost->titulo),
-        legenda: @json($socialPost->legenda),
-        textoFinal: @json($socialPost->texto_final),
-        carouselTexts: @json($socialPost->carouselTexts->pluck('texto')->toArray()),
+        titulo: {!! json_encode(strip_tags($socialPost->titulo, '<b><i><u><s><sub><sup>')) !!},
+        legenda: {!! json_encode(strip_tags($socialPost->legenda, '<b><i><u><s><sub><sup>')) !!},
+        textoFinal: {!! json_encode(strip_tags($socialPost->texto_final, '<b><i><u><s><sub><sup>')) !!},
+        carouselTexts: {!! json_encode($socialPost->carouselTexts->pluck('texto')->map(function($text) { return strip_tags($text, '<b><i><u><s><sub><sup>'); })->toArray()) !!},
         callToActionImage: @json($socialPost->call_to_action_image)
-    };    console.log('Dados do post carregados:', postData);    console.log('CarouselTexts count:', postData.carouselTexts ? postData.carouselTexts.length : 0);    console.log('CarouselTexts data:', postData.carouselTexts);
+    };
+    
+    // Dados já contêm as tags HTML preservadas para processamento visual    console.log('Dados do post carregados:', postData);    console.log('CarouselTexts count:', postData.carouselTexts ? postData.carouselTexts.length : 0);    console.log('CarouselTexts data:', postData.carouselTexts);
 } catch (error) {
     console.error('Erro ao carregar dados do post:', error);
     alert('Erro no JavaScript: ' + error.message);
@@ -1196,6 +1198,113 @@ function addNavigationArrow(ctx, config, callback) {
 }
 
 // Gerar imagem do título com alinhamento justificado
+// Função para processar tags HTML e converter em texto formatado
+function processHtmlFormatting(htmlText) {
+    if (!htmlText) return '';
+    
+    // Remover tags HTML e manter apenas o texto
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = htmlText;
+    return tempDiv.textContent || tempDiv.innerText || '';
+}
+
+// Função para aplicar formatação visual no canvas baseada em tags HTML
+function renderFormattedText(ctx, htmlText, x, y, maxWidth, fontSize, color = '#000000') {
+    if (!htmlText) return;
+    
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = htmlText;
+    
+    let currentX = x;
+    let currentY = y;
+    
+    // Processar cada nó do HTML
+    function processNode(node) {
+        if (node.nodeType === Node.TEXT_NODE) {
+            // Texto simples
+            ctx.fillStyle = color;
+            ctx.font = `${fontSize}px Libre Franklin, Arial, sans-serif`;
+            ctx.fillText(node.textContent, currentX, currentY);
+            currentX += ctx.measureText(node.textContent).width;
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+            // Elemento HTML
+            const tagName = node.tagName.toLowerCase();
+            
+            // Salvar configurações atuais
+            const originalFont = ctx.font;
+            const originalFillStyle = ctx.fillStyle;
+            
+            // Aplicar formatação baseada na tag
+            switch (tagName) {
+                case 'b':
+                case 'strong':
+                    ctx.font = `bold ${fontSize}px Libre Franklin, Arial, sans-serif`;
+                    break;
+                case 'i':
+                case 'em':
+                    ctx.font = `italic ${fontSize}px Libre Franklin, Arial, sans-serif`;
+                    break;
+                case 'u':
+                    // Para sublinhado, renderizar texto e depois linha
+                    ctx.font = `${fontSize}px Libre Franklin, Arial, sans-serif`;
+                    break;
+                case 's':
+                case 'strike':
+                case 'del':
+                    // Para riscado, renderizar texto e depois linha
+                    ctx.font = `${fontSize}px Libre Franklin, Arial, sans-serif`;
+                    break;
+                case 'sub':
+                    ctx.font = `${Math.floor(fontSize * 0.7)}px Libre Franklin, Arial, sans-serif`;
+                    currentY += fontSize * 0.2; // Mover para baixo
+                    break;
+                case 'sup':
+                    ctx.font = `${Math.floor(fontSize * 0.7)}px Libre Franklin, Arial, sans-serif`;
+                    currentY -= fontSize * 0.2; // Mover para cima
+                    break;
+            }
+            
+            // Processar conteúdo do elemento
+            for (let child of node.childNodes) {
+                processNode(child);
+            }
+            
+            // Adicionar decorações especiais
+            if (tagName === 'u') {
+                // Desenhar linha de sublinhado
+                const textWidth = ctx.measureText(node.textContent).width;
+                ctx.beginPath();
+                ctx.moveTo(currentX - textWidth, currentY + fontSize * 0.1);
+                ctx.lineTo(currentX, currentY + fontSize * 0.1);
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            } else if (tagName === 's' || tagName === 'strike' || tagName === 'del') {
+                // Desenhar linha de riscado
+                const textWidth = ctx.measureText(node.textContent).width;
+                ctx.beginPath();
+                ctx.moveTo(currentX - textWidth, currentY - fontSize * 0.2);
+                ctx.lineTo(currentX, currentY - fontSize * 0.2);
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
+            
+            // Restaurar configurações
+            if (tagName === 'sub' || tagName === 'sup') {
+                currentY = y; // Restaurar posição Y original
+            }
+            ctx.font = originalFont;
+            ctx.fillStyle = originalFillStyle;
+        }
+    }
+    
+    // Processar todos os nós
+    for (let child of tempDiv.childNodes) {
+        processNode(child);
+    }
+}
+
 function generateTitleImage() {
     const canvas = document.getElementById('titleCanvas');
     if (!canvas) {
@@ -1228,7 +1337,8 @@ function generateTitleContent(ctx, config, canvas) {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     
-    const text = postData.titulo.toUpperCase();
+    // Processar HTML tags para formatação visual
+    const text = processHtmlFormatting(postData.titulo).toUpperCase();
     const maxWidth = config.width * 0.85;
     
     let lines;
@@ -1472,6 +1582,9 @@ function generateCarouselImageContent(ctx, config, canvas, index, settings) {
         displayText = `Slide ${index + 1} - Texto não disponível`;
         console.warn(`Texto undefined detectado para slide ${index}, usando fallback:`, displayText);
     }
+    
+    // Processar HTML tags para formatação visual
+    displayText = processHtmlFormatting(displayText);
     
     // Aplicar formatação maiúscula
     if (settings.uppercase) {
@@ -1813,12 +1926,15 @@ function generateCtaText(ctx, config, canvas) {
     }
     
     // Verificar se textoFinal é uma string válida
-    const textoFinal = String(postData.textoFinal).trim();
+    let textoFinal = String(postData.textoFinal).trim();
     if (textoFinal === '' || textoFinal === 'null' || textoFinal === 'undefined') {
         console.warn('Texto final está vazio ou inválido para CTA');
         adjustCanvasDisplaySize(canvas);
         return;
     }
+    
+    // Processar HTML tags para formatação visual
+    textoFinal = processHtmlFormatting(textoFinal);
     
     // Texto do CTA (cor preta para consistência)
     ctx.fillStyle = '#000000';

@@ -3,7 +3,7 @@
 @section('title', 'Upload de Arquivo')
 
 @section('content')
-<div class="min-h-screen bg-white">
+<div class="min-h-screen bg-white dark:bg-gray-900">
     <!-- Header -->
     <div class="container mx-auto px-4 py-6">
         <div class="flex items-center mb-6">
@@ -11,8 +11,8 @@
                 <i class="fas fa-arrow-left text-xl"></i>
             </a>
             <div>
-                <h1 class="text-3xl font-bold text-gray-900">Upload de Arquivo</h1>
-                <p class="text-gray-600 mt-1">Faça upload de seus arquivos de forma segura</p>
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Upload de Arquivo</h1>
+                <p class="text-gray-600 dark:text-gray-300 mt-1">Faça upload de seus arquivos de forma segura</p>
             </div>
         </div>
     </div>
@@ -24,7 +24,7 @@
                 @csrf
                 
                 <!-- Full Height Drag and Drop Area -->
-                <div id="dropZone" class="relative min-h-[calc(100vh-200px)] bg-white rounded-2xl border-2 border-dashed border-gray-200 hover:border-blue-400 overflow-hidden group">
+                <div id="dropZone" class="relative min-h-[calc(100vh-200px)] bg-white dark:bg-gray-800 rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500 overflow-hidden group">
                     <!-- Background Pattern -->
                     <div class="absolute inset-0 opacity-5">
                         <div class="absolute inset-0" style="background-image: radial-gradient(circle at 25% 25%, #3b82f6 2px, transparent 2px), radial-gradient(circle at 75% 75%, #8b5cf6 2px, transparent 2px); background-size: 50px 50px;"></div>
@@ -41,19 +41,19 @@
                         </div>
                         
                         <!-- Main Heading -->
-                        <h2 class="text-4xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent mb-4 text-center">
+                        <h2 class="text-4xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-4 text-center">
                             Arraste e solte seus arquivos aqui
                         </h2>
                         
                         <!-- Subtitle -->
-                        <p class="text-xl text-gray-500 mb-8 text-center max-w-md">
+                        <p class="text-xl text-gray-500 dark:text-gray-400 mb-8 text-center max-w-md">
                             Compartilhe seus arquivos de forma rápida e segura
                         </p>
                         
                         <!-- Divider -->
                         <div class="flex items-center mb-8 w-full max-w-xs">
                             <div class="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
-                            <span class="px-4 text-gray-400 font-medium">ou</span>
+                            <span class="px-4 text-gray-400 dark:text-gray-500 font-medium">ou</span>
                             <div class="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
                         </div>
                         
@@ -68,7 +68,7 @@
                         <input type="file" id="fileInput" name="files[]" multiple class="hidden" accept="*/*">
                         
                         <!-- File Size Info -->
-                        <div class="mt-8 flex items-center space-x-6 text-sm text-gray-400">
+                        <div class="mt-8 flex items-center space-x-6 text-sm text-gray-400 dark:text-gray-500">
                             <div class="flex items-center">
                                 <i class="fas fa-shield-alt mr-2 text-green-500"></i>
                                 <span>100% Seguro</span>
@@ -101,7 +101,7 @@
                             </div>
                         </div>
                         
-                        <h3 class="text-3xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent mb-6">Fazendo upload...</h3>
+                        <h3 class="text-3xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-6">Fazendo upload...</h3>
                         
                         <!-- Progress Bar -->
                         <div class="w-full max-w-md mb-4">
@@ -112,8 +112,8 @@
                         
                         <!-- Progress Details -->
                         <div class="text-center mb-4">
-                            <p id="progressText" class="text-2xl text-gray-800 font-bold mb-2">0%</p>
-                            <p id="uploadSpeed" class="text-sm text-gray-600">0 MB / 0 MB</p>
+                            <p id="progressText" class="text-2xl text-gray-800 dark:text-white font-bold mb-2">0%</p>
+                            <p id="uploadSpeed" class="text-sm text-gray-600 dark:text-gray-300">0 MB / 0 MB</p>
                         </div>
                         
                         <!-- Upload Animation -->
@@ -126,10 +126,10 @@
                 </div>
             
                 <!-- Selected Files Preview -->
-                <div id="selectedFiles" class="hidden mb-6">
-                    <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
-                        <div class="bg-gray-50 px-6 py-4 border-b border-gray-100">
-                            <h3 class="text-xl font-bold text-gray-800">Arquivos Selecionados</h3>
+                <div id="selectedFiles" class="hidden mb-6 mt-6">
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 overflow-hidden">
+                        <div class="bg-gray-50 dark:bg-gray-700 px-6 py-4 border-b border-gray-100 dark:border-gray-600">
+                            <h3 class="text-xl font-bold text-gray-800 dark:text-white">Arquivos Selecionados</h3>
                         </div>
                         <div id="filesList" class="p-6 space-y-4 max-h-96 overflow-y-auto"></div>
                     </div>
@@ -137,19 +137,19 @@
             
                 <!-- File Details Form -->
                 <div id="fileDetailsForm" class="hidden">
-                    <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden max-w-7xl mx-auto">
-                        <div class="bg-gray-50 px-6 py-4 border-b border-gray-100">
-                            <h3 class="text-xl font-bold text-gray-800">Detalhes dos Arquivos</h3>
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 overflow-hidden max-w-7xl mx-auto">
+                        <div class="bg-gray-50 dark:bg-gray-700 px-6 py-4 border-b border-gray-100 dark:border-gray-600">
+                            <h3 class="text-xl font-bold text-gray-800 dark:text-white">Detalhes dos Arquivos</h3>
                         </div>
                         
                         <div class="p-6 space-y-6">
                             <!-- Category Selection -->
                             <div>
-                                <label for="category_id" class="block text-sm font-semibold text-gray-700 mb-2">
+                                <label for="category_id" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                                     Categoria
                                 </label>
                                 <select name="category_id" id="category_id" 
-                                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:bg-white">
+                                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 dark:bg-gray-700 hover:bg-white dark:hover:bg-gray-600 text-gray-900 dark:text-white">
                                     <option value="">Selecione uma categoria</option>
                                     @foreach($categories as $category)
                                         <option value="{{ $category->id }}">{{ $category->name }}</option>
@@ -165,11 +165,11 @@
                             
                             <!-- Description -->
                             <div>
-                                <label for="description" class="block text-sm font-semibold text-gray-700 mb-2">
+                                <label for="description" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                                     Descrição (opcional)
                                 </label>
                                 <textarea name="description" id="description" rows="4" 
-                                          class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:bg-white resize-none"
+                                          class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 dark:bg-gray-700 hover:bg-white dark:hover:bg-gray-600 resize-none text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                                           placeholder="Adicione uma descrição para seus arquivos..."></textarea>
                                 @error('description')
                                     <div class="text-red-500 text-sm mt-2 flex items-center">
@@ -181,9 +181,9 @@
                         </div>
                         
                         <!-- Action Buttons -->
-                        <div class="flex justify-end space-x-4 p-6 bg-gray-50 border-t border-gray-100">
+                        <div class="flex justify-end space-x-4 p-6 bg-gray-50 dark:bg-gray-700 border-t border-gray-100 dark:border-gray-600">
                             <button type="button" id="cancelUpload" 
-                                    class="px-6 py-3 text-sm font-semibold text-gray-700 bg-white hover:bg-gray-100 border border-gray-300 rounded-xl">
+                                    class="px-6 py-3 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl">
                                 <i class="fas fa-times mr-2"></i>Cancelar
                             </button>
                             <button type="submit" id="uploadButton" 
@@ -244,17 +244,17 @@ class FileUploader {
     
     handleDragOver(e) {
         e.preventDefault();
-        this.dropZone.classList.add('border-blue-400', 'bg-blue-50');
+        this.dropZone.classList.add('border-blue-400', 'bg-blue-50', 'dark:bg-blue-900/20');
     }
     
     handleDragLeave(e) {
         e.preventDefault();
-        this.dropZone.classList.remove('border-blue-400', 'bg-blue-50');
+        this.dropZone.classList.remove('border-blue-400', 'bg-blue-50', 'dark:bg-blue-900/20');
     }
     
     handleDrop(e) {
         e.preventDefault();
-        this.dropZone.classList.remove('border-blue-400', 'bg-blue-50');
+        this.dropZone.classList.remove('border-blue-400', 'bg-blue-50', 'dark:bg-blue-900/20');
         
         const files = Array.from(e.dataTransfer.files);
         this.processFiles(files);
@@ -294,7 +294,7 @@ class FileUploader {
         
         this.files.forEach((file, index) => {
             const fileItem = document.createElement('div');
-            fileItem.className = 'flex items-center justify-between p-3 bg-gray-50 rounded-md';
+            fileItem.className = 'flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-md';
             
             // Verificar se é uma imagem
             const isImage = file.type.startsWith('image/');
@@ -316,13 +316,13 @@ class FileUploader {
                     <div class="flex items-center flex-1">
                         ${fileIcon}
                         <div class="flex-1">
-                            <p class="font-medium text-gray-900">${file.name}</p>
-                            <p class="text-sm text-gray-500">${this.formatFileSize(file.size)}</p>
+                            <p class="font-medium text-gray-900 dark:text-white">${file.name}</p>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">${this.formatFileSize(file.size)}</p>
                             ${imagePreview}
                         </div>
                     </div>
                     <button type="button" onclick="fileUploader.removeFile(${index})" 
-                            class="text-red-600 hover:text-red-800 ml-3">
+                            class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 ml-3">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>

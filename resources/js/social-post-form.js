@@ -13,18 +13,28 @@ document.addEventListener('DOMContentLoaded', function() {
     const titleElement = document.getElementById('titulo');
     const contentElement = document.getElementById('legenda');
     const textoFinalElement = document.getElementById('texto_final');
+    const textoFinalEditor = document.getElementById('texto_final_editor');
     const hashtagInput = document.getElementById('hashtagInput');
-    const carouselTextsInput = document.getElementById('carouselTextsInput');
+    const carouselTextsInput = document.getElementById('carouselTextsInput_editor');
 
     if (titleElement) titleElement.addEventListener('input', updatePreview);
     if (contentElement) contentElement.addEventListener('input', updatePreview);
     if (textoFinalElement) textoFinalElement.addEventListener('input', updatePreview);
+    if (textoFinalEditor) {
+        textoFinalEditor.addEventListener('input', function() {
+            syncEditorContent('texto_final_editor', 'texto_final');
+            updatePreview();
+        });
+    }
     if (hashtagInput) {
         hashtagInput.addEventListener('keydown', handleHashtagInput);
         hashtagInput.addEventListener('input', handleHashtagSearch);
     }
     if (carouselTextsInput) {
-        carouselTextsInput.addEventListener('input', updateCarouselPreview);
+        carouselTextsInput.addEventListener('input', function() {
+            syncEditorContent('carouselTextsInput_editor', 'carousel_texts_combined');
+            updateCarouselPreview();
+        });
     }
 
     // Load existing data for edit page
@@ -39,89 +49,101 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Text formatting
 function formatText(command, targetId) {
-    const textarea = document.getElementById(targetId) || document.getElementById('content') || document.getElementById('legenda');
-    if (!textarea) return;
+    const element = document.getElementById(targetId) || document.getElementById('content') || document.getElementById('legenda');
+    if (!element) return;
 
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const selectedText = textarea.value.substring(start, end);
-
-    if (selectedText) {
-        let formattedText = '';
+    element.focus();
+    
+    try {
         switch (command) {
             case 'bold':
-                formattedText = `**${selectedText}**`;
+                document.execCommand('bold', false, null);
                 break;
             case 'italic':
-                formattedText = `*${selectedText}*`;
+                document.execCommand('italic', false, null);
                 break;
             case 'underline':
-                formattedText = `__${selectedText}__`;
+                document.execCommand('underline', false, null);
+                break;
+            case 'strikeThrough':
+                document.execCommand('strikeThrough', false, null);
+                break;
+            case 'subscript':
+                document.execCommand('subscript', false, null);
                 break;
         }
-
-        textarea.value = textarea.value.substring(0, start) + formattedText + textarea.value.substring(end);
-        textarea.focus();
-        textarea.setSelectionRange(start + formattedText.length, start + formattedText.length);
+        
+        // Sincronizar com campo hidden se existir
+        syncEditorContent(targetId);
         updatePreview();
+    } catch (e) {
+        console.error('Erro ao formatar texto:', e);
     }
 }
 
 function formatCarouselText(command) {
-    const textarea = document.getElementById('carouselTextsInput');
-    if (!textarea) return;
+    const element = document.getElementById('carouselTextsInput_editor');
+    if (!element) return;
 
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const selectedText = textarea.value.substring(start, end);
-
-    if (selectedText) {
-        let formattedText = '';
+    element.focus();
+    
+    try {
         switch (command) {
             case 'bold':
-                formattedText = `**${selectedText}**`;
+                document.execCommand('bold', false, null);
                 break;
             case 'italic':
-                formattedText = `*${selectedText}*`;
+                document.execCommand('italic', false, null);
                 break;
             case 'underline':
-                formattedText = `__${selectedText}__`;
+                document.execCommand('underline', false, null);
+                break;
+            case 'strikeThrough':
+                document.execCommand('strikeThrough', false, null);
+                break;
+            case 'subscript':
+                document.execCommand('subscript', false, null);
                 break;
         }
-
-        textarea.value = textarea.value.substring(0, start) + formattedText + textarea.value.substring(end);
-        textarea.focus();
-        textarea.setSelectionRange(start + formattedText.length, start + formattedText.length);
+        
+        // Sincronizar com campo hidden se existir
+        syncEditorContent('carouselTextsInput_editor', 'carousel_texts_combined');
         updateCarouselPreview();
+    } catch (e) {
+        console.error('Erro ao formatar texto do carrossel:', e);
     }
 }
 
 function formatTextFinal(command) {
-    const textarea = document.getElementById('texto_final');
-    if (!textarea) return;
+    const element = document.getElementById('texto_final_editor');
+    if (!element) return;
 
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const selectedText = textarea.value.substring(start, end);
-
-    if (selectedText) {
-        let formattedText = '';
+    element.focus();
+    
+    try {
         switch (command) {
             case 'bold':
-                formattedText = `**${selectedText}**`;
+                document.execCommand('bold', false, null);
                 break;
             case 'italic':
-                formattedText = `*${selectedText}*`;
+                document.execCommand('italic', false, null);
                 break;
             case 'underline':
-                formattedText = `__${selectedText}__`;
+                document.execCommand('underline', false, null);
+                break;
+            case 'strikeThrough':
+                document.execCommand('strikeThrough', false, null);
+                break;
+            case 'subscript':
+                document.execCommand('subscript', false, null);
                 break;
         }
-
-        textarea.value = textarea.value.substring(0, start) + formattedText + textarea.value.substring(end);
-        textarea.focus();
-        textarea.setSelectionRange(start + formattedText.length, start + formattedText.length);
+        
+        // Sincronizar com campo hidden se existir
+        syncEditorContent('texto_final_editor', 'texto_final');
         updatePreview();
+    } catch (e) {
+        console.error('Erro ao formatar texto final:', e);
     }
 }
 
@@ -138,26 +160,52 @@ function insertEmoji(emoji) {
 }
 
 function insertEmojiToCarousel(emoji) {
-    const textarea = document.getElementById('carouselTextsInput');
-    if (!textarea) return;
+    const editor = document.getElementById('carouselTextsInput_editor');
+    if (!editor) return;
 
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    textarea.value = textarea.value.substring(0, start) + emoji + textarea.value.substring(end);
-    textarea.focus();
-    textarea.setSelectionRange(start + emoji.length, start + emoji.length);
+    editor.focus();
+    
+    // Inserir emoji no contenteditable
+    const selection = window.getSelection();
+    const range = selection.getRangeAt(0);
+    
+    const emojiNode = document.createTextNode(emoji);
+    range.deleteContents();
+    range.insertNode(emojiNode);
+    
+    // Posicionar cursor após o emoji
+    range.setStartAfter(emojiNode);
+    range.collapse(true);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    
+    // Sincronizar com campo hidden
+    syncEditorContent('carouselTextsInput_editor', 'carousel_texts_combined');
     updateCarouselPreview();
 }
 
 function insertEmojiToFinal(emoji) {
-    const textarea = document.getElementById('texto_final');
-    if (!textarea) return;
+    const editor = document.getElementById('texto_final_editor');
+    if (!editor) return;
 
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    textarea.value = textarea.value.substring(0, start) + emoji + textarea.value.substring(end);
-    textarea.focus();
-    textarea.setSelectionRange(start + emoji.length, start + emoji.length);
+    editor.focus();
+    
+    // Inserir emoji no contenteditable
+    const selection = window.getSelection();
+    const range = selection.getRangeAt(0);
+    
+    const emojiNode = document.createTextNode(emoji);
+    range.deleteContents();
+    range.insertNode(emojiNode);
+    
+    // Posicionar cursor após o emoji
+    range.setStartAfter(emojiNode);
+    range.collapse(true);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    
+    // Sincronizar com campo hidden
+    syncEditorContent('texto_final_editor', 'texto_final');
     updatePreview();
 }
 
@@ -206,18 +254,43 @@ function loadEmojis() {
 
 function selectEmoji(emoji) {
     if (currentEmojiTarget) {
-        const textarea = document.getElementById(currentEmojiTarget);
-        if (textarea) {
-            const start = textarea.selectionStart;
-            const end = textarea.selectionEnd;
-            textarea.value = textarea.value.substring(0, start) + emoji + textarea.value.substring(end);
-            textarea.focus();
-            textarea.setSelectionRange(start + emoji.length, start + emoji.length);
-            
-            // Atualizar preview baseado no campo
-            if (currentEmojiTarget === 'carouselTextsInput') {
-                updateCarouselPreview();
+        const element = document.getElementById(currentEmojiTarget);
+        if (element) {
+            // Verificar se é um contenteditable ou textarea
+            if (element.contentEditable === 'true') {
+                element.focus();
+                
+                // Inserir emoji no contenteditable
+                const selection = window.getSelection();
+                const range = selection.getRangeAt(0);
+                
+                const emojiNode = document.createTextNode(emoji);
+                range.deleteContents();
+                range.insertNode(emojiNode);
+                
+                // Posicionar cursor após o emoji
+                range.setStartAfter(emojiNode);
+                range.collapse(true);
+                selection.removeAllRanges();
+                selection.addRange(range);
+                
+                // Sincronizar com campo hidden baseado no ID
+                if (currentEmojiTarget === 'carouselTextsInput_editor') {
+                    syncEditorContent('carouselTextsInput_editor', 'carousel_texts_combined');
+                    updateCarouselPreview();
+                } else if (currentEmojiTarget === 'texto_final_editor') {
+                    syncEditorContent('texto_final_editor', 'texto_final');
+                    updatePreview();
+                } else {
+                    updatePreview();
+                }
             } else {
+                // Para textareas normais
+                const start = element.selectionStart;
+                const end = element.selectionEnd;
+                element.value = element.value.substring(0, start) + emoji + element.value.substring(end);
+                element.focus();
+                element.setSelectionRange(start + emoji.length, start + emoji.length);
                 updatePreview();
             }
         }
@@ -242,6 +315,16 @@ function filterEmojis() {
 function filterEmojisByCategory(category) {
     // Função para filtrar por categoria (implementação básica)
     loadEmojis(); // Recarregar todos os emojis por enquanto
+}
+
+// Função para sincronizar conteúdo do editor com campo hidden
+function syncEditorContent(editorId, hiddenFieldId) {
+    const editor = document.getElementById(editorId);
+    const hiddenField = document.getElementById(hiddenFieldId || editorId + '_hidden');
+    
+    if (editor && hiddenField) {
+        hiddenField.value = editor.innerHTML;
+    }
 }
 
 // Expose functions globally for HTML onclick handlers
@@ -270,6 +353,7 @@ window.closeEmojiModal = closeEmojiModal;
 window.selectEmoji = selectEmoji;
 window.filterEmojis = filterEmojis;
 window.filterEmojisByCategory = filterEmojisByCategory;
+window.syncEditorContent = syncEditorContent;
 
 // Hashtag functions
 function handleHashtagSearch(e) {
@@ -395,27 +479,43 @@ function updateHashtagDisplay() {
 
 // Carousel functions
 function updateCarouselPreview() {
-    const textarea = document.getElementById('carouselTextsInput');
+    const editor = document.getElementById('carouselTextsInput_editor');
     const counter = document.getElementById('carouselCounter');
-    if (!textarea || !counter) return;
+    if (!editor || !counter) return;
 
-    // Filtrar slides vazios e remover quebras de linha desnecessárias
-    const slides = textarea.value.trim().split('---')
-        .map(slide => slide.trim().replace(/^\n+|\n+$/g, '')) // Remove \n do início e fim
+    // Obter o conteúdo do contenteditable e filtrar slides vazios
+    const content = editor.innerHTML || editor.textContent || '';
+    const slides = content.split('---')
+        .map(slide => slide.trim().replace(/^\n+|\n+$/g, '').replace(/<br>/g, '\n')) // Remove \n do início e fim e converte <br> para \n
         .filter(slide => slide.length > 0 && slide !== '\n');
     counter.textContent = `${slides.length} slides`;
     updatePreview();
 }
 
 function insertCarouselDivider() {
-    const textarea = document.getElementById('carouselTextsInput');
-    if (!textarea) return;
+    const editor = document.getElementById('carouselTextsInput_editor');
+    if (!editor) return;
 
-    const start = textarea.selectionStart;
-    const divider = '\n---\n';
-    textarea.value = textarea.value.substring(0, start) + divider + textarea.value.substring(start);
-    textarea.focus();
-    textarea.setSelectionRange(start + divider.length, start + divider.length);
+    editor.focus();
+    
+    // Inserir o separador no contenteditable
+    const selection = window.getSelection();
+    const range = selection.getRangeAt(0);
+    
+    const dividerElement = document.createElement('div');
+    dividerElement.innerHTML = '<br>---<br>';
+    
+    range.deleteContents();
+    range.insertNode(dividerElement);
+    
+    // Posicionar cursor após o separador
+    range.setStartAfter(dividerElement);
+    range.collapse(true);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    
+    // Sincronizar com campo hidden
+    syncEditorContent('carouselTextsInput_editor', 'carousel_texts_combined');
     updateCarouselPreview();
 }
 
@@ -427,9 +527,11 @@ function updatePreview() {
     const title = document.getElementById('titulo')?.value || '';
     const legend = document.getElementById('legenda')?.value || '';
     const final_text = document.getElementById('texto_final')?.value || '';
-    const carouselSlides = (document.getElementById('carouselTextsInput')?.value || '')
+    const carouselEditor = document.getElementById('carouselTextsInput_editor');
+    const carouselContent = carouselEditor ? (carouselEditor.innerHTML || carouselEditor.textContent || '') : '';
+    const carouselSlides = carouselContent
         .split('---')
-        .map(s => s.trim().replace(/^\n+|\n+$/g, '')) // Remove \n do início e fim
+        .map(s => s.trim().replace(/^\n+|\n+$/g, '').replace(/<br>/g, '\n')) // Remove \n do início e fim e converte <br> para \n
         .filter(s => s.length > 0 && s !== '\n');
 
     let previewHTML = '';
@@ -626,4 +728,50 @@ function removeCurrentImage() {
     } else {
         removeInput.value = '1';
     }
+}
+
+// Funções para formatação de data brasileira
+function formatDateBrazilian(input) {
+    let value = input.value.replace(/\D/g, ''); // Remove tudo que não é dígito
+    
+    if (value.length >= 2) {
+        value = value.substring(0, 2) + '/' + value.substring(2);
+    }
+    if (value.length >= 5) {
+        value = value.substring(0, 5) + '/' + value.substring(5, 9);
+    }
+    
+    input.value = value;
+}
+
+function validateDateBrazilian(input) {
+    const value = input.value;
+    const dateRegex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+    
+    if (value && !dateRegex.test(value)) {
+        input.setCustomValidity('Por favor, insira uma data válida no formato dd/mm/aaaa');
+        input.classList.add('border-red-500');
+        return false;
+    }
+    
+    if (value) {
+        const match = value.match(dateRegex);
+        if (match) {
+            const day = parseInt(match[1]);
+            const month = parseInt(match[2]);
+            const year = parseInt(match[3]);
+            
+            // Validar se a data é válida
+            const date = new Date(year, month - 1, day);
+            if (date.getDate() !== day || date.getMonth() !== month - 1 || date.getFullYear() !== year) {
+                input.setCustomValidity('Data inválida');
+                input.classList.add('border-red-500');
+                return false;
+            }
+        }
+    }
+    
+    input.setCustomValidity('');
+    input.classList.remove('border-red-500');
+    return true;
 }

@@ -6,12 +6,12 @@
 <div class="container mx-auto px-4 py-6">
     <!-- Header -->
     <div class="flex items-center mb-6">
-        <a href="{{ route('files.index') }}" class="text-gray-600 hover:text-gray-800 mr-4">
+        <a href="{{ route('files.index') }}" class="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 mr-4">
             <i class="fas fa-arrow-left text-xl"></i>
         </a>
         <div class="flex-1">
-            <h1 class="text-3xl font-bold text-gray-900">{{ $file->original_name }}</h1>
-            <p class="text-gray-600 mt-1">Detalhes e opções de compartilhamento</p>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">{{ $file->original_name }}</h1>
+            <p class="text-gray-600 dark:text-gray-400 mt-1">Detalhes e opções de compartilhamento</p>
         </div>
         <div class="flex space-x-2">
             <a href="{{ route('files.download', $file) }}" 
@@ -36,8 +36,8 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- File Preview -->
         <div class="lg:col-span-2">
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <h2 class="text-xl font-semibold text-gray-900 mb-4">Visualização</h2>
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600 p-6">
+                <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Visualização</h2>
                 
                 <div class="text-center">
                     @if(str_starts_with($file->mime_type, 'image/'))
@@ -103,7 +103,7 @@
                     @elseif($file->mime_type === 'application/pdf')
                         <div class="p-8">
                             <i class="fas fa-file-pdf text-6xl text-red-500 mb-4"></i>
-                            <p class="text-gray-600 mb-4">Documento PDF</p>
+                            <p class="text-gray-600 dark:text-gray-300 mb-4">Documento PDF</p>
                             <a href="{{ $file->file_url }}" target="_blank" 
                                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition duration-200">
                                 <i class="fas fa-external-link-alt mr-2"></i>Abrir PDF
@@ -112,16 +112,16 @@
                     @else
                         <div class="p-8">
                             <i class="fas fa-file text-6xl text-gray-400 mb-4"></i>
-                            <p class="text-gray-600">Visualização não disponível para este tipo de arquivo</p>
+                            <p class="text-gray-600 dark:text-gray-300">Visualização não disponível para este tipo de arquivo</p>
                         </div>
                     @endif
                 </div>
             </div>
             
             <!-- Shared Links -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mt-6">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600 p-6 mt-6">
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-xl font-semibold text-gray-900">Links Compartilhados</h2>
+                    <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Links Compartilhados</h2>
                     <button onclick="shareFile()" 
                             class="flex items-center justify-center w-10 h-10 text-blue-500 hover:text-blue-600 transition-colors hover:bg-blue-50 rounded-lg" 
                             title="Criar novo link">
@@ -135,9 +135,9 @@
                     @if($sharedLinks->count() > 0)
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             @foreach($sharedLinks as $link)
-                                <div class="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
+                                <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
                                     <!-- Card Header -->
-                                    <div class="p-4 border-b border-gray-200">
+                                    <div class="p-4 border-b border-gray-200 dark:border-gray-600">
                                         <div class="flex items-center justify-between mb-2">
                                             <div class="flex items-center space-x-2">
                                                 <div class="w-8 h-8 rounded-full flex items-center justify-center text-white bg-blue-500">
@@ -146,20 +146,20 @@
                                                     </svg>
                                                 </div>
                                                 <div>
-                                                    <h3 class="text-sm font-semibold text-gray-900">Link Compartilhado</h3>
-                                                    <p class="text-xs text-gray-500">{{ $link->created_at->format('d/m/Y H:i') }}</p>
+                                                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Link Compartilhado</h3>
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ $link->created_at->format('d/m/Y H:i') }}</p>
                                                 </div>
                                             </div>
                                         </div>
                                         
                                         <!-- Status Badges -->
                                         <div class="flex flex-wrap gap-2">
-                                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {{ $link->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {{ $link->is_active ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200' : 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200' }}">
                                                 <div class="w-1.5 h-1.5 rounded-full mr-1 {{ $link->is_active ? 'bg-green-500' : 'bg-red-500' }}"></div>
                                                 {{ $link->is_active ? 'Ativo' : 'Inativo' }}
                                             </span>
                                             @if($link->expires_at)
-                                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {{ $link->isExpired() ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800' }}">
+                                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {{ $link->isExpired() ? 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200' : 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200' }}">
                                                     <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
                                                     </svg>
@@ -187,33 +187,33 @@
                                                 
                                                 @if($link->password_hash)
                                                     <div class="flex items-center mt-2">
-                                                        <svg class="w-4 h-4 mr-1 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                                        <svg class="w-4 h-4 mr-1 text-gray-400 dark:text-gray-500" fill="currentColor" viewBox="0 0 20 20">
                                                             <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
                                                         </svg>
-                                                        <span class="text-xs">Protegido por senha</span>
+                                                        <span class="text-xs dark:text-gray-400">Protegido por senha</span>
                                                     </div>
                                                 @endif
                                             </div>
                                             
                                             <!-- Link URL -->
-                                            <div class="text-xs text-gray-500 break-all bg-gray-50 p-2 rounded border">
+                                            <div class="text-xs text-gray-500 dark:text-gray-400 break-all bg-gray-50 dark:bg-gray-700 p-2 rounded border dark:border-gray-600">
                                                 {{ route('public.shared.show', $link->token) }}
                                             </div>
                                         </div>
                                     </div>
                                     
                                     <!-- Card Actions -->
-                                    <div class="flex items-center justify-center px-4 py-3 border-t border-gray-200">
+                                    <div class="flex items-center justify-center px-4 py-3 border-t border-gray-200 dark:border-gray-600">
                                         <div class="flex space-x-4">
                                             <button onclick="copyToClipboard('{{ route('public.shared.show', $link->token) }}', this)"
-                                    class="flex items-center justify-center w-10 h-10 text-blue-500 hover:text-blue-600 transition-colors hover:bg-blue-50 rounded-lg"
+                                    class="flex items-center justify-center w-10 h-10 text-blue-500 hover:text-blue-600 transition-colors hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg"
                                     title="Copiar Link">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
                                 </svg>
                             </button>
                                             <button onclick="viewAccessLogs('{{ $link->id }}')" 
-                                                    class="flex items-center justify-center w-10 h-10 text-gray-500 hover:text-gray-600 transition-colors hover:bg-gray-100 rounded-lg" 
+                                                    class="flex items-center justify-center w-10 h-10 text-gray-500 hover:text-gray-600 dark:text-gray-400 dark:hover:text-gray-300 transition-colors hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg" 
                                                     title="Ver Acessos">
                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
@@ -221,7 +221,7 @@
                                                 </svg>
                                             </button>
                                             <button onclick="deleteSharedLink('{{ $link->id }}')" 
-                                                    class="flex items-center justify-center w-10 h-10 text-red-500 hover:text-red-600 transition-colors hover:bg-red-50 rounded-lg" 
+                                                    class="flex items-center justify-center w-10 h-10 text-red-500 hover:text-red-600 transition-colors hover:bg-red-50 dark:hover:bg-red-900 rounded-lg" 
                                                     title="Excluir">
                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
@@ -234,13 +234,13 @@
                         </div>
                     @else
                         <div class="text-center py-12">
-                            <div class="bg-gray-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                            <div class="bg-gray-100 dark:bg-gray-700 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
                                 <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
                                 </svg>
                             </div>
-                            <h3 class="text-lg font-medium text-gray-600 mb-2">Nenhum link compartilhado</h3>
-                            <p class="text-gray-500 mb-4">Crie um link para compartilhar este arquivo</p>
+                            <h3 class="text-lg font-medium text-gray-600 dark:text-gray-300 mb-2">Nenhum link compartilhado</h3>
+                            <p class="text-gray-500 dark:text-gray-400 mb-4">Crie um link para compartilhar este arquivo</p>
                             <button onclick="shareFile()" 
                                     class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors">
                                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -257,18 +257,18 @@
         <!-- File Information -->
         <div class="space-y-6">
             <!-- Basic Info -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <h2 class="text-xl font-semibold text-gray-900 mb-4">Informações</h2>
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600 p-6">
+                <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Informações</h2>
                 
                 <div class="space-y-3">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Nome Original</label>
-                        <p class="text-gray-900 break-all">{{ $file->original_name }}</p>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nome Original</label>
+                        <p class="text-gray-900 dark:text-white break-all">{{ $file->original_name }}</p>
                     </div>
                     
                     @if($file->category)
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Categoria</label>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Categoria</label>
                             <span class="inline-block px-3 py-1 text-sm rounded-full mt-1" 
                                   style="background-color: {{ $file->category->color }}20; color: {{ $file->category->color }}">
                                 {{ $file->category->name }}
@@ -278,29 +278,29 @@
                     
                     @if($file->description)
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Descrição</label>
-                            <p class="text-gray-900">{{ $file->description }}</p>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Descrição</label>
+                            <p class="text-gray-900 dark:text-white">{{ $file->description }}</p>
                         </div>
                     @endif
                     
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Tamanho</label>
-                        <p class="text-gray-900">{{ $file->fileSizeFormatted }}</p>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Tamanho</label>
+                        <p class="text-gray-900 dark:text-white">{{ $file->fileSizeFormatted }}</p>
                     </div>
                     
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Tipo</label>
-                        <p class="text-gray-900">{{ $file->mime_type }}</p>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Tipo</label>
+                        <p class="text-gray-900 dark:text-white">{{ $file->mime_type }}</p>
                     </div>
                     
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Upload</label>
-                        <p class="text-gray-900">{{ $file->created_at->format('d/m/Y H:i') }}</p>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Upload</label>
+                        <p class="text-gray-900 dark:text-white">{{ $file->created_at->format('d/m/Y H:i') }}</p>
                     </div>
                     
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Última Modificação</label>
-                        <p class="text-gray-900">{{ $file->updated_at->format('d/m/Y H:i') }}</p>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Última Modificação</label>
+                        <p class="text-gray-900 dark:text-white">{{ $file->updated_at->format('d/m/Y H:i') }}</p>
                     </div>
                 </div>
             </div>
@@ -308,8 +308,8 @@
 
             
             <!-- Activity Log -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <h2 class="text-xl font-semibold text-gray-900 mb-4">Atividades Recentes</h2>
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600 p-6">
+                <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Atividades Recentes</h2>
                 
                 @if($activityLogs->count() > 0)
                     <div class="space-y-3">
@@ -334,14 +334,14 @@
                                     @endswitch
                                 </div>
                                 <div class="flex-1">
-                                    <p class="text-sm text-gray-900">{{ $log->description }}</p>
-                                    <p class="text-xs text-gray-500">{{ $log->created_at ? $log->created_at->format('d/m/Y H:i') : 'Data não disponível' }}</p>
+                                    <p class="text-sm text-gray-900 dark:text-white">{{ $log->description }}</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ $log->created_at ? $log->created_at->format('d/m/Y H:i') : 'Data não disponível' }}</p>
                                 </div>
                             </div>
                         @endforeach
                     </div>
                 @else
-                    <p class="text-gray-500 text-center py-4">Nenhuma atividade registrada</p>
+                    <p class="text-gray-500 dark:text-gray-400 text-center py-4">Nenhuma atividade registrada</p>
                 @endif
             </div>
         </div>
@@ -351,34 +351,34 @@
 <!-- Share Modal -->
 <div id="shareModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
     <div class="flex items-center justify-center min-h-screen p-4">
-        <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full">
             <div class="p-6">
-                <h3 class="text-lg font-semibold mb-4">Compartilhar Arquivo</h3>
+                <h3 class="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Compartilhar Arquivo</h3>
                 <form id="shareForm">
                     @csrf
                     <input type="hidden" name="file_id" value="{{ $file->id }}">
                     
                     <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Data de Expiração</label>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Data de Expiração</label>
                         <input type="datetime-local" id="expiresAt" name="expires_at" 
-                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                               class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
                     
                     <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Limite de Downloads</label>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Limite de Downloads</label>
                         <input type="number" id="downloadLimit" name="download_limit" min="1" 
-                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                               class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
                     
                     <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Senha (opcional)</label>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Senha (opcional)</label>
                         <input type="password" id="password" name="password" 
-                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                               class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
                     
                     <div class="flex justify-end space-x-3">
                         <button type="button" onclick="closeShareModal()" 
-                                class="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50">
+                                class="px-4 py-2 text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700">
                             Cancelar
                         </button>
                         <button type="submit" 
@@ -395,21 +395,21 @@
 <!-- Copy Link Modal -->
 <div id="copyLinkModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden" style="z-index: 10003;">
     <div class="flex items-center justify-center min-h-screen p-4">
-        <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-semibold">Copiar Link</h3>
-                    <button onclick="closeCopyLinkModal()" class="text-gray-400 hover:text-gray-600">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Copiar Link</h3>
+                    <button onclick="closeCopyLinkModal()" class="text-gray-400 hover:text-gray-600 dark:text-gray-300 dark:hover:text-gray-100">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
                     </button>
                 </div>
                 <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Link do arquivo:</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Link do arquivo:</label>
                     <div class="flex">
                         <input type="text" id="linkToCopy" readonly 
-                               class="flex-1 px-3 py-2 border border-gray-300 rounded-l-md bg-gray-50 text-sm">
+                               class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-l-md bg-gray-50 dark:bg-gray-700 dark:text-gray-300 text-sm">
                         <button onclick="copyToClipboard()" 
                                 class="px-4 py-2 bg-blue-600 text-white rounded-r-md hover:bg-blue-700 transition-colors">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -420,7 +420,7 @@
                 </div>
                 <div class="flex justify-end">
                     <button onclick="closeCopyLinkModal()" 
-                            class="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50">
+                            class="px-4 py-2 text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700">
                         Fechar
                     </button>
                 </div>
@@ -432,7 +432,7 @@
 <!-- Share Success Modal -->
 <div id="shareSuccessModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden" style="z-index: 10003;">
     <div class="flex items-center justify-center min-h-screen p-4">
-        <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full">
             <div class="p-6">
                 <div class="flex items-center mb-4">
                     <div class="flex-shrink-0">
@@ -441,14 +441,14 @@
                         </svg>
                     </div>
                     <div class="ml-3">
-                        <h3 class="text-lg font-semibold text-gray-900">Link Criado com Sucesso!</h3>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Link Criado com Sucesso!</h3>
                     </div>
                 </div>
                 <div class="mb-6">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Link compartilhado:</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Link compartilhado:</label>
                     <div class="flex">
                         <input type="text" id="shareSuccessUrl" readonly 
-                               class="flex-1 px-3 py-2 border border-gray-300 rounded-l-md bg-gray-50 text-sm">
+                               class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-l-md bg-gray-50 dark:bg-gray-700 dark:text-gray-300 text-sm">
                         <button onclick="copyShareSuccessUrl(this)" 
                                 class="px-4 py-2 bg-blue-600 text-white rounded-r-md hover:bg-blue-700 transition-colors">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -471,11 +471,11 @@
 <!-- Access Logs Modal -->
 <div id="accessLogsModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden" style="z-index: 10003;">
     <div class="flex items-center justify-center min-h-screen p-4">
-        <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-semibold">Logs de Acesso</h3>
-                    <button onclick="closeAccessLogsModal()" class="text-gray-400 hover:text-gray-600">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Logs de Acesso</h3>
+                    <button onclick="closeAccessLogsModal()" class="text-gray-400 hover:text-gray-600 dark:text-gray-300 dark:hover:text-gray-100">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
@@ -492,7 +492,7 @@
 <!-- Delete Shared Link Confirmation Modal -->
 <div id="deleteConfirmModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden" style="z-index: 10003;">
     <div class="flex items-center justify-center min-h-screen p-4">
-        <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full">
             <div class="p-6">
                 <div class="flex items-center mb-4">
                     <div class="flex-shrink-0">
@@ -501,15 +501,15 @@
                         </svg>
                     </div>
                     <div class="ml-3">
-                        <h3 class="text-lg font-semibold text-gray-900">Confirmar Exclusão</h3>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Confirmar Exclusão</h3>
                     </div>
                 </div>
                 <div class="mb-6">
-                    <p class="text-gray-600">Tem certeza que deseja excluir este link compartilhado? Esta ação não pode ser desfeita.</p>
+                    <p class="text-gray-600 dark:text-gray-300">Tem certeza que deseja excluir este link compartilhado? Esta ação não pode ser desfeita.</p>
                 </div>
                 <div class="flex justify-end space-x-3">
                     <button onclick="closeDeleteConfirmModal()" 
-                            class="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50">
+                            class="px-4 py-2 text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700">
                         Cancelar
                     </button>
                     <button onclick="confirmDelete()" 
@@ -525,7 +525,7 @@
 <!-- Delete File Confirmation Modal -->
 <div id="deleteFileModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden" style="z-index: 10003;">
     <div class="flex items-center justify-center min-h-screen p-4">
-        <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full">
             <div class="p-6">
                 <div class="flex items-center mb-4">
                     <div class="flex-shrink-0">
@@ -534,15 +534,15 @@
                         </svg>
                     </div>
                     <div class="ml-3">
-                        <h3 class="text-lg font-semibold text-gray-900">Confirmar Exclusão do Arquivo</h3>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Confirmar Exclusão do Arquivo</h3>
                     </div>
                 </div>
                 <div class="mb-6">
-                    <p class="text-gray-600">Tem certeza que deseja excluir este arquivo? Esta ação não pode ser desfeita e todos os links compartilhados serão invalidados.</p>
+                    <p class="text-gray-600 dark:text-gray-300">Tem certeza que deseja excluir este arquivo? Esta ação não pode ser desfeita e todos os links compartilhados serão invalidados.</p>
                 </div>
                 <div class="flex justify-end space-x-3">
                     <button onclick="closeDeleteFileModal()" 
-                            class="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50">
+                            class="px-4 py-2 text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700">
                         Cancelar
                     </button>
                     <button onclick="confirmDeleteFile()" 

@@ -695,6 +695,28 @@ class OrcamentoController extends Controller
     }
 
     /**
+     * Retornar orçamento ao status analisando via página pública (API)
+     */
+    public function analisarPublico($token)
+    {
+        $orcamento = Orcamento::where('token_publico', $token)->firstOrFail();
+
+        try {
+            $orcamento->atualizarStatus(Orcamento::STATUS_ANALISANDO, 'Orçamento retornado ao status analisando');
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Orçamento retornado ao status analisando com sucesso!'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao retornar orçamento ao status analisando: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
      * Página de gerenciamento de imagens do perfil
      */
     public function profileImages(Orcamento $orcamento)

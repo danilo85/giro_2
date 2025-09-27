@@ -23,7 +23,7 @@
         }
     </style>
 </head>
-<body class="h-full bg-gray-50 font-open-sans">
+<body class="h-full bg-gray-50 font-open-sans" x-data="{ confirmingApproval: false, confirmingRejection: false, showSuccessApproval: false, showSuccessRejection: false, showUndoConfirmation: false, showUndoSuccess: false, undoAction: '', currentStatus: '{{ $orcamento->status }}', hideButtons: false, approvalDate: '', rejectionDate: '' }">
 
     {{-- Estilos específicos para a impressão --}}
     <style>
@@ -139,25 +139,78 @@
                 </div>
             
 
-                <div class="bg-white p-6 mt-10 no-print" x-data="{ confirmingApproval: false, confirmingRejection: false }">
-                     @if(strtolower($orcamento->status) === 'analisando')
-                        <div class="text-center">
-                            <h3 class="text-lg font-semibold text-gray-800">Ações</h3>
-                            <p class="text-gray-600 mt-1 mb-4">O que você gostaria de fazer em relação a esta proposta?</p>
-                            <div class="flex flex-col sm:flex-row justify-center flex-wrap gap-4 no-print">
-                                <button @click="confirmingApproval = true" class="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-md transition-colors">Aprovar Proposta</button>
-                                <button @click="confirmingRejection = true" class="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-md transition-colors">Rejeitar</button>
-                                <button onclick="window.print()" class="w-full sm:w-auto bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-md transition-colors">Imprimir / Salvar PDF</button>
+                <div class="bg-white p-6 mt-10 no-print">
+                    {{-- Botões de ação --}}
+                    <div x-show="currentStatus === 'analisando'" class="text-center">
+                        <h3 class="text-lg font-semibold text-gray-800">Ações</h3>
+                        <p class="text-gray-600 mt-1 mb-4">O que você gostaria de fazer em relação a esta proposta?</p>
+                        <div class="flex flex-col sm:flex-row justify-center flex-wrap gap-4 no-print">
+                            <button @click="confirmingApproval = true" class="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-md transition-colors">Aprovar Proposta</button>
+                            <button @click="confirmingRejection = true" class="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-md transition-colors">Rejeitar</button>
+                            <button onclick="window.print()" class="w-full sm:w-auto bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-md transition-colors">Imprimir / Salvar PDF</button>
+                        </div>
+                    </div>
+
+                    {{-- Mensagem de status aprovado --}}
+                    <div x-show="currentStatus === 'aprovado'" class="text-center">
+                        <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+                            <div class="flex items-center justify-center">
+                                <svg class="w-5 h-5 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <p class="text-green-800 font-medium" x-text="'Este orçamento foi aprovado em ' + approvalDate"></p>
                             </div>
                         </div>
-                    @else
-                        <div class="text-center">
-                            <p class="text-lg font-semibold italic text-gray-600">Este orçamento foi {{ strtolower($orcamento->status) }}{{ $orcamento->updated_at ? ' em ' . $orcamento->updated_at->format('d/m/Y') : '' }}.</p>
-                             <div class="flex justify-center flex-wrap gap-4 mt-4 no-print">
-                                <button onclick="window.print()" class="w-full sm:w-auto bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-md transition-colors">Imprimir / Salvar PDF</button>
+                        
+                        <!-- Botões de Imprimir e Salvar PDF -->
+                        <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
+                            <button onclick="window.print()" class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                                </svg>
+                                Imprimir
+                            </button>
+                            <button onclick="salvarPDF()" class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors duration-200">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                                Salvar PDF
+                            </button>
+                        </div>
+                    </div>
+
+                    {{-- Mensagem de status rejeitado --}}
+                    <div x-show="currentStatus === 'rejeitado'" class="text-center">
+                        <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+                            <div class="flex items-center justify-center">
+                                <svg class="w-5 h-5 text-red-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                                <p class="text-red-800 font-medium" x-text="'Este orçamento foi rejeitado em ' + rejectionDate"></p>
                             </div>
                         </div>
-                    @endif
+                        <div class="flex justify-center flex-wrap gap-4 no-print">
+                            <button onclick="window.print()" class="w-full sm:w-auto bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-md transition-colors">Imprimir / Salvar PDF</button>
+                        </div>
+                    </div>
+
+                    <!-- Modal de Sucesso - Ação Desfeita -->
+                    <div x-show="showUndoSuccess" class="fixed inset-0 z-[10003] flex items-center justify-center bg-black bg-opacity-50 no-print" style="display: none;">
+                        <div @click.away="showUndoSuccess = false" class="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-sm mx-auto text-center shadow-xl transform transition-all">
+                            <div class="mb-4">
+                                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 dark:bg-green-900">
+                                    <svg class="h-6 w-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Ação Desfeita</h3>
+                            <p class="text-gray-600 dark:text-gray-300 mb-6">A ação foi desfeita com sucesso!</p>
+                            <button @click="showUndoSuccess = false" class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200">
+                                OK
+                            </button>
+                        </div>
+                    </div>
 
                     <!-- Modal de Rejeição -->
                     <div x-show="confirmingRejection" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 no-print" style="display: none;">
@@ -173,12 +226,83 @@
                     
                     <!-- Modal de Aprovação -->
                     <div x-show="confirmingApproval" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 no-print" style="display: none;">
-                        <div @click.away="confirmingApproval = false" class="bg-white rounded-lg p-6 max-w-sm mx-auto text-center">
-                            <h3 class="text-lg font-bold">Confirmar Aprovação</h3>
-                            <p class="mt-2 text-sm text-gray-600">Tem certeza que deseja aprovar este orçamento?</p>
+                        <div @click.away="confirmingApproval = false" class="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-sm mx-auto text-center">
+                            <h3 class="text-lg font-bold dark:text-white">Confirmar Aprovação</h3>
+                            <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Tem certeza que deseja aprovar este orçamento?</p>
                             <div class="mt-4 flex justify-center gap-4">
-                                <button @click="confirmingApproval = false" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">Cancelar</button>
-                                <button onclick="aprovarOrcamento()" @click="confirmingApproval = false" class="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-md hover:bg-green-700">Sim, Aprovar</button>
+                                <button @click="confirmingApproval = false" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 dark:bg-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">Cancelar</button>
+                                <button onclick="aprovarOrcamento()" @click="confirmingApproval = false" class="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-md hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800">Sim, Aprovar</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal de Sucesso - Aprovação -->
+                    <div x-show="showSuccessApproval" x-data="{ countdown: 8 }" x-init="$watch('showSuccessApproval', value => { if(value) { countdown = 8; let timer = setInterval(() => { countdown--; if(countdown <= 0) { clearInterval(timer); showSuccessApproval = false; hideButtons = true; currentStatus = 'aprovado'; } }, 1000); } })" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 no-print" style="z-index: 10003; display: none;">
+                        <div @click.away="showSuccessApproval = false" class="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md mx-auto text-center border dark:border-gray-600">
+                            <div class="flex justify-center mb-4">
+                                <div class="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <h3 class="text-lg font-bold text-green-600 dark:text-green-400 mb-2">Orçamento Aprovado!</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">O orçamento foi aprovado com sucesso.</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">Este modal fechará automaticamente em <span x-text="countdown"></span> segundos</p>
+                            <div class="flex justify-center gap-3">
+                                <button @click="undoAction = 'approval'; showUndoConfirmation = true" class="px-4 py-2 text-sm font-medium text-orange-700 bg-orange-100 rounded-md hover:bg-orange-200 dark:bg-orange-900 dark:text-orange-300 dark:hover:bg-orange-800 border border-orange-300 dark:border-orange-700">
+                                    <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
+                                    </svg>
+                                    Desfazer
+                                </button>
+                                <button @click="showSuccessApproval = false; currentStatus = 'aprovado'; approvalDate = formatarData(new Date())" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 dark:bg-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">Fechar</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal de Sucesso - Rejeição -->
+                    <div x-show="showSuccessRejection" x-data="{ countdown: 8 }" x-init="$watch('showSuccessRejection', value => { if(value) { countdown = 8; let timer = setInterval(() => { countdown--; if(countdown <= 0) { clearInterval(timer); showSuccessRejection = false; hideButtons = true; currentStatus = 'rejeitado'; } }, 1000); } })" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 no-print" style="z-index: 10003; display: none;">
+                        <div @click.away="showSuccessRejection = false" class="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md mx-auto text-center border dark:border-gray-600">
+                            <div class="flex justify-center mb-4">
+                                <div class="w-12 h-12 bg-red-100 dark:bg-red-900 rounded-full flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <h3 class="text-lg font-bold text-red-600 dark:text-red-400 mb-2">Orçamento Rejeitado!</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">O orçamento foi rejeitado com sucesso.</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">Este modal fechará automaticamente em <span x-text="countdown"></span> segundos</p>
+                            <div class="flex justify-center gap-3">
+                                <button @click="undoAction = 'rejection'; showUndoConfirmation = true" class="px-4 py-2 text-sm font-medium text-orange-700 bg-orange-100 rounded-md hover:bg-orange-200 dark:bg-orange-900 dark:text-orange-300 dark:hover:bg-orange-800 border border-orange-300 dark:border-orange-700">
+                                    <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
+                                    </svg>
+                                    Desfazer
+                                </button>
+                                <button @click="showSuccessRejection = false; currentStatus = 'rejeitado'; rejectionDate = formatarData(new Date())" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 dark:bg-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">Fechar</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal de Confirmação de Desfazer -->
+                    <div x-show="showUndoConfirmation" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 no-print" style="z-index: 10004; display: none;">
+                        <div @click.away="showUndoConfirmation = false" class="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md mx-auto text-center border dark:border-gray-600">
+                            <div class="flex justify-center mb-4">
+                                <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900 rounded-full flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-2">Confirmar Ação</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-300 mb-4" x-text="undoAction === 'approval' ? 'Tem certeza que deseja desfazer a aprovação?' : 'Tem certeza que deseja desfazer a rejeição?'"></p>
+                            <div class="flex justify-center gap-3">
+                                <button @click="executeUndo()" class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700">
+                                    Sim, Desfazer
+                                </button>
+                                <button @click="showUndoConfirmation = false" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 dark:bg-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">Cancelar</button>
                             </div>
                         </div>
                     </div>
@@ -321,6 +445,8 @@
 </div>
 
 <script>
+    let originalStatus = '{{ $orcamento->status }}';
+    
     function aprovarOrcamento() {
         fetch('{{ route("public.orcamentos.public.aprovar", $orcamento->token_publico) }}', {
             method: 'PATCH',
@@ -332,8 +458,9 @@
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert('Orçamento aprovado com sucesso!');
-                location.reload();
+                const alpineData = document.body._x_dataStack[0];
+                alpineData.showSuccessApproval = true;
+                alpineData.confirmingApproval = false;
             } else {
                 alert('Erro ao aprovar orçamento: ' + (data.message || 'Erro desconhecido'));
             }
@@ -355,8 +482,9 @@
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert('Orçamento rejeitado com sucesso!');
-                location.reload();
+                const alpineData = document.body._x_dataStack[0];
+                alpineData.showSuccessRejection = true;
+                alpineData.confirmingRejection = false;
             } else {
                 alert('Erro ao rejeitar orçamento: ' + (data.message || 'Erro desconhecido'));
             }
@@ -366,7 +494,107 @@
             alert('Erro ao rejeitar orçamento');
         });
     }
-
+    
+    function executeUndo() {
+        const alpineData = document.body._x_dataStack[0];
+        
+        // Sempre retornar ao status analisando
+        fetch('{{ route("public.orcamentos.public.analisar", $orcamento->token_publico) }}', {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alpineData.showUndoConfirmation = false;
+                alpineData.showSuccessApproval = false;
+                alpineData.showSuccessRejection = false;
+                alpineData.currentStatus = 'analisando';
+                alpineData.approvalDate = '';
+                alpineData.rejectionDate = '';
+                
+                // Mostrar modal de sucesso
+                alpineData.showUndoSuccess = true;
+                
+                // Auto-fechar o modal após 3 segundos
+                setTimeout(() => {
+                    alpineData.showUndoSuccess = false;
+                }, 3000);
+            } else {
+                alert('Erro ao desfazer ação: ' + (data.message || 'Erro desconhecido'));
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            alert('Erro ao desfazer ação');
+        });
+    }
+    
+    function salvarPDF() {
+        // Função para salvar como PDF usando a funcionalidade de impressão do navegador
+        window.print();
+    }
+    
+    function formatarData(data) {
+        if (!data) return '';
+        const date = new Date(data);
+        return date.toLocaleDateString('pt-BR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
+    }
+    
+    function desfazerAprovacao() {
+        if (confirm('Tem certeza que deseja desfazer a aprovação?')) {
+            fetch('{{ route("public.orcamentos.public.rejeitar", $orcamento->token_publico) }}', {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('Erro ao desfazer aprovação: ' + (data.message || 'Erro desconhecido'));
+                }
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                alert('Erro ao desfazer aprovação');
+            });
+        }
+    }
+    
+    function desfazerRejeicao() {
+        if (confirm('Tem certeza que deseja desfazer a rejeição?')) {
+            fetch('{{ route("public.orcamentos.public.aprovar", $orcamento->token_publico) }}', {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('Erro ao desfazer rejeição: ' + (data.message || 'Erro desconhecido'));
+                }
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                alert('Erro ao desfazer rejeição');
+            });
+        }
+    }
 
 </script>
 </body>

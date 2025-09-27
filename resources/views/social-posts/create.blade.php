@@ -118,14 +118,30 @@
                                             <path d="M12.5 3a1 1 0 0 0 0 2h1.382l-4 12H8.5a1 1 0 0 0 0 2h4a1 1 0 0 0 0-2H10.618l4-12H16.5a1 1 0 0 0 0-2h-4Z"/>
                                         </svg>
                                     </button>
-
+                                    <button type="button" class="p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600" onclick="formatText('underline')">
+                                        <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M3 18h14a1 1 0 0 0 0-2H3a1 1 0 0 0 0 2ZM5 4h10a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z"/>
+                                        </svg>
+                                    </button>
+                                    <button type="button" class="p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600" onclick="formatText('strikeThrough')">
+                                        <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M3 10h14a1 1 0 0 0 0-2H3a1 1 0 0 0 0 2ZM5 6h10a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1Z"/>
+                                        </svg>
+                                    </button>
+                                    <button type="button" class="p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600" onclick="formatText('subscript')">
+                                        <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M12 3a1 1 0 0 0 0 2h1.382l-4 12H8a1 1 0 0 0 0 2h4a1 1 0 0 0 0-2h-1.382l4-12H16a1 1 0 0 0 0-2h-4Zm4 14h2v1h-2v-1Z"/>
+                                        </svg>
+                                    </button>
                                 </div>
                             </div>
-                            <textarea id="legenda" 
-                                      name="legenda" 
-                                      rows="6" 
-                                      class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 @error('legenda') border-red-500 dark:border-red-500 @enderror" 
-                                      placeholder="Escreva o conteúdo do seu post...">{{ old('legenda') }}</textarea>
+                            <div id="legenda_editor" 
+                                 contenteditable="true"
+                                 class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 @error('legenda') border-red-500 dark:border-red-500 @enderror" 
+                                 style="min-height: 150px; max-height: 300px; overflow-y: auto;"
+                                 data-placeholder="Escreva o conteúdo do seu post..."
+                                 oninput="syncEditorContent('legenda_editor', 'legenda')">{{ old('legenda') }}</div>
+                            <input type="hidden" id="legenda" name="legenda" value="{{ old('legenda') }}">
                             <div class="flex justify-between items-center mt-2">
                                 <p class="text-xs text-gray-500 dark:text-gray-400">Máximo 2200 caracteres</p>
                                 <span id="contentCounter" class="text-xs text-gray-500 dark:text-gray-400">0/2200</span>
@@ -211,6 +227,18 @@
                                             <path d="M3 18h14a1 1 0 0 0 0-2H3a1 1 0 0 0 0 2ZM5 4h10a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z"/>
                                         </svg>
                                     </button>
+                                    <button type="button" class="p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600" 
+                                            onclick="formatCarouselText('strikeThrough')">
+                                        <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M3 10h14a1 1 0 0 0 0-2H3a1 1 0 0 0 0 2ZM5 6h10a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1Z"/>
+                                        </svg>
+                                    </button>
+                                    <button type="button" class="p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600" 
+                                            onclick="formatCarouselText('subscript')">
+                                        <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M12 3a1 1 0 0 0 0 2h1.382l-4 12H8a1 1 0 0 0 0 2h4a1 1 0 0 0 0-2h-1.382l4-12H16a1 1 0 0 0 0-2h-4Zm4 14h2v1h-2v-1Z"/>
+                                        </svg>
+                                    </button>
                                     <div class="h-4 w-px bg-gray-300 dark:bg-gray-600"></div>
                                     <button type="button" class="p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600" 
                                             onclick="insertCarouselDivider()" title="Inserir divisor de slide">
@@ -218,15 +246,15 @@
                                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12l4-4m-4 4 4 4"/>
                                         </svg>
                                     </button>
-
                                 </div>
                             </div>
-                            <textarea id="carouselTextsInput" 
-                                      name="carousel_texts_combined" 
-                                      class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
-                                      rows="8" 
-                                      placeholder="Digite os textos do carrossel. Use '---' para separar cada slide.&#10;&#10;Exemplo:&#10;Primeiro texto do slide&#10;---&#10;Segundo texto do slide&#10;---&#10;Terceiro texto do slide"
-                                      oninput="updateCarouselPreview()"></textarea>
+                            <div id="carouselTextsInput_editor" 
+                                 contenteditable="true"
+                                 class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                 style="min-height: 200px; max-height: 400px; overflow-y: auto;"
+                                 data-placeholder="Digite os textos do carrossel. Use '---' para separar cada slide."
+                                 oninput="syncEditorContent('carouselTextsInput_editor', 'carousel_texts_combined'); updateCarouselPreview();"></div>
+                            <input type="hidden" id="carousel_texts_combined" name="carousel_texts_combined" value="{{ old('carousel_texts_combined') }}">
                             <div class="mt-2 flex justify-between items-center">
                                 <span id="carouselCounter" class="text-sm text-gray-600">0 slides</span>
                                 <span class="text-xs text-gray-500">Use '---' para separar os slides</span>
@@ -282,15 +310,30 @@
                                             <path d="M12.5 3a1 1 0 0 0 0 2h1.382l-4 12H8.5a1 1 0 0 0 0 2h4a1 1 0 0 0 0-2H10.618l4-12H16.5a1 1 0 0 0 0-2h-4Z"/>
                                         </svg>
                                     </button>
-
-
+                                    <button type="button" class="p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600" onclick="formatTextFinal('underline')">
+                                        <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M3 18h14a1 1 0 0 0 0-2H3a1 1 0 0 0 0 2ZM5 4h10a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z"/>
+                                        </svg>
+                                    </button>
+                                    <button type="button" class="p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600" onclick="formatTextFinal('strikeThrough')">
+                                        <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M3 10h14a1 1 0 0 0 0-2H3a1 1 0 0 0 0 2ZM5 6h10a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1Z"/>
+                                        </svg>
+                                    </button>
+                                    <button type="button" class="p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600" onclick="formatTextFinal('subscript')">
+                                        <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M12 3a1 1 0 0 0 0 2h1.382l-4 12H8a1 1 0 0 0 0 2h4a1 1 0 0 0 0-2h-1.382l4-12H16a1 1 0 0 0 0-2h-4Zm4 14h2v1h-2v-1Z"/>
+                                        </svg>
+                                    </button>
                                 </div>
                             </div>
-                            <textarea id="texto_final" 
-                                      name="texto_final" 
-                                      rows="4" 
-                                      class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 @error('texto_final') border-red-500 dark:border-red-500 @enderror" 
-                                      placeholder="Digite o call-to-action...">{{ old('texto_final') }}</textarea>
+                            <div id="texto_final_editor" 
+                                 contenteditable="true"
+                                 class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 @error('texto_final') border-red-500 dark:border-red-500 @enderror" 
+                                 style="min-height: 100px; max-height: 200px; overflow-y: auto;"
+                                 data-placeholder="Digite o call-to-action..."
+                                 oninput="syncEditorContent('texto_final_editor', 'texto_final')">{{ old('texto_final') }}</div>
+                            <input type="hidden" id="texto_final" name="texto_final" value="{{ old('texto_final') }}">
                             @error('texto_final')
                                 <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ $message }}</p>
                             @enderror

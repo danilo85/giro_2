@@ -525,6 +525,7 @@ Route::prefix('public')->name('public.')->group(function () {
     Route::get('/orcamento/{token}', [OrcamentoController::class, 'showPublic'])->name('orcamentos.public');
     Route::patch('/orcamento/{token}/aprovar', [OrcamentoController::class, 'aprovarPublico'])->name('orcamentos.public.aprovar');
     Route::patch('/orcamento/{token}/rejeitar', [OrcamentoController::class, 'rejeitarPublico'])->name('orcamentos.public.rejeitar');
+    Route::patch('/orcamento/{token}/analisar', [OrcamentoController::class, 'analisarPublico'])->name('orcamentos.public.analisar');
     
     // Rotas públicas para recibos
     Route::get('/recibo/{token}', [PagamentoController::class, 'showReciboPublico'])->name('recibos.public');

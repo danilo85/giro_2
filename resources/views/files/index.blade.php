@@ -326,40 +326,40 @@
 </div>
 
 <!-- Share Modal -->
-<div id="shareModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
+<div id="shareModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 dark:bg-gray-900 dark:bg-opacity-75 hidden z-50">
     <div class="flex items-center justify-center min-h-screen p-4">
-        <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full">
             <div class="p-6">
-                <h3 class="text-lg font-semibold mb-4">Compartilhar Arquivo</h3>
+                <h3 class="text-lg font-semibold mb-4 dark:text-white">Compartilhar Arquivo</h3>
                 <form id="shareForm" method="POST" class="space-y-4 no-loading">
                     @csrf
                     <input type="hidden" id="shareFileId" name="file_id">
                     
                     <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Data de Expiração</label>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Data de Expiração</label>
                         <input type="datetime-local" id="expiresAt" name="expires_at" 
-                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                               class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
                     
                     <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Limite de Downloads</label>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Limite de Downloads</label>
                         <input type="number" id="downloadLimit" name="download_limit" min="1" 
-                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                               class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
                     
                     <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Senha (opcional)</label>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Senha (opcional)</label>
                         <input type="password" id="password" name="password" 
-                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                               class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
                     
                     <div class="flex justify-end space-x-3">
                         <button type="button" onclick="closeShareModal()" 
-                                class="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50">
+                                class="px-4 py-2 text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700">
                             Cancelar
                         </button>
                         <button type="submit" 
-                                class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                                class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800">
                             Criar Link
                         </button>
                     </div>
@@ -370,20 +370,20 @@
 </div>
 
 <!-- Share Link Result Modal -->
-<div id="shareLinkModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden" style="z-index: 10003;">
+<div id="shareLinkModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 dark:bg-gray-900 dark:bg-opacity-75 hidden" style="z-index: 10003;">
     <div class="flex items-center justify-center min-h-screen p-4">
-        <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full">
             <div class="p-6">
-                <h3 class="text-lg font-semibold mb-4 text-green-600">Link Compartilhado Criado</h3>
-                <p class="text-gray-700 mb-4">Seu link de compartilhamento foi criado com sucesso!</p>
+                <h3 class="text-lg font-semibold mb-4 text-green-600 dark:text-green-400">Link Compartilhado Criado</h3>
+                <p class="text-gray-700 dark:text-gray-300 mb-4">Seu link de compartilhamento foi criado com sucesso!</p>
                 
                 <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Link de Compartilhamento:</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Link de Compartilhamento:</label>
                     <div class="flex">
                         <input type="text" id="shareUrlInput" readonly 
-                               class="flex-1 px-3 py-2 border border-gray-300 rounded-l-md bg-gray-50 text-sm">
+                               class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-l-md bg-gray-50 dark:bg-gray-700 dark:text-white text-sm">
                         <button type="button" onclick="copyShareUrl(this)" 
-                                class="px-4 py-2 bg-blue-600 text-white rounded-r-md hover:bg-blue-700 text-sm">
+                                class="px-4 py-2 bg-blue-600 text-white rounded-r-md hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 text-sm">
                             Copiar
                         </button>
                     </div>
@@ -391,7 +391,7 @@
                 
                 <div class="flex justify-end space-x-3">
                     <button type="button" onclick="closeShareLinkModal()" 
-                            class="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50">
+                            class="px-4 py-2 text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700">
                         Fechar
                     </button>
                 </div>
@@ -401,20 +401,20 @@
 </div>
 
 <!-- Delete Confirmation Modal -->
-<div id="deleteModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden" style="z-index: 10003;">
+<div id="deleteModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 dark:bg-gray-900 dark:bg-opacity-75 hidden" style="z-index: 10003;">
     <div class="flex items-center justify-center min-h-screen p-4">
-        <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full">
             <div class="p-6">
-                <h3 class="text-lg font-semibold mb-4 text-red-600">Confirmar Exclusão</h3>
-                <p class="text-gray-700 mb-6">Tem certeza que deseja excluir este arquivo? Esta ação não pode ser desfeita.</p>
+                <h3 class="text-lg font-semibold mb-4 text-red-600 dark:text-red-400">Confirmar Exclusão</h3>
+                <p class="text-gray-700 dark:text-gray-300 mb-6">Tem certeza que deseja excluir este arquivo? Esta ação não pode ser desfeita.</p>
                 
                 <div class="flex justify-end space-x-3">
                     <button type="button" onclick="closeDeleteModal()" 
-                            class="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50">
+                            class="px-4 py-2 text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700">
                         Cancelar
                     </button>
                     <button type="button" onclick="confirmDelete()" 
-                            class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
+                            class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800">
                         Confirmar Exclusão
                     </button>
                 </div>

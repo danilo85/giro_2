@@ -1,20 +1,20 @@
 {
   "resources/css/app.css": {
-    "file": "assets/app-CF37roAQ.css",
+    "file": "assets/app-DtK6v6b9.css",
     "src": "resources/css/app.css",
     "isEntry": true
   },
   "resources/js/app.js": {
-    "file": "assets/app-BqG2_Zbs.js",
+    "file": "assets/app-BlX2sbC6.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
     "css": [
-      "assets/app-CF37roAQ.css"
+      "assets/app-DtK6v6b9.css"
     ]
   },
   "resources/js/social-post-form.js": {
-    "file": "assets/social-post-form-DFQtc8B3.js",
+    "file": "assets/social-post-form-VVRTzJFB.js",
     "name": "social-post-form",
     "src": "resources/js/social-post-form.js",
     "isEntry": true

@@ -499,239 +499,229 @@
                      <!-- Portfolio Section -->
                      <div class="mt-8" x-data="{ open: JSON.parse(localStorage.getItem('sidebar_portfolio') || 'true') }" 
                           x-init="$watch('open', value => localStorage.setItem('sidebar_portfolio', JSON.stringify(value)))">
-                         <button @click="open = !open" 
-                                 class="w-full flex items-center justify-between px-3 py-3 text-left text-sm font-bold text-purple-700 dark:text-purple-300 uppercase tracking-wider hover:text-purple-900 dark:hover:text-purple-100 transition-colors bg-gray-50 dark:bg-gray-800 rounded-md"
-                                 x-show="!$store.sidebar.collapsed || $store.sidebar.isMobile"
-                                 x-transition:enter="transition ease-in-out duration-150"
-                                 x-transition:enter-start="opacity-0 transform scale-95"
-                                 x-transition:enter-end="opacity-100 transform scale-100"
-                                 x-transition:leave="transition ease-in-out duration-150"
-                                 x-transition:leave-start="opacity-100 transform scale-100"
-                                 x-transition:leave-end="opacity-0 transform scale-95">
-                             <span class="flex items-center">
-                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-                                 </svg>
-                                 Portfólio
-                             </span>
-                             <svg class="w-4 h-4 transform transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                             </svg>
-                         </button>
-                         
-                         <div class="mt-2 space-y-1" :class="{ 'mt-0': $store.sidebar.collapsed }" 
-                              x-show="open" 
-                              x-transition:enter="transition ease-out duration-200"
-                              x-transition:enter-start="opacity-0 transform scale-95"
-                              x-transition:enter-end="opacity-100 transform scale-100"
-                              x-transition:leave="transition ease-in duration-150"
-                              x-transition:leave-start="opacity-100 transform scale-100"
-                              x-transition:leave-end="opacity-0 transform scale-95">
-                             <!-- Dashboard -->
+                         <!-- Collapsed state: show individual icons -->
+                         <div x-show="$store.sidebar.collapsed && !$store.sidebar.isMobile" class="space-y-2">
                              <a href="<?php echo e(route('portfolio.dashboard')); ?>" 
-                                class="<?php echo e(request()->routeIs('portfolio.dashboard') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'); ?> group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
-                                :class="{ 'justify-center': $store.sidebar.collapsed }">
+                                class="<?php echo e(request()->routeIs('portfolio.dashboard') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'); ?> group flex items-center justify-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
+                                title="Dashboard">
                                  <svg class="<?php echo e(request()->routeIs('portfolio.dashboard') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300'); ?> flex-shrink-0 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                                  </svg>
-                                 <span x-show="!$store.sidebar.collapsed || $store.sidebar.isMobile" 
-                                       x-transition:enter="transition ease-in-out duration-150"
-                                       x-transition:enter-start="opacity-0 transform scale-95"
-                                       x-transition:enter-end="opacity-100 transform scale-100"
-                                       x-transition:leave="transition ease-in-out duration-150"
-                                       x-transition:leave-start="opacity-100 transform scale-100"
-                                       x-transition:leave-end="opacity-0 transform scale-95"
-                                       class="ml-3">Dashboard</span>
                              </a>
-
                              <a href="<?php echo e(route('portfolio.pipeline')); ?>" 
-                                class="<?php echo e(request()->routeIs('portfolio.pipeline') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'); ?> group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
-                                :class="{ 'justify-center': $store.sidebar.collapsed }">
+                                class="<?php echo e(request()->routeIs('portfolio.pipeline') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'); ?> group flex items-center justify-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
+                                title="Pipeline">
                                  <svg class="<?php echo e(request()->routeIs('portfolio.pipeline') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300'); ?> flex-shrink-0 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
                                  </svg>
-                                 <span x-show="!$store.sidebar.collapsed || $store.sidebar.isMobile" 
-                                       x-transition:enter="transition ease-in-out duration-150"
-                                       x-transition:enter-start="opacity-0 transform scale-95"
-                                       x-transition:enter-end="opacity-100 transform scale-100"
-                                       x-transition:leave="transition ease-in-out duration-150"
-                                       x-transition:leave-start="opacity-100 transform scale-100"
-                                       x-transition:leave-end="opacity-0 transform scale-95"
-                                       class="ml-3">Pipeline</span>
                              </a>
-
                              <a href="<?php echo e(route('portfolio.categories.index')); ?>" 
-                                class="<?php echo e(request()->routeIs('portfolio.categories.*') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'); ?> group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
-                                :class="{ 'justify-center': $store.sidebar.collapsed }">
+                                class="<?php echo e(request()->routeIs('portfolio.categories.*') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'); ?> group flex items-center justify-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
+                                title="Categorias">
                                  <svg class="<?php echo e(request()->routeIs('portfolio.categories.*') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300'); ?> flex-shrink-0 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
                                  </svg>
-                                 <span x-show="!$store.sidebar.collapsed || $store.sidebar.isMobile" 
-                                       x-transition:enter="transition ease-in-out duration-150"
-                                       x-transition:enter-start="opacity-0 transform scale-95"
-                                       x-transition:enter-end="opacity-100 transform scale-100"
-                                       x-transition:leave="transition ease-in-out duration-150"
-                                       x-transition:leave-start="opacity-100 transform scale-100"
-                                       x-transition:leave-end="opacity-0 transform scale-95"
-                                       class="ml-3">Categorias</span>
                              </a>
-
                              <a href="<?php echo e(route('portfolio.works.index')); ?>" 
-                                class="<?php echo e(request()->routeIs('portfolio.works.*') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'); ?> group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
-                                :class="{ 'justify-center': $store.sidebar.collapsed }">
+                                class="<?php echo e(request()->routeIs('portfolio.works.*') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'); ?> group flex items-center justify-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
+                                title="Trabalhos">
                                  <svg class="<?php echo e(request()->routeIs('portfolio.works.*') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300'); ?> flex-shrink-0 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
                                  </svg>
-                                 <span x-show="!$store.sidebar.collapsed || $store.sidebar.isMobile" 
-                                       x-transition:enter="transition ease-in-out duration-150"
-                                       x-transition:enter-start="opacity-0 transform scale-95"
-                                       x-transition:enter-end="opacity-100 transform scale-100"
-                                       x-transition:leave="transition ease-in-out duration-150"
-                                       x-transition:leave-start="opacity-100 transform scale-100"
-                                       x-transition:leave-end="opacity-0 transform scale-95"
-                                       class="ml-3">Trabalhos</span>
                              </a>
+                         </div>
+                         
+                         <!-- Expanded state: show normal module structure -->
+                         <div x-show="!$store.sidebar.collapsed || $store.sidebar.isMobile">
+                             <button @click="open = !open" 
+                                     class="w-full flex items-center justify-between px-3 py-3 text-left text-sm font-bold text-purple-700 dark:text-purple-300 uppercase tracking-wider hover:text-purple-900 dark:hover:text-purple-100 transition-colors bg-gray-50 dark:bg-gray-800 rounded-md"
+                                     x-transition:enter="transition ease-in-out duration-150"
+                                     x-transition:enter-start="opacity-0 transform scale-95"
+                                     x-transition:enter-end="opacity-100 transform scale-100"
+                                     x-transition:leave="transition ease-in-out duration-150"
+                                     x-transition:leave-start="opacity-100 transform scale-100"
+                                     x-transition:leave-end="opacity-0 transform scale-95">
+                                 <span class="flex items-center">
+                                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                                     </svg>
+                                     Portfólio
+                                 </span>
+                                 <svg class="w-4 h-4 transform transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                 </svg>
+                             </button>
+                             
+                             <div class="mt-2 space-y-1" 
+                                  x-show="open" 
+                                  x-transition:enter="transition ease-out duration-200"
+                                  x-transition:enter-start="opacity-0 transform scale-95"
+                                  x-transition:enter-end="opacity-100 transform scale-100"
+                                  x-transition:leave="transition ease-in duration-150"
+                                  x-transition:leave-start="opacity-100 transform scale-100"
+                                  x-transition:leave-end="opacity-0 transform scale-95">
+                                 <a href="<?php echo e(route('portfolio.dashboard')); ?>" 
+                                    class="<?php echo e(request()->routeIs('portfolio.dashboard') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'); ?> group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors">
+                                     <svg class="<?php echo e(request()->routeIs('portfolio.dashboard') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300'); ?> flex-shrink-0 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                     </svg>
+                                     <span class="ml-3">Dashboard</span>
+                                 </a>
+                                 <a href="<?php echo e(route('portfolio.pipeline')); ?>" 
+                                    class="<?php echo e(request()->routeIs('portfolio.pipeline') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'); ?> group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors">
+                                     <svg class="<?php echo e(request()->routeIs('portfolio.pipeline') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300'); ?> flex-shrink-0 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+                                     </svg>
+                                     <span class="ml-3">Pipeline</span>
+                                 </a>
+                                 <a href="<?php echo e(route('portfolio.categories.index')); ?>" 
+                                    class="<?php echo e(request()->routeIs('portfolio.categories.*') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'); ?> group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors">
+                                     <svg class="<?php echo e(request()->routeIs('portfolio.categories.*') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300'); ?> flex-shrink-0 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                                     </svg>
+                                     <span class="ml-3">Categorias</span>
+                                 </a>
+                                 <a href="<?php echo e(route('portfolio.works.index')); ?>" 
+                                    class="<?php echo e(request()->routeIs('portfolio.works.*') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'); ?> group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors">
+                                     <svg class="<?php echo e(request()->routeIs('portfolio.works.*') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300'); ?> flex-shrink-0 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                                     </svg>
+                                     <span class="ml-3">Trabalhos</span>
+                                 </a>
+                             </div>
                          </div>
                      </div>
 
                      <!-- Redes Sociais Section -->
                      <div class="mt-8" x-data="{ open: JSON.parse(localStorage.getItem('sidebar_social') || 'true') }" 
                           x-init="$watch('open', value => localStorage.setItem('sidebar_social', JSON.stringify(value)))">
-                         <button @click="open = !open" 
-                                 class="w-full flex items-center justify-between px-3 py-3 text-left text-sm font-bold text-red-700 dark:text-red-300 uppercase tracking-wider hover:text-red-900 dark:hover:text-red-100 transition-colors bg-gray-50 dark:bg-gray-800 rounded-md"
-                                 x-show="!$store.sidebar.collapsed || $store.sidebar.isMobile"
-                                 x-transition:enter="transition ease-in-out duration-150"
-                                 x-transition:enter-start="opacity-0 transform scale-95"
-                                 x-transition:enter-end="opacity-100 transform scale-100"
-                                 x-transition:leave="transition ease-in-out duration-150"
-                                 x-transition:leave-start="opacity-100 transform scale-100"
-                                 x-transition:leave-end="opacity-0 transform scale-95">
-                             <span class="flex items-center">
-                                 <i class="fas fa-share-alt w-5 h-5 mr-2"></i>
-                                 Redes Sociais
-                             </span>
-                             <svg class="w-4 h-4 transform transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                             </svg>
-                         </button>
-                         
-                         <div class="mt-2 space-y-1" :class="{ 'mt-0': $store.sidebar.collapsed }" 
-                              x-show="open" 
-                              x-transition:enter="transition ease-out duration-200"
-                              x-transition:enter-start="opacity-0 transform scale-95"
-                              x-transition:enter-end="opacity-100 transform scale-100"
-                              x-transition:leave="transition ease-in duration-150"
-                              x-transition:leave-start="opacity-100 transform scale-100"
-                              x-transition:leave-end="opacity-0 transform scale-95">
+                         <!-- Collapsed state: show individual icons -->
+                         <div x-show="$store.sidebar.collapsed && !$store.sidebar.isMobile" class="space-y-2">
                              <a href="<?php echo e(route('social-posts.calendar')); ?>" 
-                                class="<?php echo e(request()->routeIs('social-posts.calendar') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'); ?> group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
-                                :class="{ 'justify-center': $store.sidebar.collapsed }">
+                                class="<?php echo e(request()->routeIs('social-posts.calendar') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'); ?> group flex items-center justify-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
+                                title="Calendário">
                                  <i class="fas fa-calendar <?php echo e(request()->routeIs('social-posts.calendar') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300'); ?> flex-shrink-0 w-6 h-6"></i>
-                                 <span x-show="!$store.sidebar.collapsed || $store.sidebar.isMobile" 
-                                       x-transition:enter="transition ease-in-out duration-150"
-                                       x-transition:enter-start="opacity-0 transform scale-95"
-                                       x-transition:enter-end="opacity-100 transform scale-100"
-                                       x-transition:leave="transition ease-in-out duration-150"
-                                       x-transition:leave-start="opacity-100 transform scale-100"
-                                       x-transition:leave-end="opacity-0 transform scale-95"
-                                       class="ml-3">Calendário</span>
                              </a>
                              <a href="<?php echo e(route('social-posts.index')); ?>" 
-                                class="<?php echo e(request()->routeIs('social-posts.index', 'social-posts.show', 'social-posts.create', 'social-posts.edit') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'); ?> group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
-                                :class="{ 'justify-center': $store.sidebar.collapsed }">
+                                class="<?php echo e(request()->routeIs('social-posts.index', 'social-posts.show', 'social-posts.create', 'social-posts.edit') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'); ?> group flex items-center justify-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
+                                title="Posts">
                                  <i class="fas fa-list <?php echo e(request()->routeIs('social-posts.index', 'social-posts.show', 'social-posts.create', 'social-posts.edit') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300'); ?> flex-shrink-0 w-6 h-6"></i>
-                                 <span x-show="!$store.sidebar.collapsed || $store.sidebar.isMobile" 
-                                       x-transition:enter="transition ease-in-out duration-150"
-                                       x-transition:enter-start="opacity-0 transform scale-95"
-                                       x-transition:enter-end="opacity-100 transform scale-100"
-                                       x-transition:leave="transition ease-in-out duration-150"
-                                       x-transition:leave-start="opacity-100 transform scale-100"
-                                       x-transition:leave-end="opacity-0 transform scale-95"
-                                       class="ml-3">Posts</span>
                              </a>
-
+                         </div>
+                         
+                         <!-- Expanded state: show normal module structure -->
+                         <div x-show="!$store.sidebar.collapsed || $store.sidebar.isMobile">
+                             <button @click="open = !open" 
+                                     class="w-full flex items-center justify-between px-3 py-3 text-left text-sm font-bold text-red-700 dark:text-red-300 uppercase tracking-wider hover:text-red-900 dark:hover:text-red-100 transition-colors bg-gray-50 dark:bg-gray-800 rounded-md"
+                                     x-transition:enter="transition ease-in-out duration-150"
+                                     x-transition:enter-start="opacity-0 transform scale-95"
+                                     x-transition:enter-end="opacity-100 transform scale-100"
+                                     x-transition:leave="transition ease-in-out duration-150"
+                                     x-transition:leave-start="opacity-100 transform scale-100"
+                                     x-transition:leave-end="opacity-0 transform scale-95">
+                                 <span class="flex items-center">
+                                     <i class="fas fa-share-alt w-5 h-5 mr-2"></i>
+                                     Redes Sociais
+                                 </span>
+                                 <svg class="w-4 h-4 transform transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                 </svg>
+                             </button>
+                             
+                             <div class="mt-2 space-y-1" 
+                                  x-show="open" 
+                                  x-transition:enter="transition ease-out duration-200"
+                                  x-transition:enter-start="opacity-0 transform scale-95"
+                                  x-transition:enter-end="opacity-100 transform scale-100"
+                                  x-transition:leave="transition ease-in duration-150"
+                                  x-transition:leave-start="opacity-100 transform scale-100"
+                                  x-transition:leave-end="opacity-0 transform scale-95">
+                                 <a href="<?php echo e(route('social-posts.calendar')); ?>" 
+                                    class="<?php echo e(request()->routeIs('social-posts.calendar') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'); ?> group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors">
+                                     <i class="fas fa-calendar <?php echo e(request()->routeIs('social-posts.calendar') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300'); ?> flex-shrink-0 w-6 h-6"></i>
+                                     <span class="ml-3">Calendário</span>
+                                 </a>
+                                 <a href="<?php echo e(route('social-posts.index')); ?>" 
+                                    class="<?php echo e(request()->routeIs('social-posts.index', 'social-posts.show', 'social-posts.create', 'social-posts.edit') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'); ?> group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors">
+                                     <i class="fas fa-list <?php echo e(request()->routeIs('social-posts.index', 'social-posts.show', 'social-posts.create', 'social-posts.edit') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300'); ?> flex-shrink-0 w-6 h-6"></i>
+                                     <span class="ml-3">Posts</span>
+                                 </a>
+                             </div>
                          </div>
                      </div>
 
                      <!-- File Management Section -->
                      <div class="mt-8" x-data="{ open: JSON.parse(localStorage.getItem('sidebar_files') || 'true') }" 
                           x-init="$watch('open', value => localStorage.setItem('sidebar_files', JSON.stringify(value)))">
-                         <button @click="open = !open" 
-                                 class="w-full flex items-center justify-between px-3 py-3 text-left text-sm font-bold text-purple-700 dark:text-purple-300 uppercase tracking-wider hover:text-purple-900 dark:hover:text-purple-100 transition-colors bg-gray-50 dark:bg-gray-800 rounded-md"
-                                 x-show="!$store.sidebar.collapsed || $store.sidebar.isMobile"
-                                 x-transition:enter="transition ease-in-out duration-150"
-                                 x-transition:enter-start="opacity-0 transform scale-95"
-                                 x-transition:enter-end="opacity-100 transform scale-100"
-                                 x-transition:leave="transition ease-in-out duration-150"
-                                 x-transition:leave-start="opacity-100 transform scale-100"
-                                 x-transition:leave-end="opacity-0 transform scale-95">
-                             <span class="flex items-center">
-                                 <i class="fas fa-folder w-5 h-5 mr-2"></i>
-                                 Arquivos
-                             </span>
-                             <svg class="w-4 h-4 transform transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                             </svg>
-                         </button>
-                         
-                         <div class="mt-2 space-y-1" :class="{ 'mt-0': $store.sidebar.collapsed }" 
-                              x-show="open" 
-                              x-transition:enter="transition ease-out duration-200"
-                              x-transition:enter-start="opacity-0 transform scale-95"
-                              x-transition:enter-end="opacity-100 transform scale-100"
-                              x-transition:leave="transition ease-in duration-150"
-                              x-transition:leave-start="opacity-100 transform scale-100"
-                              x-transition:leave-end="opacity-0 transform scale-95">
-                             <!-- Files Dashboard -->
+                         <!-- Collapsed state: show individual icons -->
+                         <div x-show="$store.sidebar.collapsed && !$store.sidebar.isMobile" class="space-y-2">
                              <a href="<?php echo e(route('files.index')); ?>" 
-                                class="<?php echo e(request()->routeIs('files.index') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'); ?> group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
-                                :class="{ 'justify-center': $store.sidebar.collapsed }">
+                                class="<?php echo e(request()->routeIs('files.index') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'); ?> group flex items-center justify-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
+                                title="Meus Arquivos">
                                  <i class="fas fa-folder-open <?php echo e(request()->routeIs('files.index') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300'); ?> flex-shrink-0 w-6 h-6"></i>
-                                 <span x-show="!$store.sidebar.collapsed || $store.sidebar.isMobile" 
-                                       x-transition:enter="transition ease-in-out duration-150"
-                                       x-transition:enter-start="opacity-0 transform scale-95"
-                                       x-transition:enter-end="opacity-100 transform scale-100"
-                                       x-transition:leave="transition ease-in-out duration-150"
-                                       x-transition:leave-start="opacity-100 transform scale-100"
-                                       x-transition:leave-end="opacity-0 transform scale-95"
-                                       class="ml-3">Meus Arquivos</span>
                              </a>
-
-                             <!-- Upload Files -->
                              <a href="<?php echo e(route('files.create')); ?>" 
-                                class="<?php echo e(request()->routeIs('files.create') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'); ?> group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
-                                :class="{ 'justify-center': $store.sidebar.collapsed }">
+                                class="<?php echo e(request()->routeIs('files.create') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'); ?> group flex items-center justify-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
+                                title="Upload">
                                  <i class="fas fa-cloud-upload-alt <?php echo e(request()->routeIs('files.create') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300'); ?> flex-shrink-0 w-6 h-6"></i>
-                                 <span x-show="!$store.sidebar.collapsed || $store.sidebar.isMobile" 
-                                       x-transition:enter="transition ease-in-out duration-150"
-                                       x-transition:enter-start="opacity-0 transform scale-95"
-                                       x-transition:enter-end="opacity-100 transform scale-100"
-                                       x-transition:leave="transition ease-in-out duration-150"
-                                       x-transition:leave-start="opacity-100 transform scale-100"
-                                       x-transition:leave-end="opacity-0 transform scale-95"
-                                       class="ml-3">Upload</span>
                              </a>
-
-                             <!-- File Categories -->
                              <a href="<?php echo e(route('file-categories.index')); ?>" 
-                                class="<?php echo e(request()->routeIs('file-categories.*') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'); ?> group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
-                                :class="{ 'justify-center': $store.sidebar.collapsed }">
+                                class="<?php echo e(request()->routeIs('file-categories.*') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'); ?> group flex items-center justify-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
+                                title="Categorias">
                                  <i class="fas fa-tags <?php echo e(request()->routeIs('file-categories.*') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300'); ?> flex-shrink-0 w-6 h-6"></i>
-                                 <span x-show="!$store.sidebar.collapsed || $store.sidebar.isMobile" 
-                                       x-transition:enter="transition ease-in-out duration-150"
-                                       x-transition:enter-start="opacity-0 transform scale-95"
-                                       x-transition:enter-end="opacity-100 transform scale-100"
-                                       x-transition:leave="transition ease-in-out duration-150"
-                                       x-transition:leave-start="opacity-100 transform scale-100"
-                                       x-transition:leave-end="opacity-0 transform scale-95"
-                                       class="ml-3">Categorias</span>
                              </a>
+                         </div>
+                         
+                         <!-- Expanded state: show normal module structure -->
+                         <div x-show="!$store.sidebar.collapsed || $store.sidebar.isMobile">
+                             <button @click="open = !open" 
+                                     class="w-full flex items-center justify-between px-3 py-3 text-left text-sm font-bold text-purple-700 dark:text-purple-300 uppercase tracking-wider hover:text-purple-900 dark:hover:text-purple-100 transition-colors bg-gray-50 dark:bg-gray-800 rounded-md"
+                                     x-transition:enter="transition ease-in-out duration-150"
+                                     x-transition:enter-start="opacity-0 transform scale-95"
+                                     x-transition:enter-end="opacity-100 transform scale-100"
+                                     x-transition:leave="transition ease-in-out duration-150"
+                                     x-transition:leave-start="opacity-100 transform scale-100"
+                                     x-transition:leave-end="opacity-0 transform scale-95">
+                                 <span class="flex items-center">
+                                     <i class="fas fa-folder w-5 h-5 mr-2"></i>
+                                     Arquivos
+                                 </span>
+                                 <svg class="w-4 h-4 transform transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                 </svg>
+                             </button>
+                             
+                             <div class="mt-2 space-y-1" 
+                                  x-show="open" 
+                                  x-transition:enter="transition ease-out duration-200"
+                                  x-transition:enter-start="opacity-0 transform scale-95"
+                                  x-transition:enter-end="opacity-100 transform scale-100"
+                                  x-transition:leave="transition ease-in duration-150"
+                                  x-transition:leave-start="opacity-100 transform scale-100"
+                                  x-transition:leave-end="opacity-0 transform scale-95">
+                                 <a href="<?php echo e(route('files.index')); ?>" 
+                                    class="<?php echo e(request()->routeIs('files.index') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'); ?> group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors">
+                                     <i class="fas fa-folder-open <?php echo e(request()->routeIs('files.index') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300'); ?> flex-shrink-0 w-6 h-6"></i>
+                                     <span class="ml-3">Meus Arquivos</span>
+                                 </a>
+                                 <a href="<?php echo e(route('files.create')); ?>" 
+                                    class="<?php echo e(request()->routeIs('files.create') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'); ?> group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors">
+                                     <i class="fas fa-cloud-upload-alt <?php echo e(request()->routeIs('files.create') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300'); ?> flex-shrink-0 w-6 h-6"></i>
+                                     <span class="ml-3">Upload</span>
+                                 </a>
+                                 <a href="<?php echo e(route('file-categories.index')); ?>" 
+                                    class="<?php echo e(request()->routeIs('file-categories.*') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'); ?> group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors">
+                                     <i class="fas fa-tags <?php echo e(request()->routeIs('file-categories.*') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300'); ?> flex-shrink-0 w-6 h-6"></i>
+                                     <span class="ml-3">Categorias</span>
+                                 </a>
+                             </div>
                          </div>
                      </div>
 
                      <!-- Admin Section -->
                      <div class="mt-8" x-data="{ open: JSON.parse(localStorage.getItem('sidebar_administracao') || 'true') }" 
                           x-init="$watch('open', value => localStorage.setItem('sidebar_administracao', JSON.stringify(value)))">
+                         <!-- Botão do módulo quando não colapsado -->
                          <button @click="open = !open" 
                                  class="w-full flex items-center justify-between px-3 py-3 text-left text-sm font-bold text-orange-700 dark:text-orange-300 uppercase tracking-wider hover:text-orange-900 dark:hover:text-orange-100 transition-colors bg-gray-50 dark:bg-gray-800 rounded-md"
                                  x-show="!$store.sidebar.collapsed || $store.sidebar.isMobile"
@@ -750,8 +740,43 @@
                              </svg>
                          </button>
                          
+                         <!-- Links individuais quando colapsado -->
+                         <div class="space-y-1" x-show="$store.sidebar.collapsed && !$store.sidebar.isMobile">
+                             <?php if(auth()->check() && auth()->user()->is_admin): ?>
+                             <a href="<?php echo e(route('users.index')); ?>" 
+                                class="<?php echo e(request()->routeIs('users.*') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'); ?> group flex items-center justify-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
+                                title="Usuários">
+                                 <i class="fas fa-users <?php echo e(request()->routeIs('users.*') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300'); ?> flex-shrink-0 w-6 h-6"></i>
+                             </a>
+
+                             <a href="<?php echo e(route('admin.user-approvals.index')); ?>" 
+                                class="<?php echo e(request()->routeIs('admin.user-approvals.*') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'); ?> group flex items-center justify-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
+                                title="Aprovação de Usuários">
+                                 <i class="fas fa-user-check <?php echo e(request()->routeIs('admin.user-approvals.*') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300'); ?> flex-shrink-0 w-6 h-6"></i>
+                             </a>
+                             <?php endif; ?>
+
+                             <a href="<?php echo e(route('profile.show')); ?>" 
+                                class="<?php echo e(request()->routeIs('profile.*') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'); ?> group flex items-center justify-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
+                                title="Perfil">
+                                 <svg class="<?php echo e(request()->routeIs('profile.*') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300'); ?> flex-shrink-0 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                 </svg>
+                             </a>
+
+                             <a href="<?php echo e(route('settings.index')); ?>" 
+                                class="<?php echo e(request()->routeIs('settings.*') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'); ?> group flex items-center justify-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
+                                title="Configurações">
+                                 <svg class="<?php echo e(request()->routeIs('settings.*') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300'); ?> flex-shrink-0 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                 </svg>
+                             </a>
+                         </div>
+                         
+                         <!-- Links expandidos quando não colapsado -->
                          <div class="mt-2 space-y-1" :class="{ 'mt-0': $store.sidebar.collapsed }" 
-                              x-show="open" 
+                              x-show="open && (!$store.sidebar.collapsed || $store.sidebar.isMobile)" 
                               x-transition:enter="transition ease-out duration-200"
                               x-transition:enter-start="opacity-0 transform scale-95"
                               x-transition:enter-end="opacity-100 transform scale-100"
@@ -821,25 +846,29 @@
                                        class="ml-3">Configurações</span>
                              </a>
 
-                             <form method="POST" action="<?php echo e(route('logout')); ?>">
-                                 <?php echo csrf_field(); ?>
-                                 <button type="submit" 
-                                         class="w-full text-red-600 hover:bg-red-50 hover:text-red-700 dark:text-red-400 dark:hover:bg-red-900/20 dark:hover:text-red-300 group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
-                                         :class="{ 'justify-center': $store.sidebar.collapsed }">
-                                     <svg class="text-red-400 group-hover:text-red-500 dark:group-hover:text-red-300 flex-shrink-0 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-                                     </svg>
-                                     <span x-show="!$store.sidebar.collapsed || $store.sidebar.isMobile" 
-                                           x-transition:enter="transition ease-in-out duration-150"
-                                           x-transition:enter-start="opacity-0 transform scale-95"
-                                           x-transition:enter-end="opacity-100 transform scale-100"
-                                           x-transition:leave="transition ease-in-out duration-150"
-                                           x-transition:leave-start="opacity-100 transform scale-100"
-                                           x-transition:leave-end="opacity-0 transform scale-95"
-                                           class="ml-3">Sair</span>
-                                 </button>
-                             </form>
                          </div>
+                     </div>
+
+                     <!-- Logout Button - Outside Administration Module -->
+                     <div class="mt-8">
+                         <form method="POST" action="<?php echo e(route('logout')); ?>">
+                             <?php echo csrf_field(); ?>
+                             <button type="submit" 
+                                     class="w-full text-red-600 hover:bg-red-50 hover:text-red-700 dark:text-red-400 dark:hover:bg-red-900/20 dark:hover:text-red-300 group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
+                                     :class="{ 'justify-center': $store.sidebar.collapsed }">
+                                 <svg class="text-red-400 group-hover:text-red-500 dark:group-hover:text-red-300 flex-shrink-0 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                                 </svg>
+                                 <span x-show="!$store.sidebar.collapsed || $store.sidebar.isMobile" 
+                                       x-transition:enter="transition ease-in-out duration-150"
+                                       x-transition:enter-start="opacity-0 transform scale-95"
+                                       x-transition:enter-end="opacity-100 transform scale-100"
+                                       x-transition:leave="transition ease-in-out duration-150"
+                                       x-transition:leave-start="opacity-100 transform scale-100"
+                                       x-transition:leave-end="opacity-0 transform scale-95"
+                                       class="ml-3">Sair</span>
+                             </button>
+                         </form>
                      </div>
 
 

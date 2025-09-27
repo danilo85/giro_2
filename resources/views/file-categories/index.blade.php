@@ -303,10 +303,44 @@
         </div>
     </div>
 </div>
+<!-- Delete Category Confirmation Modal -->
+<div id="deleteCategoryModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden" style="z-index: 10003;">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full">
+            <div class="p-6">
+                <div class="flex items-center mb-4">
+                    <div class="flex-shrink-0">
+                        <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Confirmar Exclusão da Categoria</h3>
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <p class="text-gray-600 dark:text-gray-400">Tem certeza que deseja excluir esta categoria? Esta ação não pode ser desfeita e todos os arquivos associados perderão esta categoria.</p>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button onclick="closeDeleteCategoryModal()" 
+                            class="px-4 py-2 text-gray-600 dark:text-gray-400 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700">
+                        Cancelar
+                    </button>
+                    <button onclick="confirmDeleteCategory()" 
+                            class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
+                        Confirmar Exclusão
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('scripts')
 <script>
+let categoryToDelete = null;
 // Modal functions
 function openCreateModal() {
     document.getElementById('modalTitle').textContent = 'Nova Categoria';
@@ -424,10 +458,20 @@ document.getElementById('categoryForm').addEventListener('submit', async functio
     }
 });
 
-// Delete function
+// Delete functions
 function deleteCategory(categoryId) {
-    if (confirm('Tem certeza que deseja excluir esta categoria? Esta ação não pode ser desfeita.')) {
-        fetch(`/file-categories/${categoryId}`, {
+    categoryToDelete = categoryId;
+    document.getElementById('deleteCategoryModal').classList.remove('hidden');
+}
+
+function closeDeleteCategoryModal() {
+    document.getElementById('deleteCategoryModal').classList.add('hidden');
+    categoryToDelete = null;
+}
+
+function confirmDeleteCategory() {
+    if (categoryToDelete) {
+        fetch(`/file-categories/${categoryToDelete}`, {
             method: 'DELETE',
             headers: {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
@@ -453,6 +497,9 @@ function deleteCategory(categoryId) {
         .catch(error => {
             console.error('Erro ao excluir categoria:', error);
             alert('Erro ao excluir categoria: ' + error.message);
+        })
+        .finally(() => {
+            closeDeleteCategoryModal();
         });
     }
 }
@@ -464,10 +511,18 @@ document.getElementById('categoryModal').addEventListener('click', function(e) {
     }
 });
 
+// Close delete modal when clicking outside
+document.getElementById('deleteCategoryModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeDeleteCategoryModal();
+    }
+});
+
 // Close modal with Escape key
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         closeCategoryModal();
+        closeDeleteCategoryModal();
     }
 });
 
