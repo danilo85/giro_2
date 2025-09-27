@@ -28,6 +28,7 @@ use App\Http\Controllers\PortfolioApiController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\FileCategoryController;
 use App\Http\Controllers\SharedLinkController;
+use App\Http\Controllers\Admin\TempFileSettingsController;
 use App\Utils\MimeTypeDetector;
 
 /*
@@ -128,6 +129,15 @@ Route::middleware(['auth', 'conditional.verified'])->group(function () {
              Route::post('/bulk-approve', [\App\Http\Controllers\Admin\UserApprovalController::class, 'bulkApprove'])->name('bulk-approve');
              Route::post('/bulk-reject', [\App\Http\Controllers\Admin\UserApprovalController::class, 'bulkReject'])->name('bulk-reject');
              Route::post('/bulk-delete', [\App\Http\Controllers\Admin\UserApprovalController::class, 'bulkDelete'])->name('bulk-delete');
+         });
+         
+         // Temporary File Settings Management
+         Route::prefix('admin/temp-file-settings')->name('admin.temp-file-settings.')->group(function () {
+             Route::get('/', [TempFileSettingsController::class, 'index'])->name('index');
+             Route::put('/', [TempFileSettingsController::class, 'update'])->name('update');
+             Route::get('/statistics', [TempFileSettingsController::class, 'getStatistics'])->name('statistics');
+             Route::post('/cleanup', [TempFileSettingsController::class, 'triggerCleanup'])->name('cleanup');
+             Route::post('/warnings', [TempFileSettingsController::class, 'sendWarnings'])->name('warnings');
          });
      });
 
@@ -413,6 +423,11 @@ Route::post('/debug-form', function (\Illuminate\Http\Request $request) {
         Route::delete('/{file}', [FileController::class, 'destroy'])->name('destroy');
         Route::get('/category/{category}', [FileController::class, 'getByCategory'])->name('by-category');
         Route::post('/upload-progress', [FileController::class, 'uploadProgress'])->name('upload-progress');
+        
+        // Temporary file management routes
+        Route::post('/{file}/extend-expiration', [FileController::class, 'extendExpiration'])->name('extend-expiration');
+        Route::post('/{file}/convert-to-permanent', [FileController::class, 'convertToPermanent'])->name('convert-to-permanent');
+        Route::post('/{file}/convert-to-temporary', [FileController::class, 'convertToTemporary'])->name('convert-to-temporary');
         
         // Shared links management
         Route::post('/{file}/share', [SharedLinkController::class, 'store'])->name('share');

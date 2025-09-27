@@ -754,6 +754,12 @@
                                 title="Aprovação de Usuários">
                                  <i class="fas fa-user-check <?php echo e(request()->routeIs('admin.user-approvals.*') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300'); ?> flex-shrink-0 w-6 h-6"></i>
                              </a>
+
+                             <a href="<?php echo e(route('admin.temp-file-settings.index')); ?>" 
+                                class="<?php echo e(request()->routeIs('admin.temp-file-settings.*') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'); ?> group flex items-center justify-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
+                                title="Arquivos Temporários">
+                                 <i class="fas fa-clock <?php echo e(request()->routeIs('admin.temp-file-settings.*') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300'); ?> flex-shrink-0 w-6 h-6"></i>
+                             </a>
                              <?php endif; ?>
 
                              <a href="<?php echo e(route('profile.show')); ?>" 
@@ -810,6 +816,20 @@
                                        x-transition:leave-start="opacity-100 transform scale-100"
                                        x-transition:leave-end="opacity-0 transform scale-95"
                                        class="ml-3">Aprovação de Usuários</span>
+                             </a>
+
+                             <a href="<?php echo e(route('admin.temp-file-settings.index')); ?>" 
+                                class="<?php echo e(request()->routeIs('admin.temp-file-settings.*') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'); ?> group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
+                                :class="{ 'justify-center': $store.sidebar.collapsed }">
+                                 <i class="fas fa-clock <?php echo e(request()->routeIs('admin.temp-file-settings.*') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300'); ?> flex-shrink-0 w-6 h-6"></i>
+                                 <span x-show="!$store.sidebar.collapsed || $store.sidebar.isMobile" 
+                                       x-transition:enter="transition ease-in-out duration-150"
+                                       x-transition:enter-start="opacity-0 transform scale-95"
+                                       x-transition:enter-end="opacity-100 transform scale-100"
+                                       x-transition:leave="transition ease-in-out duration-150"
+                                       x-transition:leave-start="opacity-100 transform scale-100"
+                                       x-transition:leave-end="opacity-0 transform scale-95"
+                                       class="ml-3">Arquivos Temporários</span>
                              </a>
                              <?php endif; ?>
 

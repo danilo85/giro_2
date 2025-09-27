@@ -197,7 +197,46 @@
                                                     </svg>
                                                     Início de Projeto
                                                 @else
-                                                    {{ ucfirst(str_replace('_', ' ', $entry->type)) }}
+                                                    @switch($entry->type)
+                                                    @case('milestone')
+                                                        Marco
+                                                        @break
+                                                    @case('issue')
+                                                        Problema
+                                                        @break
+                                                    @case('resolution')
+                                                        Resolução
+                                                        @break
+                                                    @case('update')
+                                                        Atualização
+                                                        @break
+                                                    @case('note')
+                                                        Nota
+                                                        @break
+                                                    @case('meeting')
+                                                        Reunião
+                                                        @break
+                                                    @case('decision')
+                                                        Decisão
+                                                        @break
+                                                    @case('manual')
+                                                        Manual
+                                                        @break
+                                                    @case('system')
+                                                        Sistema
+                                                        @break
+                                                    @case('status_change')
+                                                        Mudança de Status
+                                                        @break
+                                                    @case('payment')
+                                                        Pagamento
+                                                        @break
+                                                    @case('project_start')
+                                                        Início de Projeto
+                                                        @break
+                                                    @default
+                                                        {{ ucfirst(str_replace('_', ' ', $entry->type)) }}
+                                                @endswitch
                                                 @endif
                                             </span>
                                             

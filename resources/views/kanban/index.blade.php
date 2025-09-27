@@ -319,9 +319,17 @@ function kanbanBoard() {
         
         // Touch/Mouse handling
         startX: 0,
+        startY: 0,
         startScrollOffset: 0,
         isDragging: false,
         columnsPerView: 4,
+        
+        // Mobile drag detection
+        touchStartTime: 0,
+        touchMoveDistance: 0,
+        isCardDragging: false,
+        scrollThreshold: 10, // pixels
+        timeThreshold: 150, // milliseconds
         
         // Edge scrolling
         edgeScrollInterval: null,
@@ -457,27 +465,71 @@ function kanbanBoard() {
         
         // Touch handling
         handleTouchStart(event) {
+            // Check if touch started on a card
+            const target = event.target.closest('[data-projeto-id]');
+            this.isCardDragging = !!target;
+            
             this.startX = event.touches[0].clientX;
+            this.startY = event.touches[0].clientY;
             this.startScrollOffset = this.scrollOffset;
-            this.isDragging = true;
-            this.isScrolling = true;
+            this.touchStartTime = Date.now();
+            this.touchMoveDistance = 0;
+            this.isDragging = false;
+            this.isScrolling = false;
         },
         
         handleTouchMove(event) {
-            if (!this.isDragging) return;
+            if (!this.startX) return;
             
-            event.preventDefault();
             const currentX = event.touches[0].clientX;
-            const deltaX = this.startX - currentX;
-            const newOffset = this.startScrollOffset + deltaX;
+            const currentY = event.touches[0].clientY;
+            const deltaX = Math.abs(this.startX - currentX);
+            const deltaY = Math.abs(this.startY - currentY);
+            const totalDistance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
             
-            this.scrollOffset = Math.max(0, Math.min(newOffset, this.maxScrollOffset));
-            this.updateScrollIndicators();
+            this.touchMoveDistance = totalDistance;
+            
+            // If user is dragging a card, don't scroll
+            if (this.isCardDragging) {
+                // Only prevent default if it's clearly a drag gesture
+                if (totalDistance > this.scrollThreshold) {
+                    return; // Let SortableJS handle the drag
+                }
+            }
+            
+            // Determine if this is a scroll gesture
+            const timeSinceStart = Date.now() - this.touchStartTime;
+            const isHorizontalGesture = deltaX > deltaY;
+            const exceedsThreshold = totalDistance > this.scrollThreshold;
+            const isQuickGesture = timeSinceStart < this.timeThreshold;
+            
+            // Only start scrolling if:
+            // 1. Not dragging a card
+            // 2. Horizontal gesture is dominant
+            // 3. Movement exceeds threshold
+            // 4. Not a quick tap/drag gesture
+            if (!this.isCardDragging && isHorizontalGesture && exceedsThreshold && !isQuickGesture) {
+                if (!this.isDragging) {
+                    this.isDragging = true;
+                    this.isScrolling = true;
+                }
+                
+                event.preventDefault();
+                const scrollDeltaX = this.startX - currentX;
+                const newOffset = this.startScrollOffset + scrollDeltaX;
+                
+                this.scrollOffset = Math.max(0, Math.min(newOffset, this.maxScrollOffset));
+                this.updateScrollIndicators();
+            }
         },
         
         handleTouchEnd() {
             this.isDragging = false;
             this.isScrolling = false;
+            this.isCardDragging = false;
+            this.startX = 0;
+            this.startY = 0;
+            this.touchMoveDistance = 0;
         },
         
         // Mouse handling
@@ -564,7 +616,19 @@ function kanbanBoard() {
                         chosenClass: 'sortable-chosen',
                         dragClass: 'sortable-drag',
                         disabled: this.isLocked,
+                        onStart: (evt) => {
+                            // Adicionar classe para prevenir scroll durante drag
+                            const sliderWrapper = document.querySelector('.slider-wrapper');
+                            if (sliderWrapper) {
+                                sliderWrapper.classList.add('card-dragging');
+                            }
+                        },
                         onEnd: (evt) => {
+                            // Remover classe após drag
+                            const sliderWrapper = document.querySelector('.slider-wrapper');
+                            if (sliderWrapper) {
+                                sliderWrapper.classList.remove('card-dragging');
+                            }
                             this.handleDrop(evt);
                         }
                     });
@@ -803,6 +867,20 @@ function kanbanBoard() {
     transition: none;
 }
 
+/* Prevenir scroll durante drag de cards */
+.slider-wrapper.card-dragging {
+    touch-action: none;
+    overflow: hidden;
+}
+
+.slider-wrapper.card-dragging .slider-track {
+    pointer-events: none;
+}
+
+.slider-wrapper.card-dragging [data-projeto-id] {
+    pointer-events: auto;
+}
+
 /* Estilos para SortableJS */
 .sortable-ghost {
     opacity: 0.4;
@@ -814,11 +892,42 @@ function kanbanBoard() {
     transform: rotate(2deg);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
     z-index: 1000;
+    cursor: grabbing !important;
 }
 
 .sortable-drag {
     transform: rotate(5deg);
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    cursor: grabbing !important;
+}
+
+/* Melhorias para dispositivos touch */
+@media (max-width: 767px) {
+    .kanban-card {
+        touch-action: none;
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-touch-callout: none;
+    }
+    
+    .sortable-chosen {
+        transform: scale(1.05) rotate(2deg);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+        opacity: 0.9;
+    }
+    
+    .sortable-drag {
+        transform: scale(1.1) rotate(5deg);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        opacity: 0.8;
+    }
+    
+    .sortable-ghost {
+        opacity: 0.3;
+        background: #e5e7eb;
+        border: 3px dashed #9ca3af;
+        transform: scale(0.95);
+    }
 }
 
 /* Estilos para estado travado */

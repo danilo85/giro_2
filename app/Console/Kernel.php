@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // Limpar arquivos temporários diariamente às 2:00 AM
-        $schedule->command('temp-files:clean')->dailyAt('02:00');
+        $schedule->command('files:cleanup-expired')->dailyAt('02:00');
         
         // Limpar links compartilhados expirados diariamente às 3:00 AM
         $schedule->command('files:cleanup-expired-links')->dailyAt('03:00');

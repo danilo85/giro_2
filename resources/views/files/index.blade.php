@@ -3,6 +3,8 @@
 @section('title', 'Gestão de Arquivos')
 
 @section('content')
+
+@include('components.error-modal')
 <div class="container mx-auto px-4 py-6">
 
     <!-- Tags de Navegação Rápida -->
@@ -109,9 +111,37 @@
             </div>
         </div>
         
+        <!-- Filtros Avançados -->
+        <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+            <div class="flex flex-wrap gap-2 mb-3">
+                <span class="text-sm font-medium text-gray-700 dark:text-gray-300 mr-2">Filtros por Tipo:</span>
+                <button class="type-filter-btn px-3 py-1 rounded-full text-xs font-medium border-2 active" 
+                        data-type="all" 
+                        style="background-color: #f3f4f6; color: #374151; border-color: #d1d5db;">
+                    Todos
+                </button>
+                <button class="type-filter-btn px-3 py-1 rounded-full text-xs font-medium border-2" 
+                        data-type="permanent" 
+                        style="background-color: #10b98120; color: #10b981; border-color: #10b98140;">
+                    Permanentes
+                </button>
+                <button class="type-filter-btn px-3 py-1 rounded-full text-xs font-medium border-2" 
+                        data-type="temporary" 
+                        style="background-color: #f59e0b20; color: #f59e0b; border-color: #f59e0b40;">
+                    Temporários
+                </button>
+                <button class="type-filter-btn px-3 py-1 rounded-full text-xs font-medium border-2" 
+                        data-type="expiring" 
+                        style="background-color: #ef444420; color: #ef4444; border-color: #ef444440;">
+                    Próximos ao Vencimento
+                </button>
+            </div>
+        </div>
+        
         <!-- Quick Category Filter -->
         <div class="p-4">
             <div class="flex flex-wrap gap-2">
+                <span class="text-sm font-medium text-gray-700 dark:text-gray-300 mr-2">Categorias:</span>
                 <button class="category-filter-btn px-3 py-1 rounded-full text-xs font-medium border-2 active" 
                         data-category="all" 
                         style="background-color: #f3f4f6; color: #374151; border-color: #d1d5db;">
@@ -132,12 +162,43 @@
         @if($files->count() > 0)
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 @foreach($files as $file)
-                    <div class="file-card rounded-lg shadow-md hover:shadow-lg transition-all duration-200 overflow-hidden flex flex-col" 
+                    @php
+                        $pulseClass = '';
+                        $pulseSpeed = '';
+                        if($file->is_temporary && $file->expires_at) {
+                            $now = now();
+                            $expiresAt = \Carbon\Carbon::parse($file->expires_at);
+                            $daysUntilExpiry = $now->diffInDays($expiresAt, false);
+                            
+                            if($expiresAt->isPast()) {
+                                $pulseClass = 'pulse-expired';
+                                $pulseSpeed = '0.5s';
+                            } elseif($daysUntilExpiry <= 1) {
+                                $pulseClass = 'pulse-critical';
+                                $pulseSpeed = '0.8s';
+                            } elseif($daysUntilExpiry <= 3) {
+                                $pulseClass = 'pulse-warning';
+                                $pulseSpeed = '1.5s';
+                            } elseif($daysUntilExpiry <= 7) {
+                                $pulseClass = 'pulse-caution';
+                                $pulseSpeed = '2.5s';
+                            } else {
+                                $pulseClass = 'pulse-safe';
+                                $pulseSpeed = '4s';
+                            }
+                        }
+                    @endphp
+                    
+                    <div class="file-card rounded-lg shadow-md hover:shadow-lg transition-all duration-200 overflow-hidden flex flex-col {{ $pulseClass }}" 
                          data-category="{{ $file->category_id }}" 
                          data-name="{{ strtolower($file->original_name) }}" 
                          data-created="{{ $file->created_at->timestamp }}" 
                          data-size="{{ $file->file_size }}"
-                         @if($file->category)
+                         data-temporary="{{ $file->is_temporary ? 'true' : 'false' }}"
+                         data-expires="{{ $file->expires_at ? $file->expires_at->toISOString() : '' }}"
+                         @if($file->is_temporary && $file->expires_at)
+                             style="background: linear-gradient(135deg, {{ $file->category ? $file->category->color : '#ffffff' }}08 0%, {{ $file->category ? $file->category->color : '#ffffff' }}15 100%); animation-duration: {{ $pulseSpeed }};"
+                         @elseif($file->category)
                              style="background: linear-gradient(135deg, {{ $file->category->color }}08 0%, {{ $file->category->color }}15 100%);"
                          @else
                              style="background: #ffffff; "
@@ -145,8 +206,8 @@
                          class="dark:bg-gray-800">
                         
                         <!-- File Header -->
-                        <div class="p-6">
-                            <div class="flex items-center justify-between mb-4">
+                        <div class="p-4">
+                            <div class="flex items-center justify-between mb-3">
                                 <div class="flex items-center space-x-3">
                                     @php
                                         $extension = strtolower(pathinfo($file->original_name, PATHINFO_EXTENSION));
@@ -193,60 +254,78 @@
                                         }
                                     @endphp
                                     
-                                    <div class="w-14 h-14 rounded-full flex items-center justify-center text-white {{ $config['color'] }}">
-                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <div class="w-10 h-10 rounded-full flex items-center justify-center text-white {{ $config['color'] }}">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $config['icon'] }}"></path>
                                         </svg>
                                     </div>
-                                    <div>
-                                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white" title="{{ $file->original_name }}">{{ Str::limit($file->original_name, 20) }}</h3>
-                                        <p class="text-sm text-gray-500 dark:text-gray-400">{{ $file->fileSizeFormatted }}</p>
+                                    <div class="flex-1 min-w-0">
+                                        <h3 class="text-sm font-semibold text-gray-900 dark:text-white truncate" title="{{ $file->original_name }}">{{ $file->original_name }}</h3>
+                                        <div class="flex items-center space-x-2 text-xs text-gray-500 dark:text-gray-400">
+                                            <span>{{ $file->fileSizeFormatted }}</span>
+                                            <span>&bull;</span>
+                                            <span>{{ $file->created_at->format('d/m/Y') }}</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             
                             <!-- Badges Row -->
-                            <div class="flex flex-wrap gap-2 mb-4">
-                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                                    <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                                    </svg>
-                                    Disponível
-                                </span>
+                            <div class="flex flex-wrap gap-1 mb-3">
+                                <!-- Status Badge -->
+                                @if($file->is_temporary && $file->expires_at)
+                                    @php
+                                        $now = now();
+                                        $expiresAt = \Carbon\Carbon::parse($file->expires_at);
+                                        $hoursUntilExpiry = $now->diffInHours($expiresAt, false);
+                                        $daysUntilExpiry = $now->diffInDays($expiresAt, false);
+                                    @endphp
+                                    
+                                    @if($expiresAt->isPast())
+                                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
+                                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            Expirado
+                                        </span>
+                                    @elseif($hoursUntilExpiry <= 24)
+                                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
+                                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            Expira em {{ $hoursUntilExpiry }}h
+                                        </span>
+                                    @else
+                                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            {{ $daysUntilExpiry }} {{ $daysUntilExpiry == 1 ? 'dia restante' : 'dias restantes' }}
+                                        </span>
+                                        <button onclick="extendExpiration({{ $file->id }})" 
+                                                class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200 hover:bg-orange-200 dark:hover:bg-orange-800 transition-colors cursor-pointer" 
+                                                title="Estender Prazo">
+                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                            </svg>
+                                            Estender
+                                        </button>
+                                    @endif
+                                @else
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        Permanente
+                                    </span>
+                                @endif
                                 
                                 @if($file->category)
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium" style="background-color: {{ $file->category->color }}20; color: {{ $file->category->color }}">
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium" style="background-color: {{ $file->category->color }}20; color: {{ $file->category->color }}">
                                         <div class="w-2 h-2 rounded-full mr-1" style="background-color: {{ $file->category->color }}"></div>
                                         {{ $file->category->name }}
                                     </span>
-                                @else
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200">
-                                        <div class="w-2 h-2 rounded-full mr-1 bg-gray-400"></div>
-                                        Sem categoria
-                                    </span>
                                 @endif
-                            </div>
-                        </div>
-
-                        <!-- File Preview -->
-                        <div class="px-6 pb-6">
-                            <div class="space-y-4">
-                                <!-- Preview -->
-                                <div class="text-center bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
-                                    @if(str_starts_with($file->mime_type, 'image/'))
-                                        <img src="{{ $file->file_url }}" alt="{{ $file->original_name }}" class="w-full h-32 object-cover rounded-md mb-3">
-                                    @else
-                                        <div class="w-full h-32 bg-gray-100 dark:bg-gray-600 rounded-md mb-3 flex items-center justify-center">
-                                            <div class="w-16 h-16 rounded-full flex items-center justify-center text-white {{ $config['color'] }}">
-                                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $config['icon'] }}"></path>
-                                                </svg>
-                                            </div>
-                                        </div>
-                                    @endif
-                                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Criado em</p>
-                                    <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $file->created_at->format('d/m/Y H:i') }}</p>
-                                </div>
                             </div>
                         </div>
 
@@ -254,34 +333,69 @@
                         <div class="flex-grow"></div>
 
                         <!-- Actions Footer -->
-                        <div class="flex items-center justify-center px-6 py-4 border-t border-gray-200 dark:border-gray-700 mt-auto">
-                            <div class="flex space-x-3">
+                        <div class="flex items-center justify-center px-2 py-3 border-t border-gray-200 dark:border-gray-700 mt-auto">
+                            <div class="flex justify-center items-center gap-1 w-full">
+                                <!-- Download -->
                                 <button onclick="downloadFile('{{ route('files.download', $file) }}')" 
-                                        class="flex items-center justify-center w-10 h-10 text-blue-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg" 
+                                        class="flex items-center justify-center w-7 h-7 text-blue-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-md" 
                                         title="Download">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                     </svg>
                                 </button>
+                                
+                                <!-- Share -->
                                 <button onclick="shareFile({{ $file->id }})" 
-                                        class="flex items-center justify-center w-10 h-10 text-green-500 hover:text-green-600 dark:hover:text-green-400 transition-colors hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg" 
+                                        class="flex items-center justify-center w-7 h-7 text-green-500 hover:text-green-600 dark:hover:text-green-400 transition-colors hover:bg-green-50 dark:hover:bg-green-900/20 rounded-md" 
                                         title="Compartilhar">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
                                     </svg>
                                 </button>
+                                
+                                <!-- Copy Link (sempre presente) -->
+                                <button onclick="copyToClipboard('{{ route('files.show', $file) }}')" 
+                                        class="flex items-center justify-center w-7 h-7 text-gray-500 hover:text-gray-600 dark:hover:text-gray-400 transition-colors hover:bg-gray-100 dark:hover:bg-gray-600 rounded-md" 
+                                        title="Copiar Link">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                    </svg>
+                                </button>
+                                
+                                <!-- View Button -->
                                 <a href="{{ route('files.show', $file) }}" 
-                                   class="flex items-center justify-center w-10 h-10 text-gray-500 hover:text-gray-600 dark:hover:text-gray-400 transition-colors hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg" 
-                                   title="Detalhes">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                   class="flex items-center justify-center w-7 h-7 text-gray-500 hover:text-gray-600 dark:hover:text-gray-400 transition-colors hover:bg-gray-100 dark:hover:bg-gray-600 rounded-md" 
+                                   title="Ver Detalhes">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                                     </svg>
                                 </a>
+                                
+                                <!-- Convert -->
+                                @if($file->is_temporary)
+                                    <button onclick="convertToPermanent({{ $file->id }})" 
+                                            class="flex items-center justify-center w-7 h-7 text-purple-500 hover:text-purple-600 dark:hover:text-purple-400 transition-colors hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded-md" 
+                                            title="Converter para Permanente">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+                                        </svg>
+                                    </button>
+                                @else
+                                    <button onclick="convertToTemporary({{ $file->id }})" 
+                                            class="flex items-center justify-center w-7 h-7 text-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-md" 
+                                            title="Converter para Temporário">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                    </button>
+                                @endif
+                                
+                                <!-- Delete -->
                                 <button onclick="deleteFile({{ $file->id }})" 
-                                        class="flex items-center justify-center w-10 h-10 text-red-500 hover:text-red-600 dark:hover:text-red-400 transition-colors hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg" 
+                                        class="flex items-center justify-center w-7 h-7 text-red-500 hover:text-red-600 dark:hover:text-red-400 transition-colors hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md" 
                                         title="Excluir">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                     </svg>
                                 </button>
@@ -423,6 +537,87 @@
     </div>
 </div>
 
+<!-- Extend Expiration Modal -->
+<div id="extendModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 dark:bg-gray-900 dark:bg-opacity-75 hidden" style="z-index: 10003;">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full">
+            <div class="p-6">
+                <h3 class="text-lg font-semibold mb-4 text-blue-600 dark:text-blue-400">Estender Prazo de Expiração</h3>
+                <p class="text-gray-700 dark:text-gray-300 mb-4">Por quantos dias deseja estender a expiração deste arquivo?</p>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Dias para estender:</label>
+                    <input type="number" id="extendDays" min="1" max="365" value="7" 
+                           class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeExtendModal()" 
+                            class="px-4 py-2 text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700">
+                        Cancelar
+                    </button>
+                    <button type="button" onclick="confirmExtend()" 
+                            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800">
+                        Estender Prazo
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Convert to Permanent Modal -->
+<div id="convertPermanentModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 dark:bg-gray-900 dark:bg-opacity-75 hidden" style="z-index: 10003;">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full">
+            <div class="p-6">
+                <h3 class="text-lg font-semibold mb-4 text-green-600 dark:text-green-400">Converter para Permanente</h3>
+                <p class="text-gray-700 dark:text-gray-300 mb-6">Deseja converter este arquivo temporário para permanente? O arquivo não terá mais data de expiração.</p>
+                
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeConvertPermanentModal()" 
+                            class="px-4 py-2 text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700">
+                        Cancelar
+                    </button>
+                    <button type="button" onclick="confirmConvertPermanent()" 
+                            class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800">
+                        Converter para Permanente
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Convert to Temporary Modal -->
+<div id="convertTemporaryModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 dark:bg-gray-900 dark:bg-opacity-75 hidden" style="z-index: 10003;">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full">
+            <div class="p-6">
+                <h3 class="text-lg font-semibold mb-4 text-orange-600 dark:text-orange-400">Converter para Temporário</h3>
+                <p class="text-gray-700 dark:text-gray-300 mb-4">Por quantos dias este arquivo deve permanecer disponível?</p>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Dias de validade:</label>
+                    <input type="number" id="temporaryDays" min="1" max="365" value="30" 
+                           class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500">
+                </div>
+                
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeConvertTemporaryModal()" 
+                            class="px-4 py-2 text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700">
+                        Cancelar
+                    </button>
+                    <button type="button" onclick="confirmConvertTemporary()" 
+                            class="px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 dark:bg-orange-700 dark:hover:bg-orange-800">
+                        Converter para Temporário
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('styles')
@@ -435,6 +630,82 @@
 
 .category-filter-btn:hover {
     opacity: 0.8;
+}
+
+/* Efeitos de pulsação para arquivos temporários */
+@keyframes pulse-wave-safe {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 0 8px rgba(34, 197, 94, 0.1), 0 0 0 16px rgba(34, 197, 94, 0.05);
+    }
+}
+
+@keyframes pulse-wave-caution {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 0 10px rgba(251, 191, 36, 0.15), 0 0 0 20px rgba(251, 191, 36, 0.08);
+    }
+}
+
+@keyframes pulse-wave-warning {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.6);
+    }
+    50% {
+        box-shadow: 0 0 0 12px rgba(249, 115, 22, 0.2), 0 0 0 24px rgba(249, 115, 22, 0.1);
+    }
+}
+
+@keyframes pulse-wave-critical {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+    }
+    50% {
+        box-shadow: 0 0 0 14px rgba(239, 68, 68, 0.25), 0 0 0 28px rgba(239, 68, 68, 0.12);
+    }
+}
+
+@keyframes pulse-wave-expired {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(127, 29, 29, 0.8);
+    }
+    50% {
+        box-shadow: 0 0 0 16px rgba(127, 29, 29, 0.3), 0 0 0 32px rgba(127, 29, 29, 0.15);
+    }
+}
+
+/* Classes para aplicar as animações */
+.pulse-safe {
+    animation: pulse-wave-safe infinite ease-in-out;
+}
+
+.pulse-caution {
+    animation: pulse-wave-caution infinite ease-in-out;
+}
+
+.pulse-warning {
+    animation: pulse-wave-warning infinite ease-in-out;
+}
+
+.pulse-critical {
+    animation: pulse-wave-critical infinite ease-in-out;
+}
+
+.pulse-expired {
+    animation: pulse-wave-expired infinite ease-in-out;
+}
+
+/* Efeito hover para cartões temporários */
+.file-card.pulse-safe:hover,
+.file-card.pulse-caution:hover,
+.file-card.pulse-warning:hover,
+.file-card.pulse-critical:hover,
+.file-card.pulse-expired:hover {
+    animation-play-state: paused;
 }
 </style>
 @endpush
@@ -559,11 +830,11 @@ document.getElementById('shareForm').addEventListener('submit', async function(e
             } else if (result.message) {
                 errorMessage += `\n\nDetalhe: ${result.message}`;
             }
-            alert(errorMessage);
+            showErrorModal(errorMessage);
         }
     } catch (error) {
-        console.error('Fetch error:', error);
-        alert('Ocorreu um erro de comunicação ao tentar criar o link.');
+        // console.error('Fetch error:', error);
+        showErrorModal('Ocorreu um erro de comunicação ao tentar criar o link.');
     }
 });
 
@@ -595,7 +866,7 @@ function copyShareUrl(buttonElement) {
             navigator.clipboard.writeText(shareUrl).then(() => {
                 showCopySuccess(buttonElement);
             }).catch(err => {
-                console.warn('Clipboard API falhou, tentando método alternativo:', err);
+                // console.warn('Clipboard API falhou, tentando método alternativo:', err);
                 fallbackCopyTextToClipboard(shareUrl, buttonElement);
             });
         } else {
@@ -627,12 +898,12 @@ function fallbackCopyTextToClipboard(text, buttonElement) {
             throw new Error('execCommand falhou');
         }
     } catch (err) {
-        console.error('Erro ao copiar texto:', err);
+        // console.error('Erro ao copiar texto:', err);
         // Selecionar o texto no input para o usuário copiar manualmente
         const shareUrlInput = document.getElementById('shareUrlInput');
         shareUrlInput.select();
         shareUrlInput.setSelectionRange(0, 99999); // Para dispositivos móveis
-        alert('Não foi possível copiar automaticamente. O link foi selecionado, use Ctrl+C para copiar.');
+        showErrorModal('Não foi possível copiar automaticamente. O link foi selecionado, use Ctrl+C para copiar.');
     } finally {
         document.body.removeChild(textArea);
     }
@@ -651,6 +922,193 @@ function showCopySuccess(buttonElement) {
             buttonElement.classList.remove('bg-green-600');
             buttonElement.classList.add('bg-blue-600', 'hover:bg-blue-700');
         }, 2000);
+    }
+}
+
+// Type filter functionality
+document.querySelectorAll('.type-filter-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        // Remove active class from all type filter buttons
+        document.querySelectorAll('.type-filter-btn').forEach(btn => {
+            btn.classList.remove('active');
+            btn.style.backgroundColor = btn.style.backgroundColor.replace('40', '20');
+            btn.style.borderColor = btn.style.borderColor.replace('80', '40');
+        });
+        
+        // Add active class to clicked button
+        this.classList.add('active');
+        this.style.backgroundColor = this.style.backgroundColor.replace('20', '40');
+        this.style.borderColor = this.style.borderColor.replace('40', '80');
+        
+        filterFiles();
+    });
+});
+
+function filterFiles() {
+    const searchTerm = document.getElementById('search').value.toLowerCase();
+    const selectedCategory = document.querySelector('.category-filter-btn.active').dataset.category;
+    const selectedType = document.querySelector('.type-filter-btn.active').dataset.type;
+    const cards = document.querySelectorAll('.file-card');
+    
+    cards.forEach(card => {
+        const fileName = card.dataset.name;
+        const categoryId = card.dataset.category;
+        const isTemporary = card.dataset.temporary === 'true';
+        const expiresAt = card.dataset.expires;
+        
+        // Search filter
+        const matchesSearch = !searchTerm || fileName.includes(searchTerm);
+        
+        // Category filter
+        const matchesCategory = selectedCategory === 'all' || categoryId === selectedCategory;
+        
+        // Type filter
+        let matchesType = true;
+        if (selectedType === 'permanent') {
+            matchesType = !isTemporary;
+        } else if (selectedType === 'temporary') {
+            matchesType = isTemporary;
+        } else if (selectedType === 'expiring') {
+            if (isTemporary && expiresAt) {
+                const expirationDate = new Date(expiresAt);
+                const now = new Date();
+                const hoursUntilExpiration = (expirationDate - now) / (1000 * 60 * 60);
+                matchesType = hoursUntilExpiration <= 24 && hoursUntilExpiration > 0;
+            } else {
+                matchesType = false;
+            }
+        }
+        
+        if (matchesSearch && matchesCategory && matchesType) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
+
+// Extend expiration functionality
+let fileToExtend = null;
+
+function extendExpiration(fileId) {
+    fileToExtend = fileId;
+    document.getElementById('extendModal').classList.remove('hidden');
+}
+
+function closeExtendModal() {
+    document.getElementById('extendModal').classList.add('hidden');
+    fileToExtend = null;
+}
+
+function confirmExtend() {
+    const days = document.getElementById('extendDays').value;
+    
+    if (fileToExtend && days && !isNaN(days) && parseInt(days) > 0) {
+        fetch(`/files/${fileToExtend}/extend-expiration`, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ additional_days: parseInt(days) })
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                location.reload();
+            } else {
+                showErrorModal('Erro ao estender expiração: ' + (result.message || 'Erro desconhecido'));
+            }
+        })
+        .catch(error => {
+            showErrorModal('Erro ao estender expiração: ' + error.message);
+        })
+        .finally(() => {
+            closeExtendModal();
+        });
+    }
+}
+
+// Convert to permanent functionality
+let fileToConvertPermanent = null;
+
+function convertToPermanent(fileId) {
+    fileToConvertPermanent = fileId;
+    document.getElementById('convertPermanentModal').classList.remove('hidden');
+}
+
+function closeConvertPermanentModal() {
+    document.getElementById('convertPermanentModal').classList.add('hidden');
+    fileToConvertPermanent = null;
+}
+
+function confirmConvertPermanent() {
+    if (fileToConvertPermanent) {
+        fetch(`/files/${fileToConvertPermanent}/convert-to-permanent`, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                location.reload();
+            } else {
+                showErrorModal('Erro ao converter arquivo: ' + (result.message || 'Erro desconhecido'));
+            }
+        })
+        .catch(error => {
+            showErrorModal('Erro ao converter arquivo: ' + error.message);
+        })
+        .finally(() => {
+            closeConvertPermanentModal();
+        });
+    }
+}
+
+// Convert to temporary functionality
+let fileToConvertTemporary = null;
+
+function convertToTemporary(fileId) {
+    fileToConvertTemporary = fileId;
+    document.getElementById('convertTemporaryModal').classList.remove('hidden');
+}
+
+function closeConvertTemporaryModal() {
+    document.getElementById('convertTemporaryModal').classList.add('hidden');
+    fileToConvertTemporary = null;
+}
+
+function confirmConvertTemporary() {
+    const days = document.getElementById('temporaryDays').value;
+    
+    if (fileToConvertTemporary && days && !isNaN(days) && parseInt(days) > 0) {
+        fetch(`/files/${fileToConvertTemporary}/convert-to-temporary`, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ expiry_days: parseInt(days) })
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                location.reload();
+            } else {
+                showErrorModal('Erro ao converter arquivo: ' + (result.message || 'Erro desconhecido'));
+            }
+        })
+        .catch(error => {
+            showErrorModal('Erro ao converter arquivo: ' + error.message);
+        })
+        .finally(() => {
+            closeConvertTemporaryModal();
+        });
     }
 }
 
@@ -680,11 +1138,11 @@ function confirmDelete() {
             if (result.success) {
                 location.reload();
             } else {
-                alert('Erro ao excluir arquivo: ' + (result.message || 'Erro desconhecido'));
+                showErrorModal('Erro ao excluir arquivo: ' + (result.message || 'Erro desconhecido'));
             }
         })
         .catch(error => {
-            alert('Erro ao excluir arquivo: ' + error.message);
+            showErrorModal('Erro ao excluir arquivo: ' + error.message);
         })
         .finally(() => {
             closeDeleteModal();

@@ -178,6 +178,50 @@
                                     </div>
                                 @enderror
                             </div>
+                            
+                            <!-- Temporary File Options -->
+                            <div class="border-t border-gray-200 dark:border-gray-600 pt-6">
+                                <div class="flex items-center mb-4">
+                                    <input type="checkbox" id="is_temporary" name="is_temporary" value="1" 
+                                           class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    <label for="is_temporary" class="ml-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+                                        <i class="fas fa-clock mr-1 text-orange-500"></i>
+                                        Arquivo temporário
+                                    </label>
+                                </div>
+                                
+                                <div id="temporaryOptions" class="hidden space-y-4 ml-6 p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-200 dark:border-orange-800">
+                                    <div class="text-sm text-orange-700 dark:text-orange-300 mb-3">
+                                        <i class="fas fa-info-circle mr-1"></i>
+                                        Arquivos temporários serão automaticamente excluídos após o período de expiração.
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="expiry_days" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            Dias até expiração
+                                        </label>
+                                        <select name="expiry_days" id="expiry_days" 
+                                                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                                            <option value="1">1 dia</option>
+                                            <option value="3">3 dias</option>
+                                            <option value="7" selected>7 dias (padrão)</option>
+                                            <option value="14">14 dias</option>
+                                            <option value="30">30 dias</option>
+                                        </select>
+                                        @error('expiry_days')
+                                            <div class="text-red-500 text-sm mt-2 flex items-center">
+                                                <i class="fas fa-exclamation-circle mr-1"></i>
+                                                {{ $message }}
+                                            </div>
+                                        @enderror
+                                    </div>
+                                    
+                                    <div class="text-xs text-gray-600 dark:text-gray-400">
+                                        <i class="fas fa-bell mr-1"></i>
+                                        Você receberá notificações 24h e 1h antes da expiração.
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         
                         <!-- Action Buttons -->
@@ -240,6 +284,18 @@ class FileUploader {
         
         // Cancel upload
         this.cancelBtn.addEventListener('click', this.resetForm.bind(this));
+        
+        // Temporary file checkbox toggle
+        const isTemporaryCheckbox = document.getElementById('is_temporary');
+        const temporaryOptions = document.getElementById('temporaryOptions');
+        
+        isTemporaryCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                temporaryOptions.classList.remove('hidden');
+            } else {
+                temporaryOptions.classList.add('hidden');
+            }
+        });
     }
     
     handleDragOver(e) {
@@ -381,9 +437,15 @@ class FileUploader {
         // Add other form data
         const categoryId = document.getElementById('category_id').value;
         const description = document.getElementById('description').value;
+        const isTemporary = document.getElementById('is_temporary').checked;
+        const expiryDays = document.getElementById('expiry_days').value;
         
         if (categoryId) formData.append('category_id', categoryId);
         if (description) formData.append('description', description);
+        if (isTemporary) {
+            formData.append('is_temporary', '1');
+            if (expiryDays) formData.append('expiry_days', expiryDays);
+        }
         
         // Use XMLHttpRequest for real progress tracking
         this.uploadWithProgress(formData);
@@ -502,6 +564,9 @@ class FileUploader {
         this.hideProgress();
         document.getElementById('category_id').value = '';
         document.getElementById('description').value = '';
+        document.getElementById('is_temporary').checked = false;
+        document.getElementById('expiry_days').value = '7';
+        document.getElementById('temporaryOptions').classList.add('hidden');
     }
 }
 
